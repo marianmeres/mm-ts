@@ -4,7 +4,7 @@
  *
  * todo: test, docs
  */
-export default class MM_Storage {
+export class MM_Storage {
 
     /**
      *
