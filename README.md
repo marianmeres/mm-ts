@@ -1,3 +1,3 @@
-# mm-php
+# mm-ts
 
 Ongoing collection of various personal TypeScript utils...
