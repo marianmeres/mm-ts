@@ -1,8 +1,11 @@
 
 /**
- * sugar wrap on top of session/localStorage
+ * few utilities on top of session/localStorage:
+ * - normalized values de/serialization
+ * - expiration features ("valid until")
+ * - auto namespace prefix
+ * - ...
  *
- * todo: test, docs
  */
 export class MM_Storage {
 
@@ -37,7 +40,7 @@ export class MM_Storage {
      * API for direct access to underlying storage
      * @returns {Storage}
      */
-    get native() {
+    get native():Storage {
         return this._storage;
     }
 

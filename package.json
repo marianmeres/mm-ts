@@ -1,0 +1,28 @@
+{
+  "name": "mm-ts",
+  "version": "1.0.0",
+  "description": "Personal TypeScript utils...",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/marianmeres/mm-ts.git"
+  },
+  "keywords": [
+    "TypeScript",
+    "jQuery",
+    "underscore"
+  ],
+  "author": "Marian Meres",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/marianmeres/mm-ts/issues"
+  },
+  "homepage": "https://github.com/marianmeres/mm-ts#readme",
+  "dependencies": {
+    "@types/jquery": "^2.0.41",
+    "@types/underscore": "^1.8.0"
+  }
+}
