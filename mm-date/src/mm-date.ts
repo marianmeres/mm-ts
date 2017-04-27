@@ -37,11 +37,13 @@ export function mm_isLeapYear(year) {
 /**
  * @param d1
  * @param d2
- * @returns {boolean}
+ * @returns {Object|boolean}
  */
-export function mm_isSameDay(d1, d2) {
+export function mm_isSameDay(d1:Date, d2:Date):boolean {
     return (
-        d1.getFullYear() === d2.getFullYear()
+        mm_isValidDate(d1)
+        && mm_isValidDate(d2)
+        && d1.getFullYear() === d2.getFullYear()
         && d1.getMonth() === d2.getMonth()
         && d1.getDate()  === d2.getDate()
     );
