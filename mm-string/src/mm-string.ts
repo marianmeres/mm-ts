@@ -44,17 +44,23 @@ export function mm_getRandomAlphaNumStr(len:number):string {
 }
 
 /**
- * credit: somewhere I don't remember, code not mine...
- * @param n   int/float
- * @param c   number of decimals
- * @param d   decimal separator
- * @param t   thousands separator
+ * credit: somewhere I don't remember...
+ * @param amount
+ * @param decimalsCount
+ * @param decimalSeparator
+ * @param thousandSeparator
  * @returns {string}
  */
-export function mm_formatMoney(n, c, d, t):string {
+export function mm_formatMoney(amount, decimalsCount, decimalSeparator, thousandSeparator):string {
+
+    let n = amount;
+    let c = decimalsCount;
+    let d = decimalSeparator;
+    let t = thousandSeparator;
+
     c = isNaN(c = Math.abs(c)) ? 2 : c; // number of decimals
-    d = d == undefined ? "." : d;       // decimal separator
-    t = t == undefined ? " " : t;       // thousands separator
+    d = d == void(0) ? "." : d;       // decimal separator
+    t = t == void(0)  ? " " : t;       // thousands separator
     let s = n < 0 ? "-" : "";           // sign
     let i = parseInt(n = Math.abs(+n || 0).toFixed(c)) + "";
     let j = i.length;

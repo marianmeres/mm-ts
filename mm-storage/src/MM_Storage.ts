@@ -78,9 +78,9 @@ export class MM_Storage {
                 payload: val,
             }));
         } catch(e) {
+            console.error(e);
             this.log(`!setItem(${key}) ${e}`);
-            // too naive?
-            if (/quota/i.test(e)) this.removeExpired();
+            if (/quota/i.test(e)) this.removeExpired(); // too naive?
         }
         return this;
     }
@@ -116,7 +116,10 @@ export class MM_Storage {
             }
             return val;
 
-        } catch (e) {} // corrupted json?
+        } catch (e) { // corrupted json?
+            console.error(e);
+            this.log(`!getItem(${key}) ${e}`);
+        }
 
         return null;
     }

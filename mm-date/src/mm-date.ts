@@ -48,3 +48,25 @@ export function mm_isSameDay(d1:Date, d2:Date):boolean {
         && d1.getDate()  === d2.getDate()
     );
 }
+
+/**
+ * @param d1
+ * @param d2
+ * @returns {Object|boolean}
+ */
+export function mm_isSameMonth(d1:Date, d2:Date):boolean {
+    return (
+        mm_isValidDate(d1)
+        && mm_isValidDate(d2)
+        && d1.getFullYear() === d2.getFullYear()
+        && d1.getMonth() === d2.getMonth()
+    );
+}
+
+/**
+ * @param d
+ * @returns {boolean}
+ */
+export function mm_isToday(d:Date):boolean {
+    return mm_isSameDay(d, new Date());
+}
