@@ -52,6 +52,7 @@ export class MM_Storage {
         try {
             this.native.setItem(key, val);
         } catch(e) {
+            console.error(e);
             this.log(`!setItem(${key}) ${e}`);
         }
     }
@@ -170,7 +171,7 @@ export class MM_Storage {
             if (rx.test(key)) {
                 this._storage.removeItem(key);
                 counter++;
-                i--; // because remove shortened length
+                i--; // because removeItem has just shortened the length
             }
         }
         return counter;
