@@ -60,8 +60,8 @@ export function mmGetFocusableEls($context: any) {
         'embed', '[contenteditable]', '[tabindex]:not([tabindex^="-"])'
     ];
 
-    return $(focusableElements.join(','), $context).filter(function(index) {
-        let child = $(this).get(0);
+    return $(focusableElements.join(','), $context).filter((index, el) => {
+        let child = $(el).get(0);
         return !!(child.offsetWidth || child.offsetHeight || child.getClientRects().length);
     });
 }
