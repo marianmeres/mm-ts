@@ -1,4 +1,4 @@
-declare const $:JQueryStatic;
+declare const $: any;
 
 const _isFunction = (obj) => {
     return !!(obj && obj.constructor && obj.call && obj.apply);
@@ -11,13 +11,13 @@ const _isFunction = (obj) => {
  * Note: v principe podobna ako $.closest() akurat v rozsirenou funcionalitov
  * matchovania a doplnenym traverse limitom
  *
- * @param $el
+ * @param {any} $el
  * @param matcher
- * @param traverseLimit
+ * @param {number} traverseLimit
  * @returns {any}
  */
-export function mmUpWhileNotMatched($el:JQuery, matcher, traverseLimit = 5) {
-    if (!_isFunction(matcher)) return false; // no-op
+export function mmUpWhileNotMatched($el: any, matcher, traverseLimit: number = 5) {
+    if (!_isFunction(matcher)) { return false; } // no-op
 
     let matched = matcher($el);
     let counter = 0;
@@ -27,19 +27,19 @@ export function mmUpWhileNotMatched($el:JQuery, matcher, traverseLimit = 5) {
 
     // 1. set default ak nie je digit (toto odchyti undefined ako aj ine hodnoty a typy)
     //    note: tu sa nespolieham na typescript
-    if (!/^\d+$/.test(traverseLimit as any)) { // interne precastuje na string
+    if (!/^\d+$/.test(`${traverseLimit}`)) { // interne precastuje na string
         traverseLimit = 5;
     }
 
     // 2. explicit cast na int (aby nizsie porovnanie zbehlo korektne)
     //    Note: NaN tu nemusime testovat, lebo vyssi regex uz validoval...
-    traverseLimit = parseInt(traverseLimit as any);
+    traverseLimit = parseInt(`${traverseLimit}`, 10);
 
     // explicit false check, not just falsey... keby sme sa pytali iba na falsey
     // tak by neslo rozlisit medzi regulernou falsey a not found
     while (matched === false) {
         $el = $el.parent();
-        if (!$el || (traverseLimit && ++counter == traverseLimit)) {
+        if (!$el || (traverseLimit && ++counter === traverseLimit)) {
             break;
         }
         matched = matcher($el);
@@ -50,10 +50,10 @@ export function mmUpWhileNotMatched($el:JQuery, matcher, traverseLimit = 5) {
 
 /**
  * ported z https://github.com/edenspiekermann/a11y-dialog/blob/master/a11y-dialog.js
+ *
  * @param $context
- * @returns {JQuery}
  */
-export function mmGetFocusableEls($context:JQuery) {
+export function mmGetFocusableEls($context: any) {
     let focusableElements = [
         'a[href]', 'area[href]', 'input:not([disabled])', 'select:not([disabled])',
         'textarea:not([disabled])', 'button:not([disabled])', 'iframe', 'object',
