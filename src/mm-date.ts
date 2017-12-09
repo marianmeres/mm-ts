@@ -1,11 +1,12 @@
-import * as _ from "underscore";
+import _isDate = require('lodash/isDate');
+import _isNaN = require('lodash/isNaN');
 
 /**
  * @param date
  * @returns {boolean}
  */
-export function mm_isValidDate(date) {
-    return (_.isDate(date) && !_.isNaN(date.valueOf()));
+export function mmIsValidDate(date) {
+    return (_isDate(date) && !_isNaN(date.valueOf()));
 }
 
 /**
@@ -13,7 +14,7 @@ export function mm_isValidDate(date) {
  * @param month
  * @returns {number}
  */
-export function mm_getDaysInMonth(year, month) {
+export function mmGetDaysInMonth(year, month) {
     return (32 - new Date(year, month, 32).getDate());
 }
 
@@ -22,7 +23,7 @@ export function mm_getDaysInMonth(year, month) {
  * @param month
  * @returns {number}
  */
-export function mm_getStartWeekday(year, month) {
+export function mmGetStartWeekday(year, month) {
     return new Date(year, month, 1).getDay();
 }
 
@@ -30,7 +31,7 @@ export function mm_getStartWeekday(year, month) {
  * @param year
  * @returns {boolean}
  */
-export function mm_isLeapYear(year) {
+export function mmIsLeapYear(year) {
     return new Date(year, 1, 29).getMonth() === 1;
 }
 
@@ -39,10 +40,10 @@ export function mm_isLeapYear(year) {
  * @param d2
  * @returns {Object|boolean}
  */
-export function mm_isSameDay(d1:Date, d2:Date):boolean {
+export function mmIsSameDay(d1:Date, d2:Date): boolean {
     return (
-        mm_isValidDate(d1)
-        && mm_isValidDate(d2)
+        mmIsValidDate(d1)
+        && mmIsValidDate(d2)
         && d1.getFullYear() === d2.getFullYear()
         && d1.getMonth() === d2.getMonth()
         && d1.getDate()  === d2.getDate()
@@ -54,10 +55,10 @@ export function mm_isSameDay(d1:Date, d2:Date):boolean {
  * @param d2
  * @returns {Object|boolean}
  */
-export function mm_isSameMonth(d1:Date, d2:Date):boolean {
+export function mmIsSameMonth(d1:Date, d2:Date): boolean {
     return (
-        mm_isValidDate(d1)
-        && mm_isValidDate(d2)
+        mmIsValidDate(d1)
+        && mmIsValidDate(d2)
         && d1.getFullYear() === d2.getFullYear()
         && d1.getMonth() === d2.getMonth()
     );
@@ -67,6 +68,6 @@ export function mm_isSameMonth(d1:Date, d2:Date):boolean {
  * @param d
  * @returns {boolean}
  */
-export function mm_isToday(d:Date):boolean {
-    return mm_isSameDay(d, new Date());
+export function mmIsToday(d:Date): boolean {
+    return mmIsSameDay(d, new Date());
 }

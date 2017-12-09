@@ -3,17 +3,13 @@
   "version": "1.0.0",
   "description": "Personal TypeScript utils...",
   "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/marianmeres/mm-ts.git"
   },
   "keywords": [
     "TypeScript",
-    "jQuery",
-    "underscore"
+    "jQuery"
   ],
   "author": "Marian Meres",
   "license": "MIT",
@@ -21,8 +17,37 @@
     "url": "https://github.com/marianmeres/mm-ts/issues"
   },
   "homepage": "https://github.com/marianmeres/mm-ts#readme",
-  "dependencies": {
-    "@types/jquery": "^2.0.41",
-    "@types/underscore": "^1.8.0"
+  "devDependencies": {
+    "@types/jest": "^21.1.8",
+    "@types/jquery": "^3.2.16",
+    "jest": "^21.2.1",
+    "lodash": "^4.17.4",
+    "onchange": "^3.3.0",
+    "tslint": "^5.8.0",
+    "typescript": "^2.6.2"
+  },
+  "scripts": {
+    "test": "NODE_ENV=testing jest --watch",
+    "tslint": "tslint -c tslint.json -p tsconfig.json --force",
+    "watch:tslint": "onchange 'src/**/*.*' --initial -- npm run tslint"
+  },
+  "jest": {
+    "moduleFileExtensions": [
+      "ts",
+      "tsx",
+      "js"
+    ],
+    "transform": {
+      "^.+\\.(ts|tsx)$": "<rootDir>/preprocessor.js"
+    },
+    "testMatch": [
+      "**/__tests__/*.(ts|tsx|js)"
+    ],
+    "modulePathIgnorePatterns": [
+      "<rootDir>/dist/"
+    ],
+    "globals": {
+      "__TESTING__": true
+    }
   }
 }

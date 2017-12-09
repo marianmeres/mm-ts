@@ -1,0 +1,25 @@
+{
+    "include": [
+        "src/**/*.ts"
+    ],
+    "exclude": [
+        "node_modules",
+        "src/**/*.test.ts",
+        "**/__tests__/*.*"
+    ],
+    "compilerOptions": {
+        "module": "commonjs",
+        "moduleResolution": "node",
+        "outDir": "dist",
+        "target": "es2017",
+        "sourceMap": false,
+        "declaration": false,
+        "forceConsistentCasingInFileNames": false,
+        "noImplicitReturns": true,
+        "noImplicitThis": true,
+        "noImplicitAny": false,
+        "strictNullChecks": false,
+        "suppressImplicitAnyIndexErrors": false,
+        "noUnusedLocals": false
+    }
+}

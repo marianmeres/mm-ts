@@ -4,7 +4,7 @@
  * @param array
  * @returns {*}
  */
-export function mm_shuffle(array) {
+export function mmShuffle(array) {
   let counter = array.length, temp, index;
 
   // While there are elements in the array

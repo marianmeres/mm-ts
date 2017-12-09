@@ -1,3 +1,5 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 /**
  * This function parses ampersand-separated name=value argument pairs from
  * the query string of the URL. It stores the name=value pairs in
@@ -10,43 +12,38 @@
  * @param separator
  * @returns {{}}
  */
-export function mm_parseQuery(query?:string, separator:string = '&'):any {
+function mmParseQuery(query, separator = '&') {
     query = query || window.location.search.substring(1);
-
     let out = {};
     let pairs = query.split(separator);
-
     for (let i = 0; i < pairs.length; i++) {
         let pos = pairs[i].indexOf('=');
-        if (pos == -1) continue;
-
+        if (pos == -1)
+            continue;
         let name = pairs[i].substring(0, pos);
-        out[name] = decodeURIComponent(pairs[i].substring(pos+1));
+        out[name] = decodeURIComponent(pairs[i].substring(pos + 1));
     }
-
     return out;
 }
-
-
+exports.mmParseQuery = mmParseQuery;
 /**
  * https://gist.github.com/jlong/2428561
  * @param url
  * @param key
  * @returns {{protocol: string, hostname: string, port: string, pathname: string, search: string, hash: string}}
  */
-export function mm_parseUrl(url?:string, key?) {
+function mmParseUrl(url, key) {
     let out = {
-        protocol: '', // => "http:"
-        hostname: '', // => "example.com"
-        port: '',     // => "3000"
-        pathname: '', // => "/pathname/"
-        search: '',   // => "?search=test"
-        hash: '',     // => "#hash"
+        protocol: '',
+        hostname: '',
+        port: '',
+        pathname: '',
+        search: '',
+        hash: '',
     };
     let parser = document.createElement('a');
     parser.href = url || window.location.href;
-
     Object.keys(out).forEach((k) => out[k] = parser[k] || "");
-
     return key ? out[key] : out;
 }
+exports.mmParseUrl = mmParseUrl;

@@ -1,7 +1,8 @@
-import * as _ from "underscore";
-
-declare const $:JQueryStatic;
-
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const _isFunction = (obj) => {
+    return !!(obj && obj.constructor && obj.call && obj.apply);
+};
 /**
  * Utilitka skusajuca matcher nad $el... ak matcher vrati false tak bude skusat
  * stastie **vyssie** u parenta az kym nenajde, alebo nehitne traverseLimit
@@ -14,25 +15,21 @@ declare const $:JQueryStatic;
  * @param traverseLimit
  * @returns {any}
  */
-export function mm_upWhileNotMatched($el:JQuery, matcher, traverseLimit = 5) {
-    if (!_.isFunction(matcher)) return false; // no-op
-
+function mmUpWhileNotMatched($el, matcher, traverseLimit = 5) {
+    if (!_isFunction(matcher))
+        return false; // no-op
     let matched = matcher($el);
     let counter = 0;
-
     // dolezite: traverseLimit chceme urcite dat **nejake** pozitivne cele cislo,
     // lebo inak tu mame riziko endless loop...
-
     // 1. set default ak nie je digit (toto odchyti undefined ako aj ine hodnoty a typy)
     //    note: tu sa nespolieham na typescript
-    if (!/^\d+$/.test(traverseLimit as any)) { // interne precastuje na string
+    if (!/^\d+$/.test(traverseLimit)) {
         traverseLimit = 5;
     }
-
     // 2. explicit cast na int (aby nizsie porovnanie zbehlo korektne)
     //    Note: NaN tu nemusime testovat, lebo vyssi regex uz validoval...
-    traverseLimit = parseInt(traverseLimit as any);
-
+    traverseLimit = parseInt(traverseLimit);
     // explicit false check, not just falsey... keby sme sa pytali iba na falsey
     // tak by neslo rozlisit medzi regulernou falsey a not found
     while (matched === false) {
@@ -42,24 +39,23 @@ export function mm_upWhileNotMatched($el:JQuery, matcher, traverseLimit = 5) {
         }
         matched = matcher($el);
     }
-
     return matched;
 }
-
+exports.mmUpWhileNotMatched = mmUpWhileNotMatched;
 /**
  * ported z https://github.com/edenspiekermann/a11y-dialog/blob/master/a11y-dialog.js
  * @param $context
  * @returns {JQuery}
  */
-export function mm_getFocusableEls($context:JQuery) {
+function mmGetFocusableEls($context) {
     let focusableElements = [
         'a[href]', 'area[href]', 'input:not([disabled])', 'select:not([disabled])',
         'textarea:not([disabled])', 'button:not([disabled])', 'iframe', 'object',
         'embed', '[contenteditable]', '[tabindex]:not([tabindex^="-"])'
     ];
-
-    return $(focusableElements.join(','), $context).filter(function(index) {
+    return $(focusableElements.join(','), $context).filter(function (index) {
         let child = $(this).get(0);
         return !!(child.offsetWidth || child.offsetHeight || child.getClientRects().length);
     });
 }
+exports.mmGetFocusableEls = mmGetFocusableEls;

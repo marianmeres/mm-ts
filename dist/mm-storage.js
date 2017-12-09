@@ -1,49 +1,68 @@
-
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const _isFunction = (obj) => {
+    return !!(obj && obj.constructor && obj.call && obj.apply);
+};
+// https://developer.mozilla.org/en-US/docs/Web/API/Web_Storage_API/Using_the_Web_Storage_API
+exports.isStorageAvailable = (type) => {
+    let storage;
+    try {
+        storage = window[type];
+        let x = '__storage_test__';
+        storage.setItem(x, x);
+        storage.removeItem(x);
+        return true;
+    }
+    catch (e) {
+        return e instanceof DOMException && (
+        // everything except Firefox
+        e.code === 22 ||
+            // Firefox
+            e.code === 1014 ||
+            // test name field too, because code might not be present
+            // everything except Firefox
+            e.name === 'QuotaExceededError' ||
+            // Firefox
+            e.name === 'NS_ERROR_DOM_QUOTA_REACHED') &&
+            // acknowledge QuotaExceededError only if there's something already stored
+            storage.length !== 0;
+    }
+};
 /**
  * few utilities on top of session/localStorage:
  * - normalized values de/serialization
  * - expiration features ("valid until")
  * - auto namespace prefix
- * - ...
- *
  */
-export class MM_Storage {
-
-    /**
-     *
-     */
-    protected _storage:Storage;
-
-    logger;
-
+class MMStorage {
     /**
      * @param _prefix
      * @param isSession
      * @param _defaultTtlMs
      */
-    constructor(protected _prefix:string, isSession = false, protected _defaultTtlMs:number = 0) {
+    constructor(_prefix, isSession = false, _defaultTtlMs = 0) {
+        this._prefix = _prefix;
+        this._defaultTtlMs = _defaultTtlMs;
         if (isSession) {
             this._storage = window.sessionStorage;
-        } else {
+        }
+        else {
             this._storage = window.localStorage;
         }
     }
-
     /**
      * @param msg
      */
     log(msg) {
-        MM_Storage._isFunction(this.logger) && this.logger(msg);
+        _isFunction(this.logger) && this.logger(msg);
     }
-
     /**
      * API for direct access to underlying storage
      * @returns {Storage}
      */
-    get native():Storage {
+    get native() {
         return this._storage;
     }
-
     /**
      * @param key
      * @param val
@@ -51,12 +70,12 @@ export class MM_Storage {
     setItemNative(key, val) {
         try {
             this.native.setItem(key, val);
-        } catch(e) {
+        }
+        catch (e) {
             console.error(e);
             this.log(`!setItem(${key}) ${e}`);
         }
     }
-
     /**
      * @param key
      * @returns {string|null}
@@ -64,28 +83,31 @@ export class MM_Storage {
     getItemNative(key) {
         return this.native.getItem(key);
     }
-
     /**
      * @param key
      * @param val
      * @param ttlMs
-     * @returns {MM_Storage}
+     * @returns {MMStorage}
      */
-    setItem(key, val, ttlMs:number = null) {
-        if (ttlMs === null) ttlMs = this._defaultTtlMs;
+    setItem(key, val, ttlMs = null) {
+        if (ttlMs === null) {
+            ttlMs = this._defaultTtlMs;
+        }
         try {
             this._storage.setItem(this._key(key), JSON.stringify({
                 _validUntil: (ttlMs ? (new Date(Date.now() + ttlMs)) : 0),
                 payload: val,
             }));
-        } catch(e) {
+        }
+        catch (e) {
             console.error(e);
             this.log(`!setItem(${key}) ${e}`);
-            if (/quota/i.test(e)) this.removeExpired(); // too naive?
+            if (/quota/i.test(e)) {
+                this.removeExpired();
+            } // too naive?
         }
         return this;
     }
-
     /**
      * @param key
      * @param fallbackValue
@@ -94,54 +116,47 @@ export class MM_Storage {
     getItem(key, fallbackValue = null) {
         key = this._key(key);
         let val = this._storage.getItem(key);
-        if (null === val) return val; // not found
+        if (null === val) {
+            return val;
+        } // not found
         try {
-
             val = JSON.parse(val);
-
-            if (!val || val['payload'] === void 0 || val['_validUntil'] === void 0) { // wrong format?
+            if (!val || val.payload === void 0 || val._validUntil === void 0) {
                 this._storage.removeItem(key);
                 return null;
             }
-
             // 0 = valid always
-            if (val['_validUntil'] && (new Date(val['_validUntil'])) < (new Date())) {
+            if (val._validUntil && (new Date(val._validUntil)) < (new Date())) {
                 this._storage.removeItem(key);
                 return null;
             }
-
-            val = val['payload'];
-
-            if (val === null && fallbackValue !== void 0) { // val = null is legit
+            val = val.payload;
+            if (val === null && fallbackValue !== void 0) {
                 val = fallbackValue;
             }
             return val;
-
-        } catch (e) { // corrupted json?
+        }
+        catch (e) {
             console.error(e);
             this.log(`!getItem(${key}) ${e}`);
         }
-
         return null;
     }
-
     /**
      * @param key
-     * @returns {MM_Storage}
+     * @returns {MMStorage}
      */
     removeItem(key) {
         this._storage.removeItem(this._key(key));
         return this;
     }
-
     /**
-     * @returns {MM_Storage}
+     * @returns {MMStorage}
      */
     removeAll() {
         this._storage.clear();
         return this;
     }
-
     /**
      *
      */
@@ -152,19 +167,19 @@ export class MM_Storage {
             this.getItem(key); // this cleans up
         }
     }
-
     /**
      * @param rgxStr
      * @param prefix
      * @returns {number}
      */
     removeMatching(rgxStr, prefix = null) {
-        if (prefix === null) prefix = this._prefix;
+        if (prefix === null) {
+            prefix = this._prefix;
+        }
         let rx = new RegExp(
-            // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions
-            "^" + (prefix + rgxStr).replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'i'
-        );
-        //console.log(rx);
+        // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions
+        '^' + (prefix + rgxStr).replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'i');
+        // console.log(rx);
         let counter = 0;
         for (let i = 0; i < this._storage.length; ++i) {
             let key = this._storage.key(i);
@@ -176,19 +191,13 @@ export class MM_Storage {
         }
         return counter;
     }
-
     /**
      * @param key
      * @returns {string}
      * @private
      */
-    protected _key(key) {
+    _key(key) {
         return this._prefix + key;
     }
-
-    // taken from underscore
-    protected static _isFunction(obj) {
-        return !!(obj && obj.constructor && obj.call && obj.apply);
-    }
-
 }
+exports.MMStorage = MMStorage;

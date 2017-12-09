@@ -1,23 +1,23 @@
 
 /**
- * @param string
+ * @param str
  * @returns {string}
  */
-export function mm_ucfirst(string:string):string {
-    string += '';
-    return string.charAt(0).toUpperCase() + string.slice(1);
+export function mmUcfirst(str: string): string {
+    str += '';
+    return str.charAt(0).toUpperCase() + str.slice(1);
 }
 
 
 /**
  * http://stackoverflow.com/questions/5002111/javascript-how-to-strip-html-tags-from-string
- * @param string
+ * @param str
  * @returns {string}
  */
-export function mm_stripHtml(string:string):string {
-    let div = document.createElement("div");
-    div.innerHTML = string;
-    return (div.textContent || div.innerText) + "";
+export function mmStripHtml(str: string): string {
+    let div = document.createElement('div');
+    div.innerHTML = str;
+    return (div.textContent || div.innerText) + '';
 }
 
 
@@ -26,21 +26,22 @@ export function mm_stripHtml(string:string):string {
  * @param str
  * @returns {string}
  */
-export function mm_nl2br(str:string):string {
-    return (str + '').replace(/([^>\r\n]?)(\r\n|\n\r|\r|\n)/g, '$1<br/>$2');
+export function mmNl2br(str: string): string {
+    return (`${str}`).replace(/([^>\r\n]?)(\r\n|\n\r|\r|\n)/g, '$1<br/>$2');
 }
 
 
 /**
- * @param len
+ * @param {number} len
+ * @param {string} prefix
  * @returns {string}
  */
-export function mm_getRandomAlphaNumStr(len:number):string {
-    let salt = "";
+export function mmGetRandomAlphaNumStr(len: number, prefix: string = ''): string {
+    let salt = '';
     while (salt.length < len) {
         salt += Math.random().toString(36).substr(2);
     }
-    return salt.substr(0, len);
+    return (prefix || '') + salt.substr(0, len);
 }
 
 /**
@@ -51,7 +52,7 @@ export function mm_getRandomAlphaNumStr(len:number):string {
  * @param thousandSeparator
  * @returns {string}
  */
-export function mm_formatMoney(amount, decimalsCount, decimalSeparator, thousandSeparator):string {
+export function mmFormatMoney(amount, decimalsCount, decimalSeparator, thousandSeparator): string {
 
     let n = amount;
     let c = decimalsCount;
@@ -59,18 +60,18 @@ export function mm_formatMoney(amount, decimalsCount, decimalSeparator, thousand
     let t = thousandSeparator;
 
     c = isNaN(c = Math.abs(c)) ? 2 : c; // number of decimals
-    d = d == void(0) ? "." : d;       // decimal separator
-    t = t == void(0)  ? " " : t;       // thousands separator
-    let s = n < 0 ? "-" : "";           // sign
-    let i = parseInt(n = Math.abs(+n || 0).toFixed(c)) + "";
+    d = d === void 0 ? '.' : d;       // decimal separator
+    t = t === void 0 ? ' ' : t;       // thousands separator
+    let s = n < 0 ? '-' : '';           // sign
+    let i = parseInt(n = Math.abs(+n || 0).toFixed(c), 10) + '';
     let j = i.length;
     j = j > 3 ? j % 3 : 0;
 
     return (
         s
-        + (j ? i.substr(0, j) + t : "")
-        + i.substr(j).replace(/(\d{3})(?=\d)/g, "$1" + t)
-        + (c ? d + Math.abs(n - (i as any)).toFixed(c).slice(2) : "")
+        + (j ? i.substr(0, j) + t : '')
+        + i.substr(j).replace(/(\d{3})(?=\d)/g, '$1' + t)
+        + (c ? d + Math.abs(n - (i as any)).toFixed(c).slice(2) : '')
     );
 }
 
@@ -80,7 +81,7 @@ export function mm_formatMoney(amount, decimalsCount, decimalSeparator, thousand
  * @param charlist
  * @returns {string}
  */
-export function mm_trim(str:string, charlist?:string):string {
+export function mmTrim(str: string, charlist?: string): string {
     let whitespace = [
         ' ', '\n', '\r', '\t', '\f', '\x0b', '\xa0', '\u2000', '\u2001', '\u2002',
         '\u2003', '\u2004', '\u2005', '\u2006', '\u2007', '\u2008', '\u2009',
@@ -111,18 +112,18 @@ export function mm_trim(str:string, charlist?:string):string {
 
 /**
  * https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions
- * @param string
+ * @param str
  * @returns {string}
  */
-export function mm_escapeRegExp(string:string):string {
-    return (string + '').replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); // $& means the whole matched string
+export function mmEscapeRegExp(str: string): string {
+    return (str + '').replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); // $& means the whole matched string
 }
 
 /**
  * http://stackoverflow.com/questions/105034/create-guid-uuid-in-javascript
  * @returns {string}
  */
-export function mm_uid(length?:number) {
+export function mmUid(length?: number) {
     let s4 = () => Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1).toLowerCase();
 
     if (!length) { // quasi uuid
@@ -130,7 +131,26 @@ export function mm_uid(length?:number) {
     }
 
     // custom length
-    let c = Math.ceil(length/4), out = '';
-    for (let i = 0; i < c; i++) out += s4();
+    let c = Math.ceil(length / 4);
+    let out = '';
+    for (let i = 0; i < c; i++) { out += s4(); }
     return out.substr(0, length);
+}
+
+/**
+ * https://stackoverflow.com/questions/10045122/replace-many-values-in-a-string-based-on-search-replace-pairs
+ * @param str
+ * @param map
+ */
+export function mmReplaceMap(str, map) {
+    let patterns = [];
+    Object.keys(map).forEach((k) => patterns.push(mmEscapeRegExp(k)));
+    let regExp = new RegExp(patterns.join('|'), 'g');
+    return str.replace(regExp, (match) => {
+        let replaced = map[match];
+        if (replaced === null || replaced === void 0) {
+            return '';
+        }
+        return replaced;
+    });
 }
