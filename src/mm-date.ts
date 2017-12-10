@@ -1,12 +1,12 @@
-import _isDate = require('lodash/isDate');
-import _isNaN = require('lodash/isNaN');
+import { isDate } from 'lodash';
+import { isNaN } from 'lodash';
 
 /**
  * @param date
  * @returns {boolean}
  */
 export function mmIsValidDate(date) {
-    return (_isDate(date) && !_isNaN(date.valueOf()));
+    return (isDate(date) && !isNaN(date.valueOf()));
 }
 
 /**
