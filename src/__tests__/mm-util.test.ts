@@ -1,5 +1,5 @@
 import { mmSequence } from '../mm-util';
-import _isArray = require('lodash/isArray');
+import { isArray } from 'lodash';
 
 describe('mmSequence', () => {
 
@@ -28,7 +28,7 @@ describe('mmSequence', () => {
 
     it('foo', () => {
         expect(1).toEqual(1);
-        expect(_isArray([])).toEqual(true);
+        expect(isArray([])).toEqual(true);
     });
 
 });
