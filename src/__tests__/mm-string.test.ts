@@ -15,4 +15,11 @@ describe('mmString', () => {
         // ':some' -> empty string (not 'null')
         expect(mmReplaceMap(str, map)).toEqual('/api/some/123/');
     });
+
+    it.only('mmReplaceMap works3 (ignore case)', () => {
+        // note: keys in map must be lowercased
+        let map = {':userid': 123, ':some': null, '/foo': void 0};
+        let str = '/api/some/:USERID/foo/:SoMe';
+        expect(mmReplaceMap(str, map, true)).toEqual('/api/some/123/');
+    });
 });
