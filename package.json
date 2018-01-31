@@ -38,7 +38,7 @@
       "js"
     ],
     "transform": {
-      "^.+\\.(ts|tsx)$": "<rootDir>/preprocessor.js"
+      "^.+\\.(ts|tsx)$": "<rootDir>/tspreprocessor.js"
     },
     "testMatch": [
       "**/__tests__/*.(ts|tsx|js)"
