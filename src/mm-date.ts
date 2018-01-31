@@ -1,5 +1,4 @@
-import isDate = require('lodash/isDate');
-import isNaN = require('lodash/isNaN');
+import { isDate, isNaN } from 'lodash';
 
 /**
  * @param date
