@@ -35,10 +35,11 @@
     "moduleFileExtensions": [
       "ts",
       "tsx",
-      "js"
+      "js",
+      "jsx"
     ],
     "transform": {
-      "^.+\\.(ts|tsx)$": "<rootDir>/tspreprocessor.js"
+      "^.+\\.tsx?$": "ts-jest"
     },
     "testMatch": [
       "**/__tests__/*.(ts|tsx|js)"
@@ -47,7 +48,13 @@
       "<rootDir>/dist/"
     ],
     "globals": {
-      "__TESTING__": true
+      "__TESTING__": true,
+      "ts-jest": {
+        "skipBabel": true
+      }
     }
+  },
+  "dependencies": {
+    "ts-jest": "^22.0.2"
   }
 }
