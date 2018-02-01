@@ -39,7 +39,7 @@ export function mmIsLeapYear(year) {
  * @param d2
  * @returns {Object|boolean}
  */
-export function mmIsSameDay(d1:Date, d2:Date): boolean {
+export function mmIsSameDay(d1: Date, d2: Date): boolean {
     return (
         mmIsValidDate(d1)
         && mmIsValidDate(d2)
@@ -54,7 +54,7 @@ export function mmIsSameDay(d1:Date, d2:Date): boolean {
  * @param d2
  * @returns {Object|boolean}
  */
-export function mmIsSameMonth(d1:Date, d2:Date): boolean {
+export function mmIsSameMonth(d1: Date, d2: Date): boolean {
     return (
         mmIsValidDate(d1)
         && mmIsValidDate(d2)
@@ -67,6 +67,6 @@ export function mmIsSameMonth(d1:Date, d2:Date): boolean {
  * @param d
  * @returns {boolean}
  */
-export function mmIsToday(d:Date): boolean {
+export function mmIsToday(d: Date): boolean {
     return mmIsSameDay(d, new Date());
 }
