@@ -10,7 +10,7 @@
  * @param separator
  * @returns {{}}
  */
-export function mmParseQuery(query?:string, separator:string = '&'):any {
+export function mmParseQuery(query?: string, separator: string = '&'):any {
     query = query || window.location.search.substring(1);
 
     let out = {};
@@ -34,7 +34,7 @@ export function mmParseQuery(query?:string, separator:string = '&'):any {
  * @param key
  * @returns {{protocol: string, hostname: string, port: string, pathname: string, search: string, hash: string}}
  */
-export function mmParseUrl(url?:string, key?) {
+export function mmParseUrl(url?: string, key?) {
     let out = {
         protocol: '', // => "http:"
         hostname: '', // => "example.com"
