@@ -10,7 +10,7 @@
  * @param separator
  * @returns {{}}
  */
-export function mmParseQuery(query?: string, separator: string = '&'):any {
+export function mmParseQuery(query?: string, separator: string = '&') {
     query = query || window.location.search.substring(1);
 
     let out = {};
