@@ -5,7 +5,9 @@
  * @returns {*}
  */
 export function mmShuffle(array) {
-  let counter = array.length, temp, index;
+  let counter = array.length;
+  let temp;
+  let index;
 
   // While there are elements in the array
   while (counter > 0) {
