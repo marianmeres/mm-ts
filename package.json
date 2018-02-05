@@ -17,14 +17,15 @@
     "url": "https://github.com/marianmeres/mm-ts/issues"
   },
   "homepage": "https://github.com/marianmeres/mm-ts#readme",
-  "devDependencies": {
+  "dependencies": {
     "@types/jest": "^21.1.8",
     "@types/jquery": "^3.2.16",
     "jest": "^21.2.1",
     "lodash": "^4.17.4",
     "onchange": "^3.3.0",
     "tslint": "^5.8.0",
-    "typescript": "^2.6.2"
+    "typescript": "^2.6.2",
+    "ts-jest": "^22.0.2"
   },
   "scripts": {
     "test": "NODE_ENV=testing jest --watch",
@@ -42,7 +43,8 @@
       "^.+\\.tsx?$": "ts-jest"
     },
     "testMatch": [
-      "**/__tests__/*.(ts|tsx|js)"
+      "**/__tests__/**/*.(ts|tsx|js|jsx)",
+      "**/?(*.)(spec|test).(ts|tsx|js|jsx)"
     ],
     "modulePathIgnorePatterns": [
       "<rootDir>/dist/"
@@ -53,8 +55,5 @@
         "skipBabel": true
       }
     }
-  },
-  "dependencies": {
-    "ts-jest": "^22.0.2"
   }
 }
