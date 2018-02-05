@@ -1,3 +1,5 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 /**
  * https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/random
  * Helper: Returns a random number between min and max
@@ -5,9 +7,10 @@
  * @param max
  * @returns {any}
  */
-export function mmGetRandomArbitrary(min, max) {
+function mmGetRandomArbitrary(min, max) {
     return Math.random() * (max - min) + min;
 }
+exports.mmGetRandomArbitrary = mmGetRandomArbitrary;
 /**
  * Returns a random integer between min and max
  * Note: Using Math.round() will give you a non-uniform distribution!
@@ -16,9 +19,10 @@ export function mmGetRandomArbitrary(min, max) {
  * @param max
  * @returns {any}
  */
-export function mmGetRandomInt(min, max) {
+function mmGetRandomInt(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
 }
+exports.mmGetRandomInt = mmGetRandomInt;
 /**
  * http://www.jacklmoore.com/notes/rounding-in-javascript/
  * Rounding Errors
@@ -38,18 +42,20 @@ export function mmGetRandomInt(min, max) {
  * @param decimals
  * @returns {Number}
  */
-export function mmRound(value, decimals = 0) {
+function mmRound(value, decimals = 0) {
     return Number(Math.round((value + 'e' + decimals)) + 'e-' + decimals);
 }
+exports.mmRound = mmRound;
 /**
  * https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/round
  * @param num
  * @param precision
  * @returns {number}
  */
-export function mmRound2(num, precision = 0) {
+function mmRound2(num, precision = 0) {
     let factor = Math.pow(10, precision);
     let tempNumber = num * factor;
     let roundedTempNumber = Math.round(tempNumber);
     return roundedTempNumber / factor;
 }
+exports.mmRound2 = mmRound2;

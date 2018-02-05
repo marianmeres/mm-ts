@@ -1,9 +1,11 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 /**
  * http://stackoverflow.com/questions/6274339/how-can-i-shuffle-an-array-in-javascript
  * @param array
  * @returns {*}
  */
-export function mmShuffle(array) {
+function mmShuffle(array) {
     let counter = array.length;
     let temp;
     let index;
@@ -20,3 +22,4 @@ export function mmShuffle(array) {
     }
     return array;
 }
+exports.mmShuffle = mmShuffle;

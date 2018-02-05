@@ -1,4 +1,6 @@
-export const mmSequence = (() => {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.mmSequence = (() => {
     let _counters = {};
     return (prefix) => {
         let _prefix = `_${prefix}`;
@@ -23,4 +25,4 @@ export const mmSequence = (() => {
 /**
  * @param ms
  */
-export const mmDelay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+exports.mmDelay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));

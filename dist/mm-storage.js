@@ -1,8 +1,10 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 const _isFunction = (obj) => {
     return !!(obj && obj.constructor && obj.call && obj.apply);
 };
 // https://developer.mozilla.org/en-US/docs/Web/API/Web_Storage_API/Using_the_Web_Storage_API
-export const isStorageAvailable = (type) => {
+exports.isStorageAvailable = (type) => {
     let storage;
     try {
         storage = window[type];
@@ -32,7 +34,7 @@ export const isStorageAvailable = (type) => {
  * - expiration features ("valid until")
  * - auto namespace prefix
  */
-export class MMStorage {
+class MMStorage {
     /**
      * @param _prefix
      * @param isSession
@@ -198,3 +200,4 @@ export class MMStorage {
         return this._prefix + key;
     }
 }
+exports.MMStorage = MMStorage;

@@ -1,41 +1,47 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 /**
  * @param str
  * @returns {string}
  */
-export function mmUcfirst(str) {
+function mmUcfirst(str) {
     str += '';
     return str.charAt(0).toUpperCase() + str.slice(1);
 }
+exports.mmUcfirst = mmUcfirst;
 /**
  * http://stackoverflow.com/questions/5002111/javascript-how-to-strip-html-tags-from-string
  * @param str
  * @returns {string}
  */
-export function mmStripHtml(str) {
+function mmStripHtml(str) {
     let div = document.createElement('div');
     div.innerHTML = str;
     return (div.textContent || div.innerText) + '';
 }
+exports.mmStripHtml = mmStripHtml;
 /**
  * http://phpjs.org/functions/nl2br/
  * @param str
  * @returns {string}
  */
-export function mmNl2br(str) {
+function mmNl2br(str) {
     return (`${str}`).replace(/([^>\r\n]?)(\r\n|\n\r|\r|\n)/g, '$1<br/>$2');
 }
+exports.mmNl2br = mmNl2br;
 /**
  * @param {number} len
  * @param {string} prefix
  * @returns {string}
  */
-export function mmGetRandomAlphaNumStr(len, prefix = '') {
+function mmGetRandomAlphaNumStr(len, prefix = '') {
     let salt = '';
     while (salt.length < len) {
         salt += Math.random().toString(36).substr(2);
     }
     return (prefix || '') + salt.substr(0, len);
 }
+exports.mmGetRandomAlphaNumStr = mmGetRandomAlphaNumStr;
 /**
  * credit: somewhere I don't remember...
  * @param amount
@@ -44,7 +50,7 @@ export function mmGetRandomAlphaNumStr(len, prefix = '') {
  * @param thousandSeparator
  * @returns {string}
  */
-export function mmFormatMoney(amount, decimalsCount, decimalSeparator, thousandSeparator) {
+function mmFormatMoney(amount, decimalsCount, decimalSeparator, thousandSeparator) {
     let n = amount;
     let c = decimalsCount;
     let d = decimalSeparator;
@@ -61,13 +67,14 @@ export function mmFormatMoney(amount, decimalsCount, decimalSeparator, thousandS
         + i.substr(j).replace(/(\d{3})(?=\d)/g, '$1' + t)
         + (c ? d + Math.abs(n - i).toFixed(c).slice(2) : ''));
 }
+exports.mmFormatMoney = mmFormatMoney;
 /**
  * http://locutus.io/php/trim/
  * @param str
  * @param charlist
  * @returns {string}
  */
-export function mmTrim(str, charlist) {
+function mmTrim(str, charlist) {
     let whitespace = [
         ' ', '\n', '\r', '\t', '\f', '\x0b', '\xa0', '\u2000', '\u2001', '\u2002',
         '\u2003', '\u2004', '\u2005', '\u2006', '\u2007', '\u2008', '\u2009',
@@ -95,19 +102,21 @@ export function mmTrim(str, charlist) {
     }
     return whitespace.indexOf(str.charAt(0)) === -1 ? str : '';
 }
+exports.mmTrim = mmTrim;
 /**
  * https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions
  * @param str
  * @returns {string}
  */
-export function mmEscapeRegExp(str) {
+function mmEscapeRegExp(str) {
     return (str + '').replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); // $& means the whole matched string
 }
+exports.mmEscapeRegExp = mmEscapeRegExp;
 /**
  * http://stackoverflow.com/questions/105034/create-guid-uuid-in-javascript
  * @returns {string}
  */
-export function mmUid(length) {
+function mmUid(length) {
     let s4 = () => Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1).toLowerCase();
     if (!length) {
         return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
@@ -120,6 +129,7 @@ export function mmUid(length) {
     }
     return out.substr(0, length);
 }
+exports.mmUid = mmUid;
 /**
  * https://stackoverflow.com/questions/10045122/replace-many-values-in-a-string-based-on-search-replace-pairs
  * https://stackoverflow.com/questions/15604140/replace-multiple-strings-with-multiple-other-strings/15604206
@@ -129,7 +139,7 @@ export function mmUid(length) {
  * @param {boolean} ignoreCase
  * @returns {string | any | void}
  */
-export function mmReplaceMap(str, map, ignoreCase = false) {
+function mmReplaceMap(str, map, ignoreCase = false) {
     let patterns = [];
     Object.keys(map).forEach((k) => patterns.push(mmEscapeRegExp(k)));
     let regExp = new RegExp(patterns.join('|'), 'g' + (ignoreCase ? 'i' : ''));
@@ -144,3 +154,4 @@ export function mmReplaceMap(str, map, ignoreCase = false) {
         return replaced;
     });
 }
+exports.mmReplaceMap = mmReplaceMap;

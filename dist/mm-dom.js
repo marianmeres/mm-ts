@@ -1,3 +1,5 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 const _isFunction = (obj) => {
     return !!(obj && obj.constructor && obj.call && obj.apply);
 };
@@ -13,7 +15,7 @@ const _isFunction = (obj) => {
  * @param {number} traverseLimit
  * @returns {any}
  */
-export function mmUpWhileNotMatched($el, matcher, traverseLimit = 5) {
+function mmUpWhileNotMatched($el, matcher, traverseLimit = 5) {
     if (!_isFunction(matcher)) {
         return false;
     } // no-op
@@ -40,12 +42,13 @@ export function mmUpWhileNotMatched($el, matcher, traverseLimit = 5) {
     }
     return matched;
 }
+exports.mmUpWhileNotMatched = mmUpWhileNotMatched;
 /**
  * ported z https://github.com/edenspiekermann/a11y-dialog/blob/master/a11y-dialog.js
  *
  * @param $context
  */
-export function mmGetFocusableEls($context) {
+function mmGetFocusableEls($context) {
     let focusableElements = [
         'a[href]', 'area[href]', 'input:not([disabled])', 'select:not([disabled])',
         'textarea:not([disabled])', 'button:not([disabled])', 'iframe', 'object',
@@ -56,3 +59,4 @@ export function mmGetFocusableEls($context) {
         return !!(child.offsetWidth || child.offsetHeight || child.getClientRects().length);
     });
 }
+exports.mmGetFocusableEls = mmGetFocusableEls;

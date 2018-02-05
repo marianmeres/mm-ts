@@ -1,3 +1,5 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 /**
  * This function parses ampersand-separated name=value argument pairs from
  * the query string of the URL. It stores the name=value pairs in
@@ -10,7 +12,7 @@
  * @param separator
  * @returns {{}}
  */
-export function mmParseQuery(query, separator = '&') {
+function mmParseQuery(query, separator = '&') {
     query = query || window.location.search.substring(1);
     let out = {};
     let pairs = query.split(separator);
@@ -24,13 +26,14 @@ export function mmParseQuery(query, separator = '&') {
     }
     return out;
 }
+exports.mmParseQuery = mmParseQuery;
 /**
  * https://gist.github.com/jlong/2428561
  * @param url
  * @param key
  * @returns {{protocol: string, hostname: string, port: string, pathname: string, search: string, hash: string}}
  */
-export function mmParseUrl(url, key) {
+function mmParseUrl(url, key) {
     let out = {
         protocol: '',
         hostname: '',
@@ -44,3 +47,4 @@ export function mmParseUrl(url, key) {
     Object.keys(out).forEach((k) => out[k] = parser[k] || '');
     return key ? out[key] : out;
 }
+exports.mmParseUrl = mmParseUrl;
