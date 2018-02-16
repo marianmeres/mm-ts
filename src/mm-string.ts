@@ -161,3 +161,11 @@ export function mmReplaceMap(str, map, ignoreCase = false) {
         return replaced;
     });
 }
+
+/**
+ * I guess more robust alternative: https://github.com/andrewrk/node-diacritics.git
+ * @param str
+ */
+export function mmUnaccent(str) {
+    return str.normalize('NFD').replace(/[\u0300-\u036f]/g, "");
+}
