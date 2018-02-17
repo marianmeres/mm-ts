@@ -3,7 +3,7 @@ import { isArray } from 'lodash';
 
 describe('mmSequence', () => {
 
-    it('works', () => {
+    test('works', () => {
         expect(mmSequence().reset().next()).toEqual(1);
         expect(mmSequence().next()).toEqual(2);
         expect(mmSequence().current()).toEqual(2);
@@ -21,14 +21,9 @@ describe('mmSequence', () => {
         expect(mmSequence('bar').next()).toEqual('bar1');
     });
 
-    it('works2', () => {
+    test('works2', () => {
         expect(mmSequence().reset().next()).toEqual(1);
         expect(mmSequence('foo').reset().next()).toEqual('foo1');
-    });
-
-    it('foo', () => {
-        expect(1).toEqual(1);
-        expect(isArray([])).toEqual(true);
     });
 
 });
