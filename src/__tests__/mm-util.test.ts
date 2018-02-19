@@ -1,5 +1,4 @@
 import { mmSequence } from '../mm-util';
-import { isArray } from 'lodash';
 
 describe('mmSequence', () => {
 

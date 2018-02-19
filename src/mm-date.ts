@@ -1,4 +1,6 @@
-import { isDate, isNaN } from 'lodash';
+// import { isDate, isNaN } from 'lodash';
+import isDate from 'lodash-es/isDate';
+import isNaN from 'lodash-es/isNaN';
 
 /**
  * @param date
