@@ -168,5 +168,5 @@ export function mmReplaceMap(str, map, ignoreCase = false) {
  * @param str
  */
 export function mmUnaccent(str) {
-    return str.normalize('NFD').replace(/[\u0300-\u036f]/g, "");
+    return str.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
 }
