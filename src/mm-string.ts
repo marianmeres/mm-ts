@@ -50,16 +50,23 @@ export function mmGetRandomAlphaNumStr(len: number, prefix: string = ''): string
  * @returns {string}
  */
 export function mmGetRandomStr(
-    options?: { length?: number, charset?: string; readable?: boolean; unique?: boolean}
+    options?: {
+        length?: number,
+        charset?: string;
+        readable?: boolean;
+        unique?: boolean;
+        prefix?: string;
+    }
 ) {
     options = Object.assign({
         length: 8,
         charset: 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789',
         readable: false,
         unique: false,
+        prefix: '',
     }, options || {});
 
-    let { length, charset, readable, unique } = options;
+    let { length, charset, readable, unique, prefix } = options;
 
     // sanity
     if (isNaN(length) || length < 1 || length > 1024) {
@@ -80,7 +87,7 @@ export function mmGetRandomStr(
         out += charset.charAt(Math.floor(Math.random() * charset.length));
     }
 
-    return out;
+    return prefix + out;
 }
 
 /**
