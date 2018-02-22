@@ -71,7 +71,7 @@ export function mmGetRandomStr(
     }
 
     if (unique) {
-        charset = [...new Set(charset.split(''))].join(''); // oh yeah!
+        charset = [...new Set(charset)].join(''); // oh yeah!
     }
 
     let out = '';
