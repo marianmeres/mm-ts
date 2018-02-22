@@ -45,6 +45,45 @@ export function mmGetRandomAlphaNumStr(len: number, prefix: string = ''): string
 }
 
 /**
+ * inspiration: https://github.com/klughammer/node-randomstring
+ * @param options
+ * @returns {string}
+ */
+export function mmGetRandomStr(
+    options?: { length?: number, charset?: string; readable?: boolean; unique?: boolean}
+) {
+    options = Object.assign({
+        length: 8,
+        charset: 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789',
+        readable: false,
+        unique: false,
+    }, options || {});
+
+    let { length, charset, readable, unique } = options;
+
+    // sanity
+    if (isNaN(length) || length < 1 || length > 1024) {
+        throw new Error('Invalid length');
+    }
+
+    if (readable) {
+        charset = charset.replace(/[01oil]/ig, ''); // flag `i` makes it safe for later `toUpperCase`
+    }
+
+    if (unique) {
+        charset = [...new Set(charset.split(''))].join(''); // oh yeah!
+    }
+
+    let out = '';
+
+    while (length--) {
+        out += charset.charAt(Math.floor(Math.random() * charset.length));
+    }
+
+    return out;
+}
+
+/**
  * credit: somewhere I don't remember...
  * @param amount
  * @param decimalsCount
