@@ -78,7 +78,11 @@ export function mmGetRandomStr(
     }
 
     if (unique) {
-        charset = [...new Set(charset)].join(''); // oh yeah!
+        // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Set
+        // this is correct and cool, but TS keeps saying: Type 'Set<string>' is not an array type
+        // charset = [...new Set(charset)].join(''); // oh yeah!
+        // so to keep it quiet:
+        charset = [...new Set(charset.split(''))].join('');
     }
 
     let out = '';
