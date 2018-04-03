@@ -1,4 +1,4 @@
-import { mmGetRandomStr, mmReplaceMap } from '../mm-string';
+import { mmGetRandomStr, mmHashCode, mmReplaceMap } from '../mm-string';
 
 
 test('mmReplaceMap works', () => {
@@ -54,3 +54,12 @@ test('`mmGetRandomStr` works',  () => {
         expect(true).toBeFalsy(); // must not be reached
     } catch (e) { /**/ }
 });
+
+test('`mmHashCode` works',  () => {
+    let checksum = mmHashCode('foo');
+
+    expect(checksum).toBeTruthy();
+    expect(checksum).toEqual(mmHashCode('foo')); // deterministic
+    expect(checksum === mmHashCode('bar')).toBeFalsy();
+});
+
