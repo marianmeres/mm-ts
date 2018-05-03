@@ -1,4 +1,3 @@
-
 const _isFunction = (obj) => {
     return !!(obj && obj.constructor && obj.call && obj.apply);
 };
@@ -15,18 +14,20 @@ export const isStorageAvailable = (type) => {
         storage.removeItem(x);
         return true;
     } catch (e) {
-        return e instanceof DOMException && (
+        return (
+            e instanceof DOMException &&
             // everything except Firefox
-            e.code === 22 ||
-            // Firefox
-            e.code === 1014 ||
-            // test name field too, because code might not be present
-            // everything except Firefox
-            e.name === 'QuotaExceededError' ||
-            // Firefox
-            e.name === 'NS_ERROR_DOM_QUOTA_REACHED') &&
+            (e.code === 22 ||
+                // Firefox
+                e.code === 1014 ||
+                // test name field too, because code might not be present
+                // everything except Firefox
+                e.name === 'QuotaExceededError' ||
+                // Firefox
+                e.name === 'NS_ERROR_DOM_QUOTA_REACHED') &&
             // acknowledge QuotaExceededError only if there's something already stored
-            storage.length !== 0;
+            storage.length !== 0
+        );
     }
 };
 
@@ -37,7 +38,6 @@ export const isStorageAvailable = (type) => {
  * - auto namespace prefix
  */
 export class MMStorage {
-
     protected _storage: Storage;
 
     logger;
@@ -47,7 +47,11 @@ export class MMStorage {
      * @param isSession
      * @param _defaultTtlMs
      */
-    constructor(protected _prefix: string, isSession = false, protected _defaultTtlMs: number = 0) {
+    constructor(
+        protected _prefix: string,
+        isSession = false,
+        protected _defaultTtlMs: number = 0
+    ) {
         if (isSession) {
             this._storage = window.sessionStorage;
         } else {
@@ -98,16 +102,23 @@ export class MMStorage {
      * @returns {MMStorage}
      */
     setItem(key, val, ttlMs: number = null) {
-        if (ttlMs === null) { ttlMs = this._defaultTtlMs; }
+        if (ttlMs === null) {
+            ttlMs = this._defaultTtlMs;
+        }
         try {
-            this._storage.setItem(this._key(key), JSON.stringify({
-                _validUntil: (ttlMs ? (new Date(Date.now() + ttlMs)) : 0),
-                payload: val,
-            }));
+            this._storage.setItem(
+                this._key(key),
+                JSON.stringify({
+                    _validUntil: ttlMs ? new Date(Date.now() + ttlMs) : 0,
+                    payload: val,
+                })
+            );
         } catch (e) {
             console.error(e);
             this.log(`!setItem(${key}) ${e}`);
-            if (/quota/i.test(e)) { this.removeExpired(); } // too naive?
+            if (/quota/i.test(e)) {
+                this.removeExpired();
+            } // too naive?
         }
         return this;
     }
@@ -120,30 +131,33 @@ export class MMStorage {
     getItem(key, fallbackValue = null) {
         key = this._key(key);
         let val: any = this._storage.getItem(key);
-        if (null === val) { return val; } // not found
+        if (null === val) {
+            return val;
+        } // not found
         try {
-
             val = JSON.parse(val);
 
-            if (!val || val.payload === void 0 || val._validUntil === void 0) { // wrong format?
+            if (!val || val.payload === void 0 || val._validUntil === void 0) {
+                // wrong format?
                 this._storage.removeItem(key);
                 return null;
             }
 
             // 0 = valid always
-            if (val._validUntil && (new Date(val._validUntil)) < (new Date())) {
+            if (val._validUntil && new Date(val._validUntil) < new Date()) {
                 this._storage.removeItem(key);
                 return null;
             }
 
             val = val.payload;
 
-            if (val === null && fallbackValue !== void 0) { // val = null is legit
+            if (val === null && fallbackValue !== void 0) {
+                // val = null is legit
                 val = fallbackValue;
             }
             return val;
-
-        } catch (e) { // corrupted json?
+        } catch (e) {
+            // corrupted json?
             console.error(e);
             this.log(`!getItem(${key}) ${e}`);
         }
@@ -185,10 +199,13 @@ export class MMStorage {
      * @returns {number}
      */
     removeMatching(rgxStr, prefix = null) {
-        if (prefix === null) { prefix = this._prefix; }
+        if (prefix === null) {
+            prefix = this._prefix;
+        }
         let rx = new RegExp(
             // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions
-            '^' + (prefix + rgxStr).replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'i'
+            '^' + (prefix + rgxStr).replace(/[.*+?^${}()|[\]\\]/g, '\\$&'),
+            'i'
         );
         // console.log(rx);
         let counter = 0;
@@ -211,5 +228,4 @@ export class MMStorage {
     protected _key(key) {
         return this._prefix + key;
     }
-
 }

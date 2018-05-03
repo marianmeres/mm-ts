@@ -18,7 +18,9 @@ export function mmParseQuery(query?: string, separator: string = '&') {
 
     for (let i = 0; i < pairs.length; i++) {
         let pos = pairs[i].indexOf('=');
-        if (pos === -1) { continue; }
+        if (pos === -1) {
+            continue;
+        }
 
         let name = pairs[i].substring(0, pos);
         out[name] = decodeURIComponent(pairs[i].substring(pos + 1));
@@ -26,7 +28,6 @@ export function mmParseQuery(query?: string, separator: string = '&') {
 
     return out;
 }
-
 
 /**
  * https://gist.github.com/jlong/2428561
@@ -38,15 +39,15 @@ export function mmParseUrl(url?: string, key?) {
     let out = {
         protocol: '', // => "http:"
         hostname: '', // => "example.com"
-        port: '',     // => "3000"
+        port: '', // => "3000"
         pathname: '', // => "/pathname/"
-        search: '',   // => "?search=test"
-        hash: '',     // => "#hash"
+        search: '', // => "?search=test"
+        hash: '', // => "#hash"
     };
     let parser = document.createElement('a');
     parser.href = url || window.location.href;
 
-    Object.keys(out).forEach((k) => out[k] = parser[k] || '');
+    Object.keys(out).forEach((k) => (out[k] = parser[k] || ''));
 
     return key ? out[key] : out;
 }

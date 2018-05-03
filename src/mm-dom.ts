@@ -16,8 +16,14 @@ const _isFunction = (obj) => {
  * @param {number} traverseLimit
  * @returns {any}
  */
-export function mmUpWhileNotMatched($el: any, matcher, traverseLimit: number = 5) {
-    if (!_isFunction(matcher)) { return false; } // no-op
+export function mmUpWhileNotMatched(
+    $el: any,
+    matcher,
+    traverseLimit: number = 5
+) {
+    if (!_isFunction(matcher)) {
+        return false;
+    } // no-op
 
     let matched = matcher($el);
     let counter = 0;
@@ -27,7 +33,8 @@ export function mmUpWhileNotMatched($el: any, matcher, traverseLimit: number = 5
 
     // 1. set default ak nie je digit (toto odchyti undefined ako aj ine hodnoty a typy)
     //    note: tu sa nespolieham na typescript
-    if (!/^\d+$/.test(`${traverseLimit}`)) { // interne precastuje na string
+    if (!/^\d+$/.test(`${traverseLimit}`)) {
+        // interne precastuje na string
         traverseLimit = 5;
     }
 
@@ -55,13 +62,25 @@ export function mmUpWhileNotMatched($el: any, matcher, traverseLimit: number = 5
  */
 export function mmGetFocusableEls($context: any) {
     let focusableElements = [
-        'a[href]', 'area[href]', 'input:not([disabled])', 'select:not([disabled])',
-        'textarea:not([disabled])', 'button:not([disabled])', 'iframe', 'object',
-        'embed', '[contenteditable]', '[tabindex]:not([tabindex^="-"])'
+        'a[href]',
+        'area[href]',
+        'input:not([disabled])',
+        'select:not([disabled])',
+        'textarea:not([disabled])',
+        'button:not([disabled])',
+        'iframe',
+        'object',
+        'embed',
+        '[contenteditable]',
+        '[tabindex]:not([tabindex^="-"])',
     ];
 
     return $(focusableElements.join(','), $context).filter((index, el) => {
         let child = $(el).get(0);
-        return !!(child.offsetWidth || child.offsetHeight || child.getClientRects().length);
+        return !!(
+            child.offsetWidth ||
+            child.offsetHeight ||
+            child.getClientRects().length
+        );
     });
 }

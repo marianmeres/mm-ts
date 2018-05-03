@@ -1,4 +1,3 @@
-
 /**
  * https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/random
  * Helper: Returns a random number between min and max
@@ -42,7 +41,9 @@ export function mmGetRandomInt(min, max): number {
  * @returns {Number}
  */
 export function mmRound(value, decimals = 0): number {
-    return Number(Math.round((value + 'e' + decimals) as any) + 'e-' + decimals);
+    return Number(
+        Math.round((value + 'e' + decimals) as any) + 'e-' + decimals
+    );
 }
 
 /**
@@ -57,4 +58,3 @@ export function mmRound2(num, precision = 0): number {
     let roundedTempNumber = Math.round(tempNumber);
     return roundedTempNumber / factor;
 }
-

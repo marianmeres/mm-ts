@@ -6,8 +6,13 @@ import isPlainObject from 'lodash-es/isPlainObject';
  * @returns {any}
  */
 export const mmGetPrototypeChain = (obj) => {
-    if (obj === null) { return null; }
-    if (typeof obj !== 'object') { return null; }
+    if (obj === null) {
+        return null;
+    }
+
+    if (typeof obj !== 'object') {
+        return null;
+    }
 
     let proto = Object.getPrototypeOf(obj);
     let out = [];

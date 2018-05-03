@@ -7,13 +7,12 @@ export interface BaseModelData {
     [index: string]: any;
 }
 
-const isString = (v) => (typeof v === 'string');
+const isString = (v) => typeof v === 'string';
 
 /**
  *
  */
 export class BaseModel {
-
     /**
      * to be added at extended level
      */
@@ -45,7 +44,9 @@ export class BaseModel {
         this.populate(Object.assign({}, this._defaults, data || {})); // populate via setters
         this.resetDirty();
 
-        if (forceDirty) { this.markDirty(); }
+        if (forceDirty) {
+            this.markDirty();
+        }
     }
 
     /**
@@ -71,8 +72,13 @@ export class BaseModel {
     // get id() {  throw new Error('Method id() must be overidden in extended models');}
 
     // get/set id je default
-    get id()  { return this._get('id'); }
-    set id(v) {        this._set('id', v); }
+    get id() {
+        return this._get('id');
+    }
+
+    set id(v) {
+        this._set('id', v);
+    }
 
     /**
      * @returns {BaseModelData}
@@ -87,10 +93,13 @@ export class BaseModel {
      * @returns {BaseModelData}
      */
     toJSON(): BaseModelData {
-        return Object.keys(this._data).reduce((out, k) => {
-            out[k] = this.get(k);
-            return out;
-        }, {} as any);
+        return Object.keys(this._data).reduce(
+            (out, k) => {
+                out[k] = this.get(k);
+                return out;
+            },
+            {} as any
+        );
     }
 
     /**
@@ -152,7 +161,7 @@ export class BaseModel {
         if (Array.isArray(chain)) {
             return chain.some((proto) => {
                 let desc = Object.getOwnPropertyDescriptor(proto, k);
-                return (desc && !!desc.set);
+                return desc && !!desc.set;
             });
         }
         return false;
@@ -173,7 +182,7 @@ export class BaseModel {
         if (Array.isArray(chain)) {
             return chain.some((proto) => {
                 let desc = Object.getOwnPropertyDescriptor(proto, k);
-                return (desc && !!desc.get);
+                return desc && !!desc.get;
             });
         }
         return false;
@@ -237,7 +246,10 @@ export class BaseModel {
     protected _maybeMarkKeyDirty(k, oldRawValue) {
         let newRawValue = this._data[k];
         // if (oldRawValue !== newRawValue && -1 === this._dirtyKeys.indexOf(k)) {
-        if (!isEqual(oldRawValue, newRawValue) && -1 === this._dirtyKeys.indexOf(k)) {
+        if (
+            !isEqual(oldRawValue, newRawValue) &&
+            -1 === this._dirtyKeys.indexOf(k)
+        ) {
             this._dirtyKeys.push(k);
         }
         return this;
@@ -263,18 +275,24 @@ export class BaseModel {
     /**
      * @returns {number}
      */
-    isDirty() { return this._dirtyKeys.length; }
+    isDirty() {
+        return this._dirtyKeys.length;
+    }
 
     /**
      * @returns {Array}
      */
-    get dirtyKeys() { return this._dirtyKeys; }
+    get dirtyKeys() {
+        return this._dirtyKeys;
+    }
 
     /**
      * @param k
      * @returns {boolean}
      */
-    keyExists(k) { return this._data[k] !== void 0; }
+    keyExists(k) {
+        return this._data[k] !== void 0;
+    }
 
     /**
      * helper
@@ -305,4 +323,3 @@ export class BaseModel {
         };
     }
 }
-

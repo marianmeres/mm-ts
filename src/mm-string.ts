@@ -1,4 +1,3 @@
-
 /**
  * @param str
  * @returns {string}
@@ -7,7 +6,6 @@ export function mmUcfirst(str: string): string {
     str += '';
     return str.charAt(0).toUpperCase() + str.slice(1);
 }
-
 
 /**
  * http://stackoverflow.com/questions/5002111/javascript-how-to-strip-html-tags-from-string
@@ -20,26 +18,29 @@ export function mmStripHtml(str: string): string {
     return (div.textContent || div.innerText) + '';
 }
 
-
 /**
  * http://phpjs.org/functions/nl2br/
  * @param str
  * @returns {string}
  */
 export function mmNl2br(str: string): string {
-    return (`${str}`).replace(/([^>\r\n]?)(\r\n|\n\r|\r|\n)/g, '$1<br/>$2');
+    return `${str}`.replace(/([^>\r\n]?)(\r\n|\n\r|\r|\n)/g, '$1<br/>$2');
 }
-
 
 /**
  * @param {number} len
  * @param {string} prefix
  * @returns {string}
  */
-export function mmGetRandomAlphaNumStr(len: number, prefix: string = ''): string {
+export function mmGetRandomAlphaNumStr(
+    len: number,
+    prefix: string = ''
+): string {
     let salt = '';
     while (salt.length < len) {
-        salt += Math.random().toString(36).substr(2);
+        salt += Math.random()
+            .toString(36)
+            .substr(2);
     }
     return (prefix || '') + salt.substr(0, len);
 }
@@ -49,22 +50,24 @@ export function mmGetRandomAlphaNumStr(len: number, prefix: string = ''): string
  * @param options
  * @returns {string}
  */
-export function mmGetRandomStr(
-    options?: {
-        length?: number,
-        charset?: string;
-        readable?: boolean;
-        unique?: boolean;
-        prefix?: string;
-    }
-) {
-    options = Object.assign({
-        length: 8,
-        charset: 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789',
-        readable: false,
-        unique: false,
-        prefix: '',
-    }, options || {});
+export function mmGetRandomStr(options?: {
+    length?: number;
+    charset?: string;
+    readable?: boolean;
+    unique?: boolean;
+    prefix?: string;
+}) {
+    options = Object.assign(
+        {
+            length: 8,
+            charset:
+                'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789',
+            readable: false,
+            unique: false,
+            prefix: '',
+        },
+        options || {}
+    );
 
     let { length, charset, readable, unique, prefix } = options;
 
@@ -74,7 +77,7 @@ export function mmGetRandomStr(
     }
 
     if (readable) {
-        charset = charset.replace(/[01oil]/ig, ''); // flag `i` makes it safe for later `toUpperCase`
+        charset = charset.replace(/[01oil]/gi, ''); // flag `i` makes it safe for later `toUpperCase`
     }
 
     if (unique) {
@@ -103,26 +106,35 @@ export function mmGetRandomStr(
  * @param thousandSeparator
  * @returns {string}
  */
-export function mmFormatMoney(amount, decimalsCount, decimalSeparator, thousandSeparator): string {
-
+export function mmFormatMoney(
+    amount,
+    decimalsCount,
+    decimalSeparator,
+    thousandSeparator
+): string {
     let n = amount;
     let c = decimalsCount;
     let d = decimalSeparator;
     let t = thousandSeparator;
 
-    c = isNaN(c = Math.abs(c)) ? 2 : c; // number of decimals
-    d = d === void 0 ? '.' : d;       // decimal separator
-    t = t === void 0 ? ' ' : t;       // thousands separator
-    let s = n < 0 ? '-' : '';           // sign
-    let i = parseInt(n = Math.abs(+n || 0).toFixed(c), 10) + '';
+    c = isNaN((c = Math.abs(c))) ? 2 : c; // number of decimals
+    d = d === void 0 ? '.' : d; // decimal separator
+    t = t === void 0 ? ' ' : t; // thousands separator
+    let s = n < 0 ? '-' : ''; // sign
+    let i = parseInt((n = Math.abs(+n || 0).toFixed(c)), 10) + '';
     let j = i.length;
     j = j > 3 ? j % 3 : 0;
 
     return (
-        s
-        + (j ? i.substr(0, j) + t : '')
-        + i.substr(j).replace(/(\d{3})(?=\d)/g, '$1' + t)
-        + (c ? d + Math.abs(n - (i as any)).toFixed(c).slice(2) : '')
+        s +
+        (j ? i.substr(0, j) + t : '') +
+        i.substr(j).replace(/(\d{3})(?=\d)/g, '$1' + t) +
+        (c
+            ? d +
+              Math.abs(n - (i as any))
+                  .toFixed(c)
+                  .slice(2)
+            : '')
     );
 }
 
@@ -134,9 +146,28 @@ export function mmFormatMoney(amount, decimalsCount, decimalSeparator, thousandS
  */
 export function mmTrim(str: string, charlist?: string): string {
     let whitespace = [
-        ' ', '\n', '\r', '\t', '\f', '\x0b', '\xa0', '\u2000', '\u2001', '\u2002',
-        '\u2003', '\u2004', '\u2005', '\u2006', '\u2007', '\u2008', '\u2009',
-        '\u200a', '\u200b', '\u2028', '\u2029', '\u3000'
+        ' ',
+        '\n',
+        '\r',
+        '\t',
+        '\f',
+        '\x0b',
+        '\xa0',
+        '\u2000',
+        '\u2001',
+        '\u2002',
+        '\u2003',
+        '\u2004',
+        '\u2005',
+        '\u2006',
+        '\u2007',
+        '\u2008',
+        '\u2009',
+        '\u200a',
+        '\u200b',
+        '\u2028',
+        '\u2029',
+        '\u3000',
     ].join('');
     let l = 0;
     let i = 0;
@@ -175,16 +206,36 @@ export function mmEscapeRegExp(str: string): string {
  * @returns {string}
  */
 export function mmUid(length?: number) {
-    let s4 = () => Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1).toLowerCase();
+    let s4 = () =>
+        Math.floor((1 + Math.random()) * 0x10000)
+            .toString(16)
+            .substring(1)
+            .toLowerCase();
 
-    if (!length) { // quasi uuid
-        return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
+    if (!length) {
+        // quasi uuid
+        return (
+            s4() +
+            s4() +
+            '-' +
+            s4() +
+            '-' +
+            s4() +
+            '-' +
+            s4() +
+            '-' +
+            s4() +
+            s4() +
+            s4()
+        );
     }
 
     // custom length
     let c = Math.ceil(length / 4);
     let out = '';
-    for (let i = 0; i < c; i++) { out += s4(); }
+    for (let i = 0; i < c; i++) {
+        out += s4();
+    }
     return out.substr(0, length);
 }
 
@@ -226,10 +277,12 @@ export function mmUnaccent(str) {
 // https://stackoverflow.com/questions/6122571/simple-non-secure-hash-function-for-javascript/8831937
 export function mmHashCode(str): number {
     let hash = 0;
-    if (str.length === 0) { return hash; }
+    if (str.length === 0) {
+        return hash;
+    }
     for (let i = 0; i < str.length; i++) {
         let char = str.charCodeAt(i);
-        hash = ((hash << 5) - hash) + char; // tslint:disable-line
+        hash = (hash << 5) - hash + char; // tslint:disable-line
         // Convert to 32bit integer
         hash = hash & hash; // tslint:disable-line
     }

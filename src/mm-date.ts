@@ -7,7 +7,7 @@ import isNaN from 'lodash-es/isNaN';
  * @returns {boolean}
  */
 export function mmIsValidDate(date) {
-    return (isDate(date) && !isNaN(date.valueOf()));
+    return isDate(date) && !isNaN(date.valueOf());
 }
 
 /**
@@ -16,7 +16,7 @@ export function mmIsValidDate(date) {
  * @returns {number}
  */
 export function mmGetDaysInMonth(year, month) {
-    return (32 - new Date(year, month, 32).getDate());
+    return 32 - new Date(year, month, 32).getDate();
 }
 
 /**
@@ -43,11 +43,11 @@ export function mmIsLeapYear(year) {
  */
 export function mmIsSameDay(d1: Date, d2: Date): boolean {
     return (
-        mmIsValidDate(d1)
-        && mmIsValidDate(d2)
-        && d1.getFullYear() === d2.getFullYear()
-        && d1.getMonth() === d2.getMonth()
-        && d1.getDate()  === d2.getDate()
+        mmIsValidDate(d1) &&
+        mmIsValidDate(d2) &&
+        d1.getFullYear() === d2.getFullYear() &&
+        d1.getMonth() === d2.getMonth() &&
+        d1.getDate() === d2.getDate()
     );
 }
 
@@ -58,10 +58,10 @@ export function mmIsSameDay(d1: Date, d2: Date): boolean {
  */
 export function mmIsSameMonth(d1: Date, d2: Date): boolean {
     return (
-        mmIsValidDate(d1)
-        && mmIsValidDate(d2)
-        && d1.getFullYear() === d2.getFullYear()
-        && d1.getMonth() === d2.getMonth()
+        mmIsValidDate(d1) &&
+        mmIsValidDate(d2) &&
+        d1.getFullYear() === d2.getFullYear() &&
+        d1.getMonth() === d2.getMonth()
     );
 }
 

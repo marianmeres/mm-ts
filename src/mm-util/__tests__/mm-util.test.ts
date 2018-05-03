@@ -1,9 +1,12 @@
 import { mmSequence } from '../mm-sequence';
 
 describe('mmSequence', () => {
-
     test('works', () => {
-        expect(mmSequence().reset().next()).toEqual(1);
+        expect(
+            mmSequence()
+                .reset()
+                .next()
+        ).toEqual(1);
         expect(mmSequence().next()).toEqual(2);
         expect(mmSequence().current()).toEqual(2);
         expect(mmSequence().next()).toEqual(3);
@@ -21,8 +24,15 @@ describe('mmSequence', () => {
     });
 
     test('works2', () => {
-        expect(mmSequence().reset().next()).toEqual(1);
-        expect(mmSequence('foo').reset().next()).toEqual('foo1');
+        expect(
+            mmSequence()
+                .reset()
+                .next()
+        ).toEqual(1);
+        expect(
+            mmSequence('foo')
+                .reset()
+                .next()
+        ).toEqual('foo1');
     });
-
 });

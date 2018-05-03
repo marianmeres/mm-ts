@@ -1,8 +1,6 @@
-
 import find from 'lodash-es/find';
 
 export default class BaseCollection {
-
     protected _items: any[] = [];
 
     //
@@ -39,13 +37,14 @@ export default class BaseCollection {
      * Useful for simple cases of filter.
      * @returns {any[]}
      */
-    where(attributes: {[index: string]: any}) {
+    where(attributes: { [index: string]: any }) {
         const attrKeys = Object.keys(attributes);
-        const isWhereMatch = (item) => (
-            attrKeys.length === attrKeys.reduce(
-                (acc, key) => acc += item[key] === attributes[key] ? 1 : 0, 0
-            )
-        );
+        const isWhereMatch = (item) =>
+            attrKeys.length ===
+            attrKeys.reduce(
+                (acc, key) => (acc += item[key] === attributes[key] ? 1 : 0),
+                0
+            );
 
         return this._items.filter(isWhereMatch);
     }
@@ -54,15 +53,15 @@ export default class BaseCollection {
      * Just like where, but directly returns only the first model in the collection
      * that matches the passed attributes.
      */
-    findWhere(attributes: {[index: string]: any}) {
+    findWhere(attributes: { [index: string]: any }) {
         const attrKeys = Object.keys(attributes);
-        const isWhereMatch = (item) => (
-            attrKeys.length === attrKeys.reduce(
-                (acc, key) => acc += item[key] === attributes[key] ? 1 : 0, 0
-            )
-        );
+        const isWhereMatch = (item) =>
+            attrKeys.length ===
+            attrKeys.reduce(
+                (acc, key) => (acc += item[key] === attributes[key] ? 1 : 0),
+                0
+            );
 
         return find(this._items, isWhereMatch);
     }
-
 }

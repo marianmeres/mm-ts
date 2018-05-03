@@ -1,14 +1,13 @@
 import { mmGetRandomStr, mmHashCode, mmReplaceMap } from '../mm-string';
 
-
 test('mmReplaceMap works', () => {
-    let map: any = {foo: 'bar', baz: 'bat', bar: 'foo', bat: 'baz'};
+    let map: any = { foo: 'bar', baz: 'bat', bar: 'foo', bat: 'baz' };
     let str = 'Hello foofoo bar baz bat!';
     expect(mmReplaceMap(str, map)).toEqual('Hello barbar foo bat baz!');
 });
 
 test('mmReplaceMap works2', () => {
-    let map = {':userId': 123, ':some': null, '/foo': void 0};
+    let map = { ':userId': 123, ':some': null, '/foo': void 0 };
     let str = '/api/some/:userId/foo/:some';
     // '/foo' -> empty string (not 'undefined')
     // ':some' -> empty string (not 'null')
@@ -17,12 +16,12 @@ test('mmReplaceMap works2', () => {
 
 test('mmReplaceMap works3 (ignore case)', () => {
     // note: keys in map must be lowercased
-    let map = {':userid': 123, ':some': null, '/foo': void 0};
+    let map = { ':userid': 123, ':some': null, '/foo': void 0 };
     let str = '/api/some/:USERID/foo/:SoMe';
     expect(mmReplaceMap(str, map, true)).toEqual('/api/some/123/');
 });
 
-test('`mmGetRandomStr` works',  () => {
+test('`mmGetRandomStr` works', () => {
     let s = '';
 
     s = mmGetRandomStr();
@@ -52,14 +51,15 @@ test('`mmGetRandomStr` works',  () => {
     try {
         mmGetRandomStr({ length: -5 });
         expect(true).toBeFalsy(); // must not be reached
-    } catch (e) { /**/ }
+    } catch (e) {
+        /**/
+    }
 });
 
-test('`mmHashCode` works',  () => {
+test('`mmHashCode` works', () => {
     let checksum = mmHashCode('foo');
 
     expect(checksum).toBeTruthy();
     expect(checksum).toEqual(mmHashCode('foo')); // deterministic
     expect(checksum === mmHashCode('bar')).toBeFalsy();
 });
-

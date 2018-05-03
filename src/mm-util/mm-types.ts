@@ -1,5 +1,3 @@
-
-
 // id: a unique identifier for this particular occurrence of the problem.
 //     links: a links object containing the following members:
 //          about: a link that leads to further details about this particular
@@ -32,7 +30,7 @@ export interface JSONApiEnvelope {
     // MUST at least one of
     data?: JSONApiData | JSONApiData[] | null; // "primary data"
     errors?: JSONApiErrorObject[] | null;
-    meta?: { [key: string]: any; }; // must be object
+    meta?: { [key: string]: any }; // must be object
     // MAY
     jsonapi?: object;
     links?: object[];
@@ -46,7 +44,7 @@ export interface JSONApiEnvelope {
 export interface JSONApiData {
     type: string;
     id: any;
-    attributes: { [key: string]: any; };
+    attributes: { [key: string]: any };
     relationships?: {
         // Resource linkage MUST be represented as one of the following:
         // - null for empty to-one relationships.
@@ -55,9 +53,11 @@ export interface JSONApiData {
         // - an array of resource identifier objects for non-empty to-many relationships.
         [key: string]: any;
     };
-    meta?: { [key: string]: any; };
+    meta?: { [key: string]: any };
 }
 
 export const createJSONApiEnvelope = () => ({
-    data: null, included: [], meta: {}
+    data: null,
+    included: [],
+    meta: {},
 });
