@@ -18,20 +18,26 @@
   },
   "homepage": "https://github.com/marianmeres/mm-ts#readme",
   "dependencies": {
-    "@types/jest": "^21.1.8",
-    "@types/jquery": "^3.2.16",
+    "dotenv": "^5.0.1",
+    "lodash-es": "^4.17.10"
+  },
+  "devDependencies": {
+    "@types/jest": "^22.2.3",
+    "@types/jquery": "^3.3.1",
     "@types/lodash-es": "^4.17.0",
-    "jest": "^21.2.1",
-    "lodash-es": "^4.17.5",
+    "@types/node": "^10.0.3",
+    "jest": "^22.4.3",
     "onchange": "^3.3.0",
-    "ts-jest": "^22.0.2",
+    "prettier": "^1.12.1",
+    "ts-jest": "^22.4.4",
     "tslint": "^5.8.0",
-    "typescript": "^2.7.2"
+    "typescript": "^2.8.3"
   },
   "scripts": {
-    "test": "NODE_ENV=testing jest --watch",
+    "test": "NODE_ENV=testing jest --watch --runInBand",
     "tslint": "tslint -c tslint.json -p tsconfig.json --force",
-    "watch:tslint": "onchange 'src/**/*.*' --initial -- npm run tslint"
+    "watch:tslint": "onchange 'src/**/*.*' --initial -- npm run tslint",
+    "format": "prettier --single-quote --trailing-comma es5 --tab-width 4 --arrow-parens always --write 'src/**/*.{js,jsx,ts,tsx,scss,json}'"
   },
   "jest": {
     "moduleFileExtensions": [

@@ -1,4 +1,4 @@
-import { mmSequence } from '../mm-util';
+import { mmSequence } from '../mm-sequence';
 
 describe('mmSequence', () => {
 

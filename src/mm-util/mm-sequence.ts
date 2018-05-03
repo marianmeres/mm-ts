@@ -23,8 +23,3 @@ export const mmSequence = (() => {
         return seq;
     };
 })();
-
-/**
- * @param ms
- */
-export const mmDelay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
