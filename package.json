@@ -19,13 +19,15 @@
   "homepage": "https://github.com/marianmeres/mm-ts#readme",
   "dependencies": {
     "dotenv": "^5.0.1",
-    "lodash-es": "^4.17.10"
+    "lodash-es": "^4.17.10",
+    "pg": "^7.4.1"
   },
   "devDependencies": {
     "@types/jest": "^22.2.3",
     "@types/jquery": "^3.3.1",
     "@types/lodash-es": "^4.17.0",
     "@types/node": "^10.0.3",
+    "colors": "^1.2.3",
     "jest": "^22.4.3",
     "onchange": "^3.3.0",
     "prettier": "^1.12.1",

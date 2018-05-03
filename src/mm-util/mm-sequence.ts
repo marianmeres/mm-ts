@@ -1,5 +1,6 @@
 export const mmSequence = (() => {
     let _counters = {};
+
     return (prefix?: string) => {
         let _prefix = `_${prefix}`;
 

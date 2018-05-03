@@ -1,4 +1,4 @@
-import * as _ from 'lodash';
+// import * as _ from 'lodash';
 import isObject from 'lodash-es/isObject';
 import isDate from 'lodash-es/isDate';
 import * as util from 'util';
@@ -32,6 +32,10 @@ export class SqlUtil {
         if (db) {
             this.db = db;
         }
+    }
+
+    get dialect() {
+        return this._dialect;
     }
 
     /**
@@ -148,7 +152,7 @@ export class SqlUtil {
 
         where = where || '';
 
-        if (_.isObject(where)) {
+        if (isObject(where)) {
             Object.keys(where).forEach((col) => {
                 let val = where[col];
 
@@ -254,7 +258,7 @@ export class SqlUtil {
         }
 
         // opnionated: Dates are converted to ISO
-        if (_.isDate(val)) {
+        if (isDate(val)) {
             val = val.toISOString();
         }
 
