@@ -2,11 +2,12 @@ import { SqlUtil } from '../SqlUtil';
 import { TableDao } from '../TableDao';
 
 const dao = (db: SqlUtil) => new TableDao('foo', { db });
-const dao2 = (db: SqlUtil) => new TableDao('foo2', {
-    db,
-    idCol: ['id1', 'id2'],
-    autoIncrement: false
-});
+const dao2 = (db: SqlUtil) =>
+    new TableDao('foo2', {
+        db,
+        idCol: ['id1', 'id2'],
+        autoIncrement: false,
+    });
 
 export const _sqlUtilTestsAll = {
     // single pk
@@ -84,19 +85,19 @@ export const _sqlUtilTestsAll = {
     // foo2, composite pk
     'foo2: `find` works': async (db: SqlUtil) => {
         const table = dao2(db);
-        const row = await table.find({id1: 1, id2: 2});
+        const row = await table.find({ id1: 1, id2: 2 });
         expect(row.label).toEqual('foo12');
     },
 
     'foo2: `findWhere` works': async (db: SqlUtil) => {
         const table = dao2(db);
-        const row = await table.fetchRow({label: 'foo13'});
+        const row = await table.fetchRow({ label: 'foo13' });
         expect(row.id2).toEqual(3);
     },
 
     'foo2: `fetchAll` works': async (db: SqlUtil) => {
         const table = dao2(db);
-        const rows = await table.fetchAll(null, {order_by: 'id2 DESC'});
+        const rows = await table.fetchAll(null, { order_by: 'id2 DESC' });
         expect(rows).toBeTruthy();
         expect(rows[0].id2).toEqual(3); // desc
     },
@@ -131,7 +132,7 @@ export const _sqlUtilTestsAll = {
 
     'foo2: `delete` works': async (db: SqlUtil) => {
         const table = dao2(db);
-        await table.delete({id1: 1, id2: 2});
+        await table.delete({ id1: 1, id2: 2 });
         let rows = await table.fetchAll();
         expect(rows.length).toEqual(1);
         expect(rows[0].id2).toEqual(3);

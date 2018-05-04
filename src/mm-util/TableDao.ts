@@ -179,7 +179,11 @@ export class TableDao {
                 // still no problem, if we're under autoincrement mode...
                 if (autoIncrement) {
                     let lid = await this.db.lastInsertId();
-                    return await this.fetchRow({ [idCol as any]: lid }, true, debug);
+                    return await this.fetchRow(
+                        { [idCol as any]: lid },
+                        true,
+                        debug
+                    );
                 }
                 // here we just dont have enough id data to fetch the actual saved row,
                 // but in sane real life usage, this case should not really happen...
