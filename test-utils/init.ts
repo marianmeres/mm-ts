@@ -9,7 +9,7 @@ const _assertExists = (file) => {
 
 export async function _importData(DATA_DIR, db) {
     _assertExists(DATA_DIR);
-    const sqlFile = path.join(DATA_DIR, `testing.sql`);
+    const sqlFile = path.join(DATA_DIR, `testing.sql`); // hard
 
     if (fs.existsSync(sqlFile)) {
         return db.query(fs.readFileSync(sqlFile).toString());

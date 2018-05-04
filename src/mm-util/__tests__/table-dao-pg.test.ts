@@ -1,8 +1,8 @@
 import * as dotenv from 'dotenv';
 import { _initDb } from '../../../test-utils/init';
-import { _sqlUtilTestsAll } from '../__tests-helpers__/_sql-util-tests-all';
 import { SqlUtil } from '../SqlUtil';
 import pg from '../../../test-utils/pg';
+import { _sqlUtilTestsAll } from '../__tests-helpers__/_table-dao-tests-all';
 dotenv.config();
 
 const DRIVER = 'pg';

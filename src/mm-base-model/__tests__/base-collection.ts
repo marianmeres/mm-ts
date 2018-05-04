@@ -4,7 +4,7 @@ const musketeersData = [
     { name: 'Athos', job: 'Musketeer' },
     { name: 'Porthos', job: 'Musketeer' },
     { name: 'Aramis', job: 'Musketeer' },
-    { name: 'd\'Artagnan', job: 'Guard' },
+    { name: "d'Artagnan", job: 'Guard' },
 ];
 
 describe('base collection', () => {

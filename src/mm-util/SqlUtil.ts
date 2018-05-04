@@ -2,6 +2,7 @@
 import isObject from 'lodash-es/isObject';
 import isDate from 'lodash-es/isDate';
 import * as util from 'util';
+import * as mysqlSqlstring from 'sqlstring';
 
 export interface SqlUtilFetchOptions {
     group_by?: string;
@@ -26,7 +27,7 @@ export class SqlUtil {
      * @param db
      */
     constructor(protected _dialect: string, db?) {
-        if (!this.isPg()) {
+        if (!this.isPg() && !this.isMysql()) {
             throw new Error(`Dialect ${this._dialect} not (yet) supported.`);
         }
         if (db) {
@@ -34,6 +35,9 @@ export class SqlUtil {
         }
     }
 
+    /**
+     * @returns {string}
+     */
     get dialect() {
         return this._dialect;
     }
@@ -61,10 +65,25 @@ export class SqlUtil {
     }
 
     /**
+     * @param dbClientOrPool
+     * @returns {SqlUtil}
+     */
+    static mysql(dbClientOrPool?) {
+        return new SqlUtil('mysql', dbClientOrPool);
+    }
+
+    /**
      * @returns {boolean}
      */
     isPg() {
         return SqlUtil.RGX_PG.test(this._dialect);
+    }
+
+    /**
+     * @returns {boolean}
+     */
+    isMysql() {
+        return SqlUtil.RGX_MYSQL.test(this._dialect);
     }
 
     /**
@@ -275,6 +294,15 @@ export class SqlUtil {
     }
 
     /**
+     * @param val
+     * @returns {any}
+     * @private
+     */
+    protected _qvMysql(val) {
+        return mysqlSqlstring.escape(val);
+    }
+
+    /**
      * "qv" = quote value
      * @param val
      * @returns {string}
@@ -282,6 +310,9 @@ export class SqlUtil {
     qv(val) {
         if (this.isPg()) {
             return this._qvPg(val);
+        }
+        if (this.isMysql()) {
+            return this._qvMysql(val);
         }
         throw new Error('Not supported');
     }
@@ -298,6 +329,15 @@ export class SqlUtil {
     }
 
     /**
+     * @param id
+     * @returns {any}
+     * @private
+     */
+    protected _qiMysql(id) {
+        return mysqlSqlstring.escapeId(id);
+    }
+
+    /**
      * "qi" = quote identifier
      * @param val
      * @returns {string}
@@ -305,6 +345,9 @@ export class SqlUtil {
     qi(val) {
         if (this.isPg()) {
             return this._qiPg(val);
+        }
+        if (this.isMysql()) {
+            return this._qiMysql(val);
         }
         throw new Error('Not supported');
     }
@@ -407,10 +450,14 @@ export class SqlUtil {
 
         let addons = this.buildAddons(options);
 
-        let sql = `SELECT ${fields} FROM "${table}" ${where} ${addons}`;
-        let { rows } = await this.query(sql, [], debug);
+        let sql = `SELECT ${fields} FROM ${this.qi(table)} ${where} ${addons}`;
 
-        return rows;
+        // let { rows } = await this.query(sql, [], debug);
+        // return rows;
+
+        // normalizujem do pg tvaru
+        let res = await this.query(sql, [], debug);
+        return res.rows ? res.rows : res;
     }
 
     /**
@@ -426,12 +473,17 @@ export class SqlUtil {
         }
 
         let sql = `SELECT COUNT(*) AS count FROM ${this.qi(table)} ${where}`;
-        let { rows } = await this.query(sql, [], debug);
+        // let { rows } = await this.query(sql, [], debug);
+
+        // normalizujem do pg tvaru
+        let res = await this.query(sql, [], debug);
+        let rows = res.rows ? res.rows : res;
 
         return parseInt(rows[0].count, 10);
     }
 
     /**
+     * WARNING: return value depends on the driver...
      * @param {string} table
      * @param data
      * @param {boolean} debug
@@ -447,13 +499,34 @@ export class SqlUtil {
             values.push(this.qv(data[k]));
         });
 
-        sql += `(${keys.join(', ')}) VALUES (${values.join(', ')}) RETURNING *`; // hard postgres dialect
-        let res = await this.query(sql, [], debug);
+        sql += `(${keys.join(', ')}) VALUES (${values.join(', ')})`;
 
-        return res.rows[0];
+        // WARNING: different behaviour for different driver
+        let res;
+
+        // PG: return the new row
+        if (this.isPg()) {
+            sql += ' RETURNING *'; // hard postgres dialect
+            res = await this.query(sql, [], debug);
+            return res.rows[0];
+        }
+
+        // MYSQL: return affected rows count
+        res = await this.query(sql, [], debug);
+        if (this.isMysql()) {
+            return res.affectedRows;
+        }
+
+        // if (this.isSqlite()) {
+        //     // to do
+        // }
+
+        // should not be reached...
+        return null;
     }
 
     /**
+     * WARNING: return value depends on the driver...
      * @param {string} table
      * @param data
      * @param where
@@ -486,10 +559,30 @@ export class SqlUtil {
             where = ` WHERE ${where}`;
         }
 
-        sql += `${pairs.join(', ')} ${where} RETURNING *`; // hard postgres dialect
+        sql += `${pairs.join(', ')} ${where}`;
 
-        let res = await this.query(sql, [], debug);
-        return res.rows[0];
+        // WARNING: different behaviour for different driver
+        let res;
+
+        // PG: return the new row
+        if (this.isPg()) {
+            sql += ' RETURNING *'; // hard postgres dialect
+            res = await this.query(sql, [], debug);
+            return res.rows[0];
+        }
+
+        // MYSQL: return affected rows count
+        res = await this.query(sql, [], debug);
+        if (this.isMysql()) {
+            return res.affectedRows;
+        }
+
+        // if (this.isSqlite()) {
+        //     // to do
+        // }
+
+        // should not be reached...
+        return null;
     }
 
     /**
@@ -521,5 +614,34 @@ export class SqlUtil {
         let sql = `DELETE FROM ${this.qi(table)} WHERE ${where} ${addons}`;
 
         return this.query(sql, [], debug);
+    }
+
+    /**
+     * @param {any} name
+     * @returns {Promise<any>}
+     */
+    async lastInsertId(name = null) {
+        // pg
+        if (this.isPg()) {
+            // CURRVAL: Return value most recently obtained with nextval for specified sequence
+            // LASTVAL: Return value most recently obtained with nextval for any sequence
+            let sql = name
+                ? `SELECT CURRVAL(${this.qi(name)}) AS lid;`
+                : `SELECT LASTVAL() AS lid;`;
+
+            let { rows } = await this.query(sql);
+            return parseInt(rows[0].lid, 10);
+        }
+        // mysql
+        else if (this.isMysql()) {
+            let rows = await this.query(`SELECT LAST_INSERT_ID() AS lid;`);
+            return parseInt(rows[0].lid, 10);
+        }
+        // sqlite
+        else {
+            // to do
+        }
+
+        return null;
     }
 }

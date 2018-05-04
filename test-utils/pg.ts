@@ -1,10 +1,10 @@
 import * as dotenv from 'dotenv';
-import { DbConfig } from './misc';
+import { PgDbConfig } from './misc';
 dotenv.config();
 
 import * as _pg from 'pg';
 
-const config: DbConfig = {
+const config: PgDbConfig = {
     host: process.env.MM_TS_TESTING__DB_PG_HOST,
     user: process.env.MM_TS_TESTING__DB_PG_USER,
     password: process.env.MM_TS_TESTING__DB_PG_PASSWORD,

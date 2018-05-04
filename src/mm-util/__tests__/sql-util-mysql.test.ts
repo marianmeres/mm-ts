@@ -2,10 +2,12 @@ import * as dotenv from 'dotenv';
 import { _initDb } from '../../../test-utils/init';
 import { _sqlUtilTestsAll } from '../__tests-helpers__/_sql-util-tests-all';
 import { SqlUtil } from '../SqlUtil';
-import pg from '../../../test-utils/pg';
+import { default as mysql } from '../../../test-utils/mysql';
+import * as mysqlSqlstring from 'sqlstring';
+
 dotenv.config();
 
-const DRIVER = 'pg';
+const DRIVER = 'mysql';
 
 // NOTE: this is a bit of a hacking... since I'm trying to test the same tests for
 // different 'drivers'...
@@ -18,7 +20,8 @@ const shouldSkip = () =>
     ];
 
 describe(DRIVER, () => {
-    beforeEach(async () => (shouldSkip() ? void 0 : _initDb(SqlUtil.pg(pg))));
+    beforeEach(async () =>
+        shouldSkip() ? void 0 : _initDb(SqlUtil.mysql(mysql)));
 
     for (let i = 0; i < testsFactoryMap.length; i++) {
         let key = testsFactoryMap[i];
@@ -26,7 +29,7 @@ describe(DRIVER, () => {
 
         let testFn = async () => {
             if (!shouldSkip()) {
-                await testFactory(SqlUtil.pg(pg));
+                await testFactory(SqlUtil.mysql(mysql));
             }
         };
 

@@ -152,11 +152,6 @@ export class BaseModel {
      * @private
      */
     protected _hasSetterFor(k) {
-        // let proto = Object.getPrototypeOf(this);
-        // let desc = Object.getOwnPropertyDescriptor(proto, k);
-        // return (desc && !!desc.set);
-        // vyssie nefunguje pri dedeni
-
         const chain = mmGetPrototypeChain(this);
         if (Array.isArray(chain)) {
             return chain.some((proto) => {
@@ -173,11 +168,6 @@ export class BaseModel {
      * @private
      */
     protected _hasGetterFor(k) {
-        // let proto = Object.getPrototypeOf(this);
-        // let desc = Object.getOwnPropertyDescriptor(proto, k);
-        // return (desc && !!desc.get);
-        // vyssie nefunguje pri dedeni
-
         const chain = mmGetPrototypeChain(this);
         if (Array.isArray(chain)) {
             return chain.some((proto) => {
@@ -212,7 +202,7 @@ export class BaseModel {
     }
 
     /**
-     * wrapper on top od _data, volany zo setterov
+     * wrapper on top od _data, called by setters
      * @param k
      * @param v
      * @returns {this}
@@ -226,7 +216,7 @@ export class BaseModel {
     }
 
     /**
-     * wrapper on top of _data, volany z getterov
+     * wrapper on top of _data, called by getters
      * @param k
      * @param {any} defaultValue
      * @returns {any}

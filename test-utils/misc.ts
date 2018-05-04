@@ -5,7 +5,9 @@ export interface DbConfig {
     password?: string;
     database?: string;
     port?: string | number;
+}
 
+export interface PgDbConfig extends DbConfig {
     // number of milliseconds to wait before timing out when connecting a new client
     // by default this is 0 which means no timeout
     connectionTimeoutMillis?: number;
@@ -18,4 +20,13 @@ export interface DbConfig {
     // maximum number of clients the pool should contain
     // by default this is set to 10.
     max?: number;
+}
+
+export interface MysqlDbConfig extends DbConfig {
+    // https://github.com/mysqljs/mysql#connection-options
+}
+
+export interface MysqlPoolDbConfig extends MysqlDbConfig {
+    // https://github.com/mysqljs/mysql#pool-options
+    multipleStatements?: boolean;
 }
