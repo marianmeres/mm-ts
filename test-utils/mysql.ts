@@ -14,7 +14,7 @@ const config: MysqlPoolDbConfig = {
     multipleStatements: true
 };
 
-export const mysqlPool =  _mysql.createPool(config);
+export const mysqlPool =  _mysql.createPool(config as any);
 
 const mysql = {
     /**

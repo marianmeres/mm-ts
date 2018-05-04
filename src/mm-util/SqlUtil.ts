@@ -1,6 +1,6 @@
-// import * as _ from 'lodash';
-import isObject from 'lodash-es/isObject';
-import isDate from 'lodash-es/isDate';
+import * as _ from 'lodash';
+// import isObject from 'lodash-es/isObject';
+// import isDate from 'lodash-es/isDate';
 import * as util from 'util';
 import * as mysqlSqlstring from 'sqlstring';
 
@@ -171,7 +171,7 @@ export class SqlUtil {
 
         where = where || '';
 
-        if (isObject(where)) {
+        if (_.isObject(where)) {
             Object.keys(where).forEach((col) => {
                 let val = where[col];
 
@@ -277,7 +277,7 @@ export class SqlUtil {
         }
 
         // opnionated: Dates are converted to ISO
-        if (isDate(val)) {
+        if (_.isDate(val)) {
             val = val.toISOString();
         }
 
