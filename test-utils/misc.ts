@@ -1,3 +1,5 @@
+import { SqlUtil } from '../src/mm-util/SqlUtil';
+import { _initDb } from './init';
 
 export interface DbConfig {
     host?: string;
@@ -30,3 +32,39 @@ export interface MysqlPoolDbConfig extends MysqlDbConfig {
     // https://github.com/mysqljs/mysql#pool-options
     multipleStatements?: boolean;
 }
+
+export const testSuiteFactorySqlUtilDialectBased = (db: SqlUtil, testsAll, shouldSkipResolver) => {
+    let testsFactoryMap = Object.keys(testsAll);
+
+    describe(db.dialect, () => {
+        beforeEach(async () => (shouldSkipResolver() ? void 0 : _initDb(db)));
+
+        for (let i = 0; i < testsFactoryMap.length; i++) {
+            let key = testsFactoryMap[i];
+            let testFactory = testsAll[key];
+
+            let testFn = async () => {
+                if (!shouldSkipResolver()) {
+                    await testFactory(db);
+                }
+            };
+
+            if (shouldSkipResolver()) {
+                key = `skip.${key}`;
+            }
+
+            // skip
+            if (/^skip\./i.test(key)) {
+                test.skip(key, testFn);
+            }
+            // only
+            else if (/^only\./i.test(key)) {
+                test.only(key, testFn);
+            }
+            // normal
+            else {
+                test(key, testFn);
+            }
+        }
+    });
+};

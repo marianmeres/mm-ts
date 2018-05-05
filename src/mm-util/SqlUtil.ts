@@ -43,10 +43,10 @@ export class SqlUtil {
     }
 
     /**
-     * @param dbClientOrPool
+     * @param driverProxy
      */
-    set db(dbClientOrPool) {
-        this._db = dbClientOrPool;
+    set db(driverProxy) {
+        this._db = driverProxy;
     }
 
     /**
@@ -60,16 +60,16 @@ export class SqlUtil {
      * factory
      * @returns {SqlUtil}
      */
-    static pg(dbClientOrPool?) {
-        return new SqlUtil('pg', dbClientOrPool);
+    static pg(driverProxy?) {
+        return new SqlUtil('pg', driverProxy);
     }
 
     /**
-     * @param dbClientOrPool
+     * @param driverProxy
      * @returns {SqlUtil}
      */
-    static mysql(dbClientOrPool?) {
-        return new SqlUtil('mysql', dbClientOrPool);
+    static mysql(driverProxy?) {
+        return new SqlUtil('mysql', driverProxy);
     }
 
     /**
@@ -613,7 +613,7 @@ export class SqlUtil {
 
         let sql = `DELETE FROM ${this.qi(table)} WHERE ${where} ${addons}`;
 
-        return this.query(sql, [], debug);
+        return await this.query(sql, [], debug);
     }
 
     /**
