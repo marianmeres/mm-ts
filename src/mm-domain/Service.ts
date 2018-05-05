@@ -15,6 +15,8 @@ export const assertWhereNotString = (where) => {
 export class Service<TModel extends BaseModel> {
     protected _tableName: string;
 
+    protected _daoOptions: any;
+
     protected _modelCtor: any;
 
     protected _isDeletedColName: null | string;
@@ -33,7 +35,9 @@ export class Service<TModel extends BaseModel> {
     }
 
     get dao() {
-        return new TableDao(this._tableName, { db: this.db });
+        return new TableDao(this._tableName, Object.assign(
+            {}, { db: this.db }, this._daoOptions || {}
+        );
     }
 
     /**
