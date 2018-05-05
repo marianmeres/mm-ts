@@ -145,29 +145,11 @@ export function mmFormatMoney(
  * @returns {string}
  */
 export function mmTrim(str: string, charlist?: string): string {
+    // prettier-ignore
     let whitespace = [
-        ' ',
-        '\n',
-        '\r',
-        '\t',
-        '\f',
-        '\x0b',
-        '\xa0',
-        '\u2000',
-        '\u2001',
-        '\u2002',
-        '\u2003',
-        '\u2004',
-        '\u2005',
-        '\u2006',
-        '\u2007',
-        '\u2008',
-        '\u2009',
-        '\u200a',
-        '\u200b',
-        '\u2028',
-        '\u2029',
-        '\u3000',
+        ' ', '\n', '\r', '\t', '\f', '\x0b', '\xa0', '\u2000', '\u2001', '\u2002',
+        '\u2003', '\u2004', '\u2005', '\u2006', '\u2007', '\u2008', '\u2009',
+        '\u200a', '\u200b', '\u2028', '\u2029', '\u3000',
     ].join('');
     let l = 0;
     let i = 0;
@@ -202,6 +184,7 @@ export function mmEscapeRegExp(str: string): string {
 }
 
 /**
+ * creates quasi uuid
  * http://stackoverflow.com/questions/105034/create-guid-uuid-in-javascript
  * @returns {string}
  */
@@ -213,20 +196,9 @@ export function mmUid(length?: number) {
             .toLowerCase();
 
     if (!length) {
-        // quasi uuid
+        // prettier-ignore
         return (
-            s4() +
-            s4() +
-            '-' +
-            s4() +
-            '-' +
-            s4() +
-            '-' +
-            s4() +
-            '-' +
-            s4() +
-            s4() +
-            s4()
+            s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4()
         );
     }
 

@@ -19,6 +19,7 @@
   "homepage": "https://github.com/marianmeres/mm-ts#readme",
   "dependencies": {
     "dotenv": "^5.0.1",
+    "lodash": "^4.17.10",
     "lodash-es": "^4.17.10",
     "mysql": "^2.15.0",
     "pg": "^7.4.1",
