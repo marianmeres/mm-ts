@@ -8,7 +8,10 @@ export class SqlUtilHelper {
      * @param config
      */
     static factoryMysqlDriverProxy(config) {
-        const mysqlPool =  _mysql.createPool(config as any);
+        const mysqlPool =  _mysql.createPool(Object.assign({}, config as any, {
+            // force same behavior as pg
+            multipleStatements: true
+        }));
 
         /**
          * @param text
