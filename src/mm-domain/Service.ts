@@ -1,6 +1,6 @@
 import { BaseModel } from './BaseModel';
 import { SqlUtil } from '../mm-util/SqlUtil';
-import { TableDao } from '../mm-util/TableDao';
+import { TableDao, TableDaoOptions } from '../mm-util/TableDao';
 
 export const assertWhereNotString = (where) => {
     if (typeof where === 'string') {
@@ -15,7 +15,7 @@ export const assertWhereNotString = (where) => {
 export class Service<TModel extends BaseModel> {
     protected _tableName: string;
 
-    protected _daoOptions: any;
+    protected _daoOptions: TableDaoOptions;
 
     protected _modelCtor: any;
 
@@ -35,8 +35,9 @@ export class Service<TModel extends BaseModel> {
     }
 
     get dao() {
-        return new TableDao(this._tableName, Object.assign(
-            {}, { db: this.db }, this._daoOptions || {}
+        return new TableDao(
+            this._tableName,
+            Object.assign({}, { db: this.db }, this._daoOptions || {})
         );
     }
 

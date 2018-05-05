@@ -1,7 +1,7 @@
 import defaults from 'lodash-es/defaults';
 import { SqlUtil } from './SqlUtil';
 
-interface TableDaoOptions {
+export interface TableDaoOptions {
     idCol?: string | string[];
     db?: SqlUtil;
     autoIncrement?: boolean;

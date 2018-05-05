@@ -46,7 +46,7 @@
     "test": "NODE_ENV=testing jest --watch --runInBand",
     "tslint": "tslint -c tslint.json -p tsconfig.json --force",
     "watch:tslint": "onchange 'src/**/*.*' --initial -- npm run tslint",
-    "format": "prettier --single-quote --trailing-comma es5 --tab-width 4 --arrow-parens always --write 'src/**/*.{js,jsx,ts,tsx,scss,json}'"
+    "prettier": "prettier --single-quote --trailing-comma es5 --tab-width 4 --arrow-parens always --write 'src/**/*.{js,jsx,ts,tsx,scss,json}'"
   },
   "jest": {
     "moduleFileExtensions": [
