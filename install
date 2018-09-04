@@ -1,0 +1,1 @@
+npm i @types/jest @types/jquery @types/lodash-es @types/mysql @types/node @types/sqlstring @types/ws colors dotenv jest lodash lodash-es mysql onchange pg prettier sqlstring ts-jest tslint typescript ws
