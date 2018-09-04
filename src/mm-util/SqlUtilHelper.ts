@@ -3,15 +3,16 @@ import * as _pg from 'pg';
 import * as util from 'util';
 
 export class SqlUtilHelper {
-
     /**
      * @param config
      */
     static factoryMysqlDriverProxy(config) {
-        const mysqlPool =  _mysql.createPool(Object.assign({}, config as any, {
-            // force same behavior as pg
-            multipleStatements: true
-        }));
+        const mysqlPool = _mysql.createPool(
+            Object.assign({}, config as any, {
+                // force same behavior as pg
+                multipleStatements: true,
+            })
+        );
 
         /**
          * @param text
@@ -61,7 +62,7 @@ export class SqlUtilHelper {
          * @param _client
          * @returns {Promise<void>}
          */
-        const clientRelease = async (_client) =>  {
+        const clientRelease = async (_client) => {
             _client.release();
             _client = null;
         };
@@ -83,7 +84,9 @@ export class SqlUtilHelper {
     static factoryPgDriverProxy(config) {
         const { Pool } = _pg;
         const pgPool = new Pool(config);
-        pgPool.on('error', (err, _client) => console.error(`pgPool error: ${err.toString()}`));
+        pgPool.on('error', (err, _client) =>
+            console.error(`pgPool error: ${err.toString()}`)
+        );
 
         /**
          * @param text
@@ -101,7 +104,7 @@ export class SqlUtilHelper {
          * @param _client
          * @returns {Promise<void>}
          */
-        const clientRelease = async (_client) =>  {
+        const clientRelease = async (_client) => {
             _client.release(true);
             _client = null;
         };

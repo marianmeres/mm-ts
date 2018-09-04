@@ -6,11 +6,9 @@ import { SqlUtilHelper } from '../SqlUtilHelper';
 import { testSuiteFactorySqlUtilDialectBased } from '../../../test-utils/misc';
 dotenv.config();
 
-
 // main
-const db = () => SqlUtil.mysql(SqlUtilHelper.factoryMysqlDriverProxy(
-    configMysql
-));
+const db = () =>
+    SqlUtil.mysql(SqlUtilHelper.factoryMysqlDriverProxy(configMysql));
 
 // should not need to edit below
 const shouldSkip = () =>

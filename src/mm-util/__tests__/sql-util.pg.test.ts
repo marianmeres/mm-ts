@@ -7,9 +7,7 @@ import { testSuiteFactorySqlUtilDialectBased } from '../../../test-utils/misc';
 dotenv.config();
 
 // main
-const db = () => SqlUtil.pg(SqlUtilHelper.factoryPgDriverProxy(
-    configPg
-));
+const db = () => SqlUtil.pg(SqlUtilHelper.factoryPgDriverProxy(configPg));
 
 // should not need to edit below
 const shouldSkip = () =>
@@ -19,4 +17,3 @@ const shouldSkip = () =>
 
 // actual test suite
 testSuiteFactorySqlUtilDialectBased(db(), _sqlUtilTestsAll, shouldSkip);
-

@@ -7,9 +7,7 @@ import { configPg } from '../../../test-utils/config-db';
 dotenv.config();
 
 // main
-const db = () => SqlUtil.pg(SqlUtilHelper.factoryPgDriverProxy(
-    configPg
-));
+const db = () => SqlUtil.pg(SqlUtilHelper.factoryPgDriverProxy(configPg));
 
 // should not need to edit below
 const shouldSkip = () =>

@@ -7,14 +7,11 @@ import { testSuiteFactorySqlUtilDialectBased } from '../../../test-utils/misc';
 import { _initDb } from '../../../test-utils/init';
 dotenv.config();
 
-const driverProxy = SqlUtilHelper.factoryMysqlDriverProxy(
-    configMysql
-);
+const driverProxy = SqlUtilHelper.factoryMysqlDriverProxy(configMysql);
 
 beforeEach(async () => _initDb(SqlUtil.mysql(driverProxy)));
 
 test('basic transaction (begin + commit) works', async () => {
-
     // it is important to make transactions on single client (connection) instance
     const client = await driverProxy.client();
     const db = SqlUtil.mysql(client);
@@ -33,7 +30,6 @@ test('basic transaction (begin + commit) works', async () => {
 });
 
 test('basic transaction (begin + rollback) works', async () => {
-
     // it is important to make transactions on single client (connection) instance
     const client = await driverProxy.client();
     const db = SqlUtil.mysql(client);
