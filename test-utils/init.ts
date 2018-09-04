@@ -4,7 +4,9 @@ import { getSqlSchema } from './get-sql-schema';
 import * as path from 'path';
 
 const _assertExists = (file) => {
-    if (!fs.existsSync(file)) { throw new Error(`'${file}' not found`); }
+    if (!fs.existsSync(file)) {
+        throw new Error(`'${file}' not found`);
+    }
 };
 
 export async function _importData(DATA_DIR, db) {
@@ -17,7 +19,12 @@ export async function _importData(DATA_DIR, db) {
 }
 
 export const _initDb = async (db: SqlUtil) => {
-    const SCHEMA_DIR = path.resolve(process.cwd(), 'data', db.dialect, 'schema');
+    const SCHEMA_DIR = path.resolve(
+        process.cwd(),
+        'data',
+        db.dialect,
+        'schema'
+    );
     _assertExists(SCHEMA_DIR);
 
     const sqlSchema = getSqlSchema(SCHEMA_DIR);
@@ -26,9 +33,13 @@ export const _initDb = async (db: SqlUtil) => {
         // import schema
         await db.query(sqlSchema);
 
-        const DATA_DIR = path.resolve(process.cwd(), 'data', db.dialect, 'data');
+        const DATA_DIR = path.resolve(
+            process.cwd(),
+            'data',
+            db.dialect,
+            'data'
+        );
         await _importData(DATA_DIR, db);
-
     } catch (e) {
         console.error(e.toString());
     }

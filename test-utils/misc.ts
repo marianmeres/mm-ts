@@ -33,7 +33,11 @@ export interface MysqlPoolDbConfig extends MysqlDbConfig {
     multipleStatements?: boolean;
 }
 
-export const testSuiteFactorySqlUtilDialectBased = (db: SqlUtil, testsAll, shouldSkipResolver) => {
+export const testSuiteFactorySqlUtilDialectBased = (
+    db: SqlUtil,
+    testsAll,
+    shouldSkipResolver
+) => {
     let testsFactoryMap = Object.keys(testsAll);
 
     describe(db.dialect, () => {

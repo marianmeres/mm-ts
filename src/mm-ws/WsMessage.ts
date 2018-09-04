@@ -13,6 +13,7 @@ export class WsMessage {
     static readonly TYPE_LEAVE_ROOM = 'leave';
     static readonly TYPE_BROADCAST = 'broadcast';
     static readonly TYPE_ECHO = 'echo';
+    static readonly TYPE_HEARTBEAT = 'heartbeat';
     static readonly TYPE_CONNECTION_ESTABLISHED = 'connected';
 
     // "app" types
@@ -94,6 +95,10 @@ export class WsMessage {
 
     get isEcho() {
         return WsMessage.TYPE_ECHO === this.type;
+    }
+
+    get isHeartbeat() {
+        return WsMessage.TYPE_HEARTBEAT === this.type;
     }
 
     get isConnectionEstablished() {
