@@ -74,7 +74,7 @@ export class SqlUtilHelper {
 
         // prettier-ignore
         return {
-            driver: 'mysql', query, client, clientRelease, config, poolEnd, raw: _mysql
+            driver: 'mysql', query, client, clientRelease, config, poolEnd, raw: _mysql,
         };
     }
 
@@ -116,7 +116,7 @@ export class SqlUtilHelper {
 
         // prettier-ignore
         return {
-            driver: 'pg', query, client, clientRelease, config, poolEnd, raw: _pg
+            driver: 'pg', query, client, clientRelease, config, poolEnd, raw: _pg,
         };
     }
 }
