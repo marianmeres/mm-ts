@@ -1,7 +1,6 @@
 import { BaseModel } from '../BaseModel';
 import { SqlUtil } from '../../mm-util/SqlUtil';
 import { Service } from '../Service';
-import pg from '../../../../../src/server/library/_utils/pg';
 
 export interface BaseFooData {
     id: any;
@@ -36,7 +35,7 @@ export class BaseFoo extends BaseModel {
 }
 
 // exposed factory
-export const fooService = (db?: SqlUtil) => new FooService(db || SqlUtil.pg(pg));
+export const fooService = (db?: SqlUtil) => new FooService(db);
 
 class FooService extends Service<BaseFoo> {
     protected _tableName: string = 'foo';
