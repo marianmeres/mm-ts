@@ -48,6 +48,8 @@ export const createWss = (
         args.port = serverOrPort;
     }
 
+    args.path = args.path === void 0 ? '/ws/' : args.path; // hard default
+
     const wss = new WebSocket.Server(args);
 
     // debug
@@ -77,7 +79,12 @@ export const createWss = (
             WsMessage.stringify({
                 payload: ws.cid,
                 type: WsMessage.TYPE_CONNECTION_ESTABLISHED,
-            })
+            }),
+            (err) => {
+                if (err) {
+                    console.error(err);
+                }
+            }
         );
 
         // ping/pong PART 1
@@ -93,20 +100,25 @@ export const createWss = (
             // join?
             if (msg.isJoin) {
                 ws.rooms.set(msg.room, true);
-                wss.emit(`join`, msg, ws, req);
+                wss.emit(WsMessage.TYPE_JOIN_ROOM, msg, ws, req);
                 wss.emit(`all`, msg, ws, req);
             }
             // leave?
             else if (msg.isLeave) {
                 let res = ws.rooms.delete(msg.room);
-                wss.emit(`leave`, msg, ws, req, res);
+                wss.emit(WsMessage.TYPE_LEAVE_ROOM, msg, ws, req, res);
                 wss.emit(`all`, msg, ws, req, res);
             }
             // broadcast?
             else if (msg.isBroadcast) {
                 wsSend(wss, msg, ws);
-                wss.emit(`broadcast`, msg, ws, req);
+                wss.emit(WsMessage.TYPE_BROADCAST, msg, ws, req);
                 wss.emit(`all`, msg, ws, req);
+            }
+            // heartbeat?
+            else if (msg.isHeartbeat) {
+                wss.emit(WsMessage.TYPE_HEARTBEAT, msg, ws, req);
+                wss.emit(`all`, msg, ws, req); // hm... chceme hearbeat aj medzi all?
             }
             // `default` or unknown type...
             else {
@@ -130,7 +142,7 @@ export const createWss = (
             if ((e as any).errno) {
                 return;
             }
-            console.log(`WSS ERROR: ${e}`);
+            console.log(`ws: ${e.toString()}`);
         });
 
         ws.on('close', () => {
@@ -150,6 +162,11 @@ export const createWss = (
             ws.ping(null, void 0);
         });
     }, options.autoReconnectInterval);
+
+    // hm...
+    wss.on('error', (e) => {
+        console.log(`Websocket.Server ${e.toString()}`);
+    });
 
     return wss;
 };
@@ -221,5 +238,33 @@ export const wsSendJsonApiToRoom = (
         JSON.stringify(payload),
         room,
         WsMessage.TYPE_JSONAPI
+    );
+};
+
+// sugar
+export const wsSendJsonApiUpdateToRoom = (
+    wss: WebSocket.Server,
+    payload: JSONApiEnvelope,
+    room
+) => {
+    return wsSendPayloadToRoom(
+        wss,
+        JSON.stringify(payload),
+        room,
+        WsMessage.TYPE_JSONAPI_UPDATE
+    );
+};
+
+// sugar
+export const wsSendJsonApiDeleteToRoom = (
+    wss: WebSocket.Server,
+    payload: JSONApiEnvelope,
+    room
+) => {
+    return wsSendPayloadToRoom(
+        wss,
+        JSON.stringify(payload),
+        room,
+        WsMessage.TYPE_JSONAPI_DELETE
     );
 };
