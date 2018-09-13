@@ -16,8 +16,10 @@ export class WsMessage {
     static readonly TYPE_HEARTBEAT = 'heartbeat';
     static readonly TYPE_CONNECTION_ESTABLISHED = 'connected';
 
-    // "app" types
+    // "app" types... hm... (smells too narrow...)
     static readonly TYPE_JSONAPI = 'jsonapi';
+    static readonly TYPE_JSONAPI_UPDATE = 'jsonapi_update';
+    static readonly TYPE_JSONAPI_DELETE = 'jsonapi_delete';
 
     constructor(
         protected _payload: string,
