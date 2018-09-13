@@ -1,6 +1,6 @@
 import { mmUid } from '../mm-string';
 
-interface WsMessageData {
+export interface WsMessageData {
     id?: string;
     type?: string;
     room?: string;
