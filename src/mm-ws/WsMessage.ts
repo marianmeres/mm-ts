@@ -7,6 +7,9 @@ export interface WsMessageData {
     payload?: string;
 }
 
+/**
+ * Simple value object with factory... nothing fancy
+ */
 export class WsMessage {
     // "system" types
     static readonly TYPE_JOIN_ROOM = 'join';
@@ -14,6 +17,7 @@ export class WsMessage {
     static readonly TYPE_BROADCAST = 'broadcast';
     static readonly TYPE_ECHO = 'echo';
     static readonly TYPE_HEARTBEAT = 'heartbeat';
+    static readonly TYPE_RECONNECT = 'reconnect';
     static readonly TYPE_CONNECTION_ESTABLISHED = 'connected';
 
     // "app" types... hm... (smells too narrow...)
@@ -97,6 +101,10 @@ export class WsMessage {
 
     get isEcho() {
         return WsMessage.TYPE_ECHO === this.type;
+    }
+
+    get isReconnect() {
+        return WsMessage.TYPE_RECONNECT === this.type;
     }
 
     get isHeartbeat() {

@@ -5,3 +5,4 @@ dist
 .env
 
 /.env
+/src/mm-ws/__tests__/tmp/output.txt
