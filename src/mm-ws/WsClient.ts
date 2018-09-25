@@ -14,6 +14,8 @@ export interface WsClientOptions {
     logger?: (...args) => any | null;
     reconnectDataProvider?: () => any | null;
     retryLimit?: number;
+    // forced delay (priority over internal throthling mechanism)
+    delay?: number | ((retryCounter: number) => number);
 }
 
 export class WsClient extends EventEmitter {
@@ -23,9 +25,10 @@ export class WsClient extends EventEmitter {
     static readonly EVENT_MESSAGE = 'message';
 
     // custom...
+    static readonly EVENT_RECONNECT_SCHEDULING = 'reconnect_scheduling';
+    static readonly EVENT_RECONNECTING = 'reconnecting';
     static readonly EVENT_RECONNECT_OPEN = 'reconnect_open';
-    static readonly EVENT_READY = 'ready';
-    static readonly EVENT_ALL = '*';
+    static readonly EVENT_SEND = 'send';
 
     static readonly READYSTATE_CONNECTING = 0;
     static readonly READYSTATE_OPEN = 1;
@@ -38,29 +41,30 @@ export class WsClient extends EventEmitter {
 
     protected _connection: WebSocket;
     protected _wasDisconnected = false;
-    protected _queue: (WsMessageData | string)[] = []; // outgoing message queue
+    // protected _queue: (WsMessageData | string)[] = []; // outgoing message queue
+    protected _queue: Array<WsMessageData | string> = []; // outgoing message queue
     protected _reconnectTimer = 0;
     protected _retryCounter = 0;
     protected _retryLimit = 0;
-    protected _nextDelay = 1000;
+    protected _nextDelay = 1000; // default, overide via options
 
     // "once" map of `onSuccess` handlers...
     protected static _pendingCallbacks = new Map();
 
-    constructor(protected _url: string, options?: WsClientOptions) {
+    constructor(protected _url: string, public readonly options?: WsClientOptions) {
         super();
-        options = options || ({} as WsClientOptions);
+        this.options = this.options || ({} as WsClientOptions);
 
         // options mapped to mutable public props
         ['logger', 'debug', 'reconnectDataProvider'].forEach((k) => {
-            if (options[k] !== void 0) {
-                this[k] = options[k];
+            if (this.options[k] !== void 0) {
+                this[k] = this.options[k];
             }
         });
 
         // options mapped to private props
-        if (options.retryLimit !== void 0) {
-            this._retryLimit = parseInt(`${options.retryLimit}`, 10);
+        if (this.options.retryLimit !== void 0) {
+            this._retryLimit = parseInt(`${this.options.retryLimit}`, 10);
             if (isNaN(this._retryLimit)) {
                 this._retryLimit = 0;
             }
@@ -79,13 +83,13 @@ export class WsClient extends EventEmitter {
 
     log(...args) {
         if (this.debug && isFn(this.logger)) {
-            this.logger('WsClient:', ...args);
+            this.logger('WsClient', new Date(), ...args);
         }
     }
 
     /**
      * idea is, that the native WebSocket instance shoult be considered low-level
-     * and not really be used directly unless really needed...
+     * and not really be used directly unless needed...
      */
     get connection() {
         return this._connection;
@@ -93,9 +97,9 @@ export class WsClient extends EventEmitter {
 
     clearQueue() {
         if (this._queue.length) {
-            this._queue.splice(0, this._queue.length);
+            return this._queue.splice(0, this._queue.length).length;
         }
-        return this;
+        return 0;
     }
 
     _factoryConnection() {
@@ -138,6 +142,7 @@ export class WsClient extends EventEmitter {
 
     _onclose(e) {
         // this.log('onclose', e);
+        this.emit(WsClient.EVENT_CLOSE, e);
 
         this._wasDisconnected = true;
 
@@ -148,29 +153,31 @@ export class WsClient extends EventEmitter {
 
         // initiate retry
         let doRetry;
+        // 0 -> no limit
         if (this._retryLimit === 0) {
-            // 0 = no limit
             doRetry = true;
-        } else if (this._retryLimit < 0) {
-            // negative = no retry
+        }
+        // negative -> no retry
+        else if (this._retryLimit < 0) {
             doRetry = false;
-        } else {
-            // positive = retry limit
+        }
+        // positive -> retry while respecting the limit
+        else {
             doRetry = this._retryLimit >= this._retryCounter++;
         }
 
         if (doRetry) {
             let nextDelay = this._getReconnectDelay();
-            this.log(`will_reconnect`, nextDelay);
+            this.emit(WsClient.EVENT_RECONNECT_SCHEDULING, nextDelay);
 
             this._reconnectTimer = setTimeout(() => {
-                this.log('reconnecting');
+                this.emit(WsClient.EVENT_RECONNECTING);
                 this._connection = this._factoryConnection();
                 this._reconnectTimer = 0;
             }, nextDelay) as any;
         }
 
-        this.emit(WsClient.EVENT_CLOSE, e);
+        // this.emit(WsClient.EVENT_CLOSE, e);
     }
 
     _onerror(e) {
@@ -183,8 +190,7 @@ export class WsClient extends EventEmitter {
 
     // override to add wildcard support
     emit(event, ...args) {
-        this.log(`Event: ${event}`);
-        // super.emit(WsClient.EVENT_ALL, event, ...args);
+        this.log(event, args);
         return super.emit(event, ...args);
     }
 
@@ -222,15 +228,48 @@ export class WsClient extends EventEmitter {
                     msg = WsMessage.stringify(msg);
                 }
 
-                this.log('send', msg);
                 this._connection.send(msg);
+                this.emit(WsClient.EVENT_SEND, msg);
             }
             this.clearQueue();
         }
     }
 
     _getReconnectDelay() {
-        this._nextDelay *= 1.25; // throttle factor
-        return this._nextDelay;
+        let next;
+
+        // providing custom option has priority...
+        const { delay } = this.options;
+        if (delay) {
+            next = isFn(delay) ? (delay as any)(this._retryLimit) : delay;
+        }
+
+        // default
+        if (typeof next !== 'number') {
+            this._nextDelay *= 1.25; // throttle factor
+            next = this._nextDelay;
+        }
+
+        return next;
+    }
+
+    // sugar
+    onOpen(cb: (e) => any) {
+        this.on(WsClient.EVENT_OPEN, cb);
+    }
+
+    // sugar
+    onClose(cb: (e) => any) {
+        this.on(WsClient.EVENT_CLOSE, cb);
+    }
+
+    // sugar
+    onError(cb: (e) => any) {
+        this.on(WsClient.EVENT_ERROR, cb);
+    }
+
+    // sugar
+    onMessage(cb: (data) => any) {
+        this.on(WsClient.EVENT_MESSAGE, cb);
     }
 }

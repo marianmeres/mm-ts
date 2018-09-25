@@ -4,14 +4,15 @@ import * as path from 'path';
 import { WsClient } from '../WsClient';
 import isEqual from 'lodash-es/isEqual';
 import * as dotenv from 'dotenv';
+import { mmDelay } from '../../mm-util/mm-delay';
 dotenv.config();
 
 const WSS_PORT = parseInt(process.env.MM_TS_TESTING_WSS_PORT, 10);
 const WS_URL = `ws://localhost:${WSS_PORT}`;
 
-let wss: ws.Server;
+let ss: ws.Server;
 
-// aync closer helper... hm...
+// async closer helper... hm...
 let _closeWssIfTimer = 0;
 const closeWssIf = (_wss: ws.Server, condition: () => boolean, done) => {
     if (!_wss) {
@@ -50,39 +51,39 @@ const fileDelete = () => fs.existsSync(_file) && fs.unlinkSync(_file);
 
 beforeEach(async (done) => {
     fileDelete();
-    wss ? wss.close(done) : done();
+    ss ? ss.close(done) : done();
 });
 
 afterEach(async (done) => {
-    wss ? wss.close(done) : done();
+    ss ? ss.close(done) : done();
 });
 
 test('multiple same event handlers on one client', async (done) => {
     let counter = 0;
 
-    wss = new ws.Server({ port: WSS_PORT }, () => {
+    ss = new ws.Server({ port: WSS_PORT }, () => {
         const wsc = new WsClient(WS_URL);
-        wsc.on(WsClient.EVENT_OPEN, (e) => {
-            expect(wss.clients.size).toEqual(1);
+        wsc.onOpen((e) => { // wsc.on(WsClient.EVENT_OPEN, (e) => {
+            expect(ss.clients.size).toEqual(1);
             counter++;
-            // wss.close(done);
+            // ss.close(done);
         });
-        wsc.on(WsClient.EVENT_OPEN, (e) => counter++);
-        wsc.on(WsClient.EVENT_OPEN, (e) => counter++);
+        wsc.onOpen((e) => counter++);
+        wsc.onOpen((e) => counter++);
     });
 
-    closeWssIf(wss, () => counter === 3, done);
+    closeWssIf(ss, () => counter === 3, done);
 });
 
 test('server to client message works', async (done) => {
     let msg = '';
 
-    wss = new ws.Server({ port: WSS_PORT }, () => {
+    ss = new ws.Server({ port: WSS_PORT }, () => {
         const wsc = new WsClient(WS_URL);
 
-        wsc.on(WsClient.EVENT_OPEN, () => {
+        wsc.onOpen(() => {
             ['a', 'b', 'c'].forEach((text) => {
-                wss.clients.forEach((client) => {
+                ss.clients.forEach((client) => {
                     if (client.readyState === WebSocket.OPEN) {
                         client.send(text);
                     }
@@ -90,19 +91,19 @@ test('server to client message works', async (done) => {
             });
         });
 
-        wsc.on(WsClient.EVENT_MESSAGE, (data) => msg += data);
+        wsc.onMessage((data) => msg += data);
     });
 
-    closeWssIf(wss, () => msg === 'abc', done);
+    closeWssIf(ss, () => msg === 'abc', done);
 });
 
-test.only('client to server message works', async (done) => {
-    wss = new ws.Server({ port: WSS_PORT }, () => {
+test('client to server message works', async (done) => {
+    ss = new ws.Server({ port: WSS_PORT }, () => {
         const wsc = new WsClient(WS_URL, { debug: false });
         wsc.send('heyho');
-        wss.on('connection', (client) => client.on('message', fileWrite));
+        ss.on('connection', (client) => client.on('message', fileWrite));
     });
-    closeWssIf(wss, () => fileRead() === 'heyho', done);
+    closeWssIf(ss, () => fileRead() === 'heyho', done);
 });
 
 test('onclose + onerror is emitted on unsuccessfull init', async (done) => {
@@ -118,8 +119,8 @@ test('onclose + onerror is emitted on unsuccessfull init', async (done) => {
 
     // tu server nebezi...
     const wsc = new WsClient(WS_URL, { debug: true, logger });
-    wsc.on(WsClient.EVENT_CLOSE, (e) => close++);
-    wsc.on(WsClient.EVENT_ERROR, (e) => error++);
+    wsc.onClose((e) => close++); // wsc.on(WsClient.EVENT_CLOSE, (e) => close++);
+    wsc.onError((e) => error++); // wsc.on(WsClient.EVENT_ERROR, (e) => error++);
 
     //
     doneIf(() => {
@@ -145,6 +146,78 @@ test('onclose + onerror is emitted on unsuccessfull init', async (done) => {
     }, done);
 });
 
-test.skip('true reconnect works', (done) => {
-    done();
+test('true reconnect works', (done) => {
+    let wsc: WsClient;
+
+    let counter = 0;
+    let closeCounter = 0;
+    let openCounter = 0;
+
+    const delay = 50;
+
+    let log = [];
+    const logger = (...args) => log.push(args[2]);
+
+    ss = new ws.Server({ port: WSS_PORT }, () => {
+        // server's client message handling
+        ss.on('connection', (client) => {
+            client.on('message', (data) => {
+                expect(data).toEqual('1');
+                ss.close(afterClose);
+            });
+        });
+
+        // 'frontend' client...
+        wsc = new WsClient(WS_URL, { debug: true, delay, logger });
+
+        wsc.onOpen(() => openCounter++);
+        wsc.onClose(() => closeCounter++);
+
+        wsc.send(`${++counter}`);
+    });
+
+    const afterClose = async (err) => {
+        await mmDelay(5); // bulharske pozorovanie...
+        expect(wsc.connection.readyState).toEqual(WsClient.READYSTATE_CLOSED);
+        expect(closeCounter).toEqual(1);
+        expect(openCounter).toEqual(1);
+
+        // restart ws server
+        ss = new ws.Server({ port: WSS_PORT }, () => {
+            ss.on('connection', (client) => {
+                (async () => {
+                    await mmDelay(2 * delay);
+                    expect(closeCounter).toEqual(1); // no change here...
+                    expect(openCounter).toEqual(2); // IMPORTANT!
+                    expect(wsc.connection.readyState).toEqual(WsClient.READYSTATE_OPEN); // IMPORTANT!
+                    ss.close(async () => {
+                        await mmDelay(5);
+                        expect(wsc.connection.readyState).toEqual(WsClient.READYSTATE_CLOSED);
+                        expect(closeCounter).toEqual(2);
+                        expect(openCounter).toEqual(2);
+                        assertLogIsOK();
+                        done();
+                    });
+                })();
+            });
+        });
+
+    };
+
+    const assertLogIsOK = () => {
+
+        const countLogLabel = (name) => (
+            log.reduce((memo, logged) => {
+                (logged === name) && memo++;
+                return memo;
+            }, 0)
+        );
+
+        // console.log(log);
+        expect(countLogLabel(WsClient.EVENT_OPEN)).toEqual(2);
+        expect(countLogLabel(WsClient.EVENT_CLOSE)).toEqual(2);
+        expect(countLogLabel(WsClient.EVENT_RECONNECT_OPEN)).toEqual(1);
+        expect(countLogLabel(WsClient.EVENT_SEND)).toEqual(2);
+    };
+
 });
