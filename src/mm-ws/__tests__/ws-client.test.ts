@@ -206,7 +206,7 @@ test('true reconnect works', (done) => {
 
     const assertLogIsOK = () => {
 
-        const countLogLabel = (name) => (
+        const countLogRecord = (name) => (
             log.reduce((memo, logged) => {
                 (logged === name) && memo++;
                 return memo;
@@ -214,10 +214,10 @@ test('true reconnect works', (done) => {
         );
 
         // console.log(log);
-        expect(countLogLabel(WsClient.EVENT_OPEN)).toEqual(2);
-        expect(countLogLabel(WsClient.EVENT_CLOSE)).toEqual(2);
-        expect(countLogLabel(WsClient.EVENT_RECONNECT_OPEN)).toEqual(1);
-        expect(countLogLabel(WsClient.EVENT_SEND)).toEqual(2);
+        expect(countLogRecord(WsClient.EVENT_OPEN)).toEqual(2);
+        expect(countLogRecord(WsClient.EVENT_CLOSE)).toEqual(2);
+        expect(countLogRecord(WsClient.EVENT_RECONNECT_OPEN)).toEqual(1);
+        expect(countLogRecord(WsClient.EVENT_SEND)).toEqual(2);
     };
 
 });
