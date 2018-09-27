@@ -45,7 +45,6 @@ export class WsClient extends EventEmitter {
 
     protected _connection: WebSocket;
     protected _wasDisconnected = false;
-    // protected _queue: (WsMessageData | string)[] = []; // outgoing message queue
     protected _queue: Array<WsMessageData | string> = []; // outgoing message queue
     protected _reconnectTimer = 0;
     protected _retryCounter = 0;
@@ -180,6 +179,7 @@ export class WsClient extends EventEmitter {
     }
 
     /**
+     * NOTE: every close is in this class considered as 'not clean' (network error etc...)
      * @param e
      * @private
      */
