@@ -337,7 +337,7 @@ export class WsClient extends EventEmitter {
      * @param cb
      * @private
      */
-    protected _roomAction (isJoin: boolean, room, cb?) {
+    protected _roomAction(isJoin: boolean, room, cb?) {
         if (this.isOpen()) {
             this.send(
                 WsMessage.stringify({
@@ -359,7 +359,7 @@ export class WsClient extends EventEmitter {
 
                     //
                     if (typeof cb === 'function') {
-                        cb();
+                        cb(room, isJoin);
                     }
                 }
             );
@@ -386,10 +386,8 @@ export class WsClient extends EventEmitter {
      * Important on reconnect!
      * @param cb
      */
-    rejoinAllRooms(cb?: (room) => any) {
-        this._joinedRooms.forEach(
-            (val, key) => this.joinRoom(key, cb ? cb(key) : void 0)
-        );
+    rejoinAllRooms(cb?) {
+        this._joinedRooms.forEach((val, key) => this.joinRoom(key, cb));
     }
 
     /**
@@ -403,7 +401,7 @@ export class WsClient extends EventEmitter {
      * @param cb
      */
     onReady(cb) {
-        if (this._connection.readyState === WsClient.READYSTATE_OPEN) {
+        if (this.isOpen()) {
             cb();
         } else {
             this.on(WsClient.EVENT_OPEN, cb); // or `once` ?
