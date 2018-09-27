@@ -1,5 +1,6 @@
 import * as EventEmitter from 'eventemitter3';
 import { WsMessage, WsMessageData } from './WsMessage';
+// import { mmUid } from '../mm-string';
 
 /**
  * inspired by:
@@ -7,7 +8,8 @@ import { WsMessage, WsMessageData } from './WsMessage';
  * https://github.com/pladaria/reconnecting-websocket/blob/master/reconnecting-websocket.ts
  */
 
-const isFn = (v) => typeof v === 'function';
+const isFn = (v: any) => typeof v === 'function';
+const isWebSocket = (w: any) => typeof w === 'function' && w.CLOSING === 2;
 
 export interface WsClientOptions {
     debug?: boolean;
@@ -53,6 +55,9 @@ export class WsClient extends EventEmitter {
     // "once" map of `onSuccess` handlers...
     protected static _pendingCallbacks = new Map();
 
+    // internal server assigned client id
+    protected _cid;
+
     /**
      * @param _url
      * @param options
@@ -88,16 +93,24 @@ export class WsClient extends EventEmitter {
     }
 
     /**
+     * will be set on server's first successfull TYPE_CONNECTION_ESTABLISHED message
+     */
+    get cid() {
+        // if (!this._cid) { this._cid = mmUid(); } // do not auto generate
+        return this._cid;
+    }
+
+    /**
      * @param args
      */
     log(...args) {
         if (this.debug && isFn(this.logger)) {
-            this.logger('WsClient', new Date(), ...args);
+            this.logger('WsClient', (new Date()).toISOString(), ...args);
         }
     }
 
     /**
-     * idea is, that the native WebSocket instance shoult be considered low-level
+     * idea is, that the 'native' WebSocket instance shoult be considered low-level
      * and not really be used directly unless needed...
      */
     get connection() {
@@ -147,6 +160,7 @@ export class WsClient extends EventEmitter {
                 ? this.reconnectDataProvider()
                 : void 0;
 
+            // 'reconnect' message info to server
             this._queue.push({
                 type: WsMessage.TYPE_RECONNECT,
                 payload: reconnectData,
@@ -214,6 +228,20 @@ export class WsClient extends EventEmitter {
      * @private
      */
     _onmessage(e) {
+
+        //
+        const m = WsMessage.factory(e.data);
+
+        // feature - server echos back id, so we can implement `onSuccess`
+        if (m.isEcho && WsClient._pendingCallbacks.has(m.payload)) {
+            WsClient._pendingCallbacks.get(m.payload)(); // call `onSuccess` handler
+            WsClient._pendingCallbacks.delete(m.payload);
+        }
+        //
+        else if (m.isConnectionEstablished) {
+            this._cid = m.payload; // ulozime si client id... mozno sa moze hodit
+        }
+
         this.emit(WsClient.EVENT_MESSAGE, e.data);
     }
 
@@ -287,9 +315,10 @@ export class WsClient extends EventEmitter {
             next = isFn(delay) ? (delay as any)(this._retryLimit) : delay;
         }
 
-        // default
+        // default: throttle each repeat, but not more than 1 minute
         if (typeof next !== 'number') {
             this._nextDelay *= 1.25; // throttle factor
+            this._nextDelay = Math.min(this._nextDelay, 60000);
             next = this._nextDelay;
         }
 
@@ -297,7 +326,28 @@ export class WsClient extends EventEmitter {
     }
 
     /**
-     * sugar
+     * @param cb
+     */
+    onReady(cb) {
+        if (this._connection.readyState === WsClient.READYSTATE_OPEN) {
+            cb();
+        } else {
+            this.on(WsClient.EVENT_OPEN, cb); // or `once` ?
+        }
+    }
+
+    /**
+     * only sugar below
+     */
+
+    /**
+     *
+     */
+    isOpen() {
+        return this.connection.readyState === WsClient.READYSTATE_OPEN;
+    }
+
+    /**
      * @param cb
      */
     onOpen(cb: (e) => any) {
@@ -305,7 +355,6 @@ export class WsClient extends EventEmitter {
     }
 
     /**
-     * sugar
      * @param cb
      */
     onClose(cb: (e) => any) {
@@ -313,7 +362,6 @@ export class WsClient extends EventEmitter {
     }
 
     /**
-     * sugar
      * @param cb
      */
     onError(cb: (e) => any) {

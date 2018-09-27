@@ -18,7 +18,7 @@ export class WsMessage {
     static readonly TYPE_ECHO = 'echo';
     static readonly TYPE_HEARTBEAT = 'heartbeat';
     static readonly TYPE_RECONNECT = 'reconnect';
-    static readonly TYPE_CONNECTION_ESTABLISHED = 'connected';
+    static readonly TYPE_CONNECTION_ESTABLISHED = 'connection_established';
 
     // "app" types... hm... (smells too narrow...)
     static readonly TYPE_JSONAPI = 'jsonapi';
@@ -77,6 +77,14 @@ export class WsMessage {
 
     get payload() {
         return this._payload;
+    }
+
+    get parsedPayload() {
+        try {
+            return JSON.parse(this.payload);
+        } catch (e) {
+            return {};
+        }
     }
 
     get type() {

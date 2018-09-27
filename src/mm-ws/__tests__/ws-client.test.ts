@@ -221,3 +221,26 @@ test('true reconnect works', (done) => {
     };
 
 });
+
+test('client `onReady` works', async (done) => {
+    let counter = 0;
+
+    const wsc = new WsClient(WS_URL);
+    wsc.onReady((e) => counter++);
+
+    ss = new ws.Server({ port: WSS_PORT }, () => {
+        wsc.onReady((e) => counter++);
+    });
+
+    closeWssIf(ss, () => counter === 2, done);
+});
+
+// update: not automatically generating anymore...
+// test.skip('client `cid` is generated automatically', async (done) => {
+//     const wsc = new WsClient(WS_URL, { debug: false });
+//     const wsc2 = new WsClient(WS_URL, { debug: false });
+//     expect(wsc.cid).toBeTruthy();
+//     expect(wsc2.cid).toBeTruthy();
+//     expect(wsc.cid === wsc2.cid).toBeFalsy();
+//     done();
+// });

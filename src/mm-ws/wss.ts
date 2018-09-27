@@ -120,6 +120,10 @@ export const createWss = (
                 wss.emit(WsMessage.TYPE_HEARTBEAT, msg, ws, req);
                 wss.emit(`all`, msg, ws, req); // hm... chceme hearbeat aj medzi all?
             }
+            else if (msg.isReconnect) {
+                wss.emit(WsMessage.TYPE_RECONNECT, msg, ws, req);
+                wss.emit(`all`, msg, ws, req);
+            }
             // `default` or unknown type...
             else {
                 wss.emit(`message`, msg, ws, req);
@@ -142,7 +146,7 @@ export const createWss = (
             if ((e as any).errno) {
                 return;
             }
-            console.log(`ws: ${e.toString()}`);
+            console.error(`ws: ${e.toString()}`);
         });
 
         ws.on('close', () => {
