@@ -58,6 +58,9 @@ export class WsClient extends EventEmitter {
     // internal server assigned client id
     protected _cid;
 
+    //
+    protected static _joinedRooms = new Map();
+
     /**
      * @param _url
      * @param options
@@ -87,6 +90,9 @@ export class WsClient extends EventEmitter {
         this._onerror = this._onerror.bind(this);
         this._onmessage = this._onmessage.bind(this);
         this._factoryConnection = this._factoryConnection.bind(this);
+
+        // feature!
+        this.on(WsClient.EVENT_RECONNECT_OPEN, this.rejoinAllRooms.bind(this));
 
         // tries to connect immediatelly
         this._connection = this._factoryConnection();
@@ -323,6 +329,74 @@ export class WsClient extends EventEmitter {
         }
 
         return next;
+    }
+
+    /**
+     * @param isJoin
+     * @param room
+     * @param cb
+     * @private
+     */
+    protected _roomAction (isJoin: boolean, room, cb?) {
+        if (this.isOpen()) {
+            this.send(
+                WsMessage.stringify({
+                    type: isJoin
+                        ? WsMessage.TYPE_JOIN_ROOM
+                        : WsMessage.TYPE_LEAVE_ROOM,
+                    room,
+                }),
+                () => {
+                    // debug
+                    const isRejoin = isJoin && WsClient._joinedRooms.has(room);
+                    const joinLabel = (isRejoin ? 'RE-' : '') + 'JOINED';
+                    this.log(`${this.cid} ${isJoin ? joinLabel : 'LEFT'} ROOM ${room}`);
+
+                    // save (!important)
+                    isJoin
+                        ? WsClient._joinedRooms.set(room, true)
+                        : WsClient._joinedRooms.delete(room);
+
+                    //
+                    if (typeof cb === 'function') {
+                        cb();
+                    }
+                }
+            );
+        }
+    }
+
+    /**
+     * @param room
+     * @param cb
+     */
+    joinRoom(room, cb?) {
+        this.onReady(() => this._roomAction(true, room, cb));
+    }
+
+    /**
+     * @param room
+     * @param cb
+     */
+    leaveRoom(room, cb?) {
+        this.onReady(() => this._roomAction(false, room, cb));
+    }
+
+    /**
+     * Important on reconnect!
+     * @param cb
+     */
+    rejoinAllRooms(cb?: (room) => any) {
+        WsClient._joinedRooms.forEach(
+            (val, key) => this.joinRoom(key, cb ? cb(key) : void 0)
+        );
+    }
+
+    /**
+     *
+     */
+    get joinedRooms() {
+        return WsClient._joinedRooms;
     }
 
     /**
