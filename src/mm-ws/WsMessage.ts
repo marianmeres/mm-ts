@@ -12,18 +12,18 @@ export interface WsMessageData {
  */
 export class WsMessage {
     // "system" types
-    static readonly TYPE_JOIN_ROOM = 'join';
-    static readonly TYPE_LEAVE_ROOM = 'leave';
-    static readonly TYPE_BROADCAST = 'broadcast';
-    static readonly TYPE_ECHO = 'echo';
-    static readonly TYPE_HEARTBEAT = 'heartbeat';
-    static readonly TYPE_RECONNECT = 'reconnect';
-    static readonly TYPE_CONNECTION_ESTABLISHED = 'connection_established';
+    static readonly TYPE_JOIN_ROOM = 'JOIN';
+    static readonly TYPE_LEAVE_ROOM = 'LEAVE';
+    static readonly TYPE_BROADCAST = 'BROADCAST';
+    static readonly TYPE_ECHO = 'ECHO';
+    static readonly TYPE_HEARTBEAT = 'HEARTBEAT';
+    static readonly TYPE_RECONNECT = 'RECONNECT';
+    static readonly TYPE_CONNECTION_ESTABLISHED = 'CONNECTION_ESTABLISHED';
 
     // "app" types... hm... (smells too narrow...)
-    static readonly TYPE_JSONAPI = 'jsonapi';
-    static readonly TYPE_JSONAPI_UPDATE = 'jsonapi_update';
-    static readonly TYPE_JSONAPI_DELETE = 'jsonapi_delete';
+    static readonly TYPE_JSONAPI = 'JSONAPI';
+    static readonly TYPE_JSONAPI_UPDATE = 'JSONAPI_UPDATE';
+    static readonly TYPE_JSONAPI_DELETE = 'JSONAPI_DELETE';
 
     constructor(
         protected _payload: string,
