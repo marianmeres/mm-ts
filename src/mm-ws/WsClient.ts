@@ -59,7 +59,7 @@ export class WsClient extends EventEmitter {
     protected _cid;
 
     //
-    protected static _joinedRooms = new Map();
+    protected _joinedRooms = new Map();
 
     /**
      * @param _url
@@ -348,14 +348,14 @@ export class WsClient extends EventEmitter {
                 }),
                 () => {
                     // debug
-                    const isRejoin = isJoin && WsClient._joinedRooms.has(room);
+                    const isRejoin = isJoin && this._joinedRooms.has(room);
                     const joinLabel = (isRejoin ? 'RE-' : '') + 'JOINED';
                     this.log(`${this.cid} ${isJoin ? joinLabel : 'LEFT'} ROOM ${room}`);
 
                     // save (!important)
                     isJoin
-                        ? WsClient._joinedRooms.set(room, true)
-                        : WsClient._joinedRooms.delete(room);
+                        ? this._joinedRooms.set(room, true)
+                        : this._joinedRooms.delete(room);
 
                     //
                     if (typeof cb === 'function') {
@@ -387,7 +387,7 @@ export class WsClient extends EventEmitter {
      * @param cb
      */
     rejoinAllRooms(cb?: (room) => any) {
-        WsClient._joinedRooms.forEach(
+        this._joinedRooms.forEach(
             (val, key) => this.joinRoom(key, cb ? cb(key) : void 0)
         );
     }
@@ -396,7 +396,7 @@ export class WsClient extends EventEmitter {
      *
      */
     get joinedRooms() {
-        return WsClient._joinedRooms;
+        return this._joinedRooms;
     }
 
     /**
