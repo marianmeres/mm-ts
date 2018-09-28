@@ -157,7 +157,7 @@ test('true reconnect works', (done) => {
     const delay = 50;
 
     let log = [];
-    const logger = (...args) => log.push(args[2]);
+    const logger = (...args) => log.push(args[0]);
 
     ss = new ws.Server({ port: WSS_PORT }, () => {
         // server's client message handling

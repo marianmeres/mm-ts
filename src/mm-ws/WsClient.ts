@@ -116,7 +116,7 @@ export class WsClient extends EventEmitter {
      */
     log(...args) {
         if (this.debug && isFn(this.logger)) {
-            this.logger('WsClient', new Date().toISOString(), ...args);
+            this.logger(...args);
         }
     }
 
