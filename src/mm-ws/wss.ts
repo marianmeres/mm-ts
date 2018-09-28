@@ -119,8 +119,7 @@ export const createWss = (
             else if (msg.isHeartbeat) {
                 wss.emit(WsMessage.TYPE_HEARTBEAT, msg, ws, req);
                 wss.emit(`all`, msg, ws, req); // hm... chceme hearbeat aj medzi all?
-            }
-            else if (msg.isReconnect) {
+            } else if (msg.isReconnect) {
                 wss.emit(WsMessage.TYPE_RECONNECT, msg, ws, req);
                 wss.emit(`all`, msg, ws, req);
             }
@@ -197,7 +196,7 @@ export const wsSend = (
             client !== ws &&
             client.readyState === WebSocket.OPEN &&
             // target by room id (to all in the room) or client id (directly, privately to one client)
-            // or to all id room is '' (empty)
+            // or to all if room is '' (empty)
             (forceToAllRooms ||
                 client.cid === msg.room ||
                 client.rooms.has(msg.room))

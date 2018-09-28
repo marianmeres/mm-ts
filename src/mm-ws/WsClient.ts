@@ -60,11 +60,17 @@ export class WsClient extends EventEmitter {
     //
     protected _joinedRooms = new Map();
 
+    // internal flag to avoid rejoins if not needed (connection was not broken)
+    protected _rejoinNeeded = false;
+
     /**
      * @param _url
      * @param options
      */
-    constructor(protected _url: string, public readonly options?: WsClientOptions) {
+    constructor(
+        protected _url: string,
+        public readonly options?: WsClientOptions
+    ) {
         super();
         this.options = this.options || ({} as WsClientOptions);
 
@@ -110,7 +116,7 @@ export class WsClient extends EventEmitter {
      */
     log(...args) {
         if (this.debug && isFn(this.logger)) {
-            this.logger('WsClient', (new Date()).toISOString(), ...args);
+            this.logger('WsClient', new Date().toISOString(), ...args);
         }
     }
 
@@ -188,6 +194,7 @@ export class WsClient extends EventEmitter {
         this.emit(WsClient.EVENT_CLOSE, e);
 
         this._wasDisconnected = true;
+        this._rejoinNeeded = true;
 
         // just in case... hm...
         if (this._reconnectTimer) {
@@ -234,7 +241,6 @@ export class WsClient extends EventEmitter {
      * @private
      */
     _onmessage(e) {
-
         //
         const m = WsMessage.factory(e.data);
 
@@ -298,7 +304,8 @@ export class WsClient extends EventEmitter {
                 if (typeof msg !== 'string') {
                     msg = WsMessage.stringify(msg);
                 }
-                if (msg !== void 0) { // skip undefines
+                // no-op for undefined messages
+                if (msg !== void 0) {
                     this._connection.send(msg);
                     this.emit(WsClient.EVENT_SEND, msg);
                 }
@@ -336,7 +343,23 @@ export class WsClient extends EventEmitter {
      * @private
      */
     protected _roomAction(isJoin: boolean, room, cb?) {
-        if (this.isOpen()) {
+        let doRoomAction = true;
+
+        // if we're about to do the same roomAction without previous interruption
+        // we may safely skip to save potential server overhead...
+        if (
+            !this._rejoinNeeded &&
+            ((isJoin && this._joinedRooms.has(room)) ||
+                (!isJoin && !this._joinedRooms.has(room)))
+        ) {
+            doRoomAction = false;
+        }
+
+        if (!doRoomAction) {
+            this.log(`Skipping (unneeded) ${isJoin ? 'JOIN' : 'LEAVE'} for ${room}`);
+        }
+
+        if (doRoomAction && this.isOpen()) {
             this.send(
                 WsMessage.stringify({
                     type: isJoin
@@ -348,7 +371,11 @@ export class WsClient extends EventEmitter {
                     // debug
                     const isRejoin = isJoin && this._joinedRooms.has(room);
                     const joinLabel = (isRejoin ? 'RE-' : '') + 'JOINED';
-                    this.log(`${this.cid} ${isJoin ? joinLabel : 'LEFT'} ROOM ${room}`);
+                    this.log(
+                        `${this.cid} ${
+                            isJoin ? joinLabel : 'LEFT'
+                        } ROOM ${room}`
+                    );
 
                     // save (!important)
                     isJoin
@@ -383,7 +410,10 @@ export class WsClient extends EventEmitter {
      * @param cb
      */
     rejoinAllRooms(cb?) {
-        this._joinedRooms.forEach((val, key) => this.joinRoom(key, cb));
+        if (this._rejoinNeeded) {
+            this._joinedRooms.forEach((val, key) => this.joinRoom(key, cb));
+            this._rejoinNeeded = false;
+        }
     }
 
     /**

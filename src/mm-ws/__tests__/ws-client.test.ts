@@ -63,7 +63,8 @@ test('multiple same event handlers on one client', async (done) => {
 
     ss = new ws.Server({ port: WSS_PORT }, () => {
         const wsc = new WsClient(WS_URL);
-        wsc.onOpen((e) => { // wsc.on(WsClient.EVENT_OPEN, (e) => {
+        wsc.onOpen((e) => {
+            // wsc.on(WsClient.EVENT_OPEN, (e) => {
             expect(ss.clients.size).toEqual(1);
             counter++;
             // ss.close(done);
@@ -91,7 +92,7 @@ test('server to client message works', async (done) => {
             });
         });
 
-        wsc.onMessage((data) => msg += data);
+        wsc.onMessage((data) => (msg += data));
     });
 
     closeWssIf(ss, () => msg === 'abc', done);
@@ -189,10 +190,14 @@ test('true reconnect works', (done) => {
                     await mmDelay(2 * delay);
                     expect(closeCounter).toEqual(1); // no change here...
                     expect(openCounter).toEqual(2); // IMPORTANT!
-                    expect(wsc.connection.readyState).toEqual(WsClient.READYSTATE_OPEN); // IMPORTANT!
+                    expect(wsc.connection.readyState).toEqual(
+                        WsClient.READYSTATE_OPEN
+                    ); // IMPORTANT!
                     ss.close(async () => {
                         await mmDelay(5);
-                        expect(wsc.connection.readyState).toEqual(WsClient.READYSTATE_CLOSED);
+                        expect(wsc.connection.readyState).toEqual(
+                            WsClient.READYSTATE_CLOSED
+                        );
                         expect(closeCounter).toEqual(2);
                         expect(openCounter).toEqual(2);
                         assertLogIsOK();
@@ -201,17 +206,14 @@ test('true reconnect works', (done) => {
                 })();
             });
         });
-
     };
 
     const assertLogIsOK = () => {
-
-        const countLogRecord = (name) => (
+        const countLogRecord = (name) =>
             log.reduce((memo, logged) => {
-                (logged === name) && memo++;
+                logged === name && memo++;
                 return memo;
-            }, 0)
-        );
+            }, 0);
 
         // console.log(log);
         expect(countLogRecord(WsClient.EVENT_OPEN)).toEqual(2);
@@ -219,7 +221,6 @@ test('true reconnect works', (done) => {
         expect(countLogRecord(WsClient.EVENT_RECONNECT_OPEN)).toEqual(1);
         expect(countLogRecord(WsClient.EVENT_SEND)).toEqual(2);
     };
-
 });
 
 test('client `onReady` works', async (done) => {
