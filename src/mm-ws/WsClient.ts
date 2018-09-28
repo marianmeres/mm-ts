@@ -157,7 +157,8 @@ export class WsClient extends EventEmitter {
             this._wasDisconnected = false;
             reconnect = true;
 
-            // is this a good idea?
+            // is this a good idea? (can cause significant server load issues under
+            // certain circumstances)
             this.clearQueue();
 
             // notify the application and gather any context to send to the server
@@ -179,12 +180,11 @@ export class WsClient extends EventEmitter {
     }
 
     /**
-     * NOTE: every close is in this class considered as 'not clean' (network error etc...)
+     * NOTE: every close is in this package considered as 'not clean' (network error etc...)
      * @param e
      * @private
      */
     _onclose(e) {
-        // this.log('onclose', e);
         this.emit(WsClient.EVENT_CLOSE, e);
 
         this._wasDisconnected = true;
@@ -245,19 +245,19 @@ export class WsClient extends EventEmitter {
         }
         //
         else if (m.isConnectionEstablished) {
-            this._cid = m.payload; // ulozime si client id... mozno sa moze hodit
+            this._cid = m.payload; // save client id... might be usefull maybe
         }
 
         this.emit(WsClient.EVENT_MESSAGE, e.data);
     }
 
     /**
-     * override to add wildcard support
      * @param event
      * @param args
      */
     emit(event, ...args) {
         this.log(event, args);
+        // maybe emit wilcard here as well?
         return super.emit(event, ...args);
     }
 
@@ -292,18 +292,16 @@ export class WsClient extends EventEmitter {
      * @private
      */
     _flushQueue() {
-        if (
-            this._queue.length &&
-            this._connection.readyState === WsClient.READYSTATE_OPEN
-        ) {
+        if (this._queue.length && this.isOpen()) {
             for (let i = 0; i < this._queue.length; i++) {
                 let msg = this._queue[i];
                 if (typeof msg !== 'string') {
                     msg = WsMessage.stringify(msg);
                 }
-
-                this._connection.send(msg);
-                this.emit(WsClient.EVENT_SEND, msg);
+                if (msg !== void 0) { // skip undefines
+                    this._connection.send(msg);
+                    this.emit(WsClient.EVENT_SEND, msg);
+                }
             }
             this.clearQueue();
         }
@@ -358,9 +356,7 @@ export class WsClient extends EventEmitter {
                         : this._joinedRooms.delete(room);
 
                     //
-                    if (typeof cb === 'function') {
-                        cb(room, isJoin);
-                    }
+                    isFn(cb) && cb(room, isJoin);
                 }
             );
         }
@@ -401,6 +397,9 @@ export class WsClient extends EventEmitter {
      * @param cb
      */
     onReady(cb) {
+        if (!isFn(cb)) {
+            return;
+        }
         if (this.isOpen()) {
             cb();
         } else {
