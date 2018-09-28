@@ -298,6 +298,10 @@ export class WsClient extends EventEmitter {
      * @private
      */
     _flushQueue() {
+
+        // note: it might be reasonable (but risky) to inspect the queue here
+        // before actual send to remove dupes (or consider other heuristics...)
+
         if (this._queue.length && this.isOpen()) {
             for (let i = 0; i < this._queue.length; i++) {
                 let msg = this._queue[i];
@@ -359,7 +363,9 @@ export class WsClient extends EventEmitter {
             this.log(`Skipping (unneeded) ${isJoin ? 'JOIN' : 'LEAVE'} for ${room}`);
         }
 
-        if (doRoomAction && this.isOpen()) {
+        // we don't need to check for `isOpen` because messages are queued in order
+        // and will be flushed once connection becomes ready
+        if (doRoomAction) { // && this.isOpen()
             this.send(
                 WsMessage.stringify({
                     type: isJoin
