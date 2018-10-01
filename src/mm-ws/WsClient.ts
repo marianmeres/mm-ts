@@ -1,6 +1,5 @@
 import * as EventEmitter from 'eventemitter3';
 import { WsMessage, WsMessageData } from './WsMessage';
-// import { mmUid } from '../mm-string';
 
 /**
  * inspired by:
@@ -16,7 +15,7 @@ export interface WsClientOptions {
     logger?: (...args) => any | null;
     reconnectDataProvider?: () => any | null;
     retryLimit?: number;
-    // forced delay (priority over internal throthling mechanism) - nice for debugging
+    // forced delay (priority over internal throthling) - nice for debugging
     delay?: number | ((retryCounter: number) => number);
 }
 
@@ -89,7 +88,7 @@ export class WsClient extends EventEmitter {
             }
         }
 
-        // I guess these bindings are not really needed...
+        // not sure if these bindings are really needed...
         this._onopen = this._onopen.bind(this);
         this._onclose = this._onclose.bind(this);
         this._onerror = this._onerror.bind(this);
@@ -99,7 +98,7 @@ export class WsClient extends EventEmitter {
         // feature!
         this.on(WsClient.EVENT_RECONNECT_OPEN, this.rejoinAllRooms.bind(this));
 
-        // tries to connect immediatelly
+        // try to connect immediatelly
         this._connection = this._factoryConnection();
     }
 
@@ -142,7 +141,7 @@ export class WsClient extends EventEmitter {
      * @private
      */
     _factoryConnection() {
-        const conn = new WebSocket(this._url) as any;
+        const conn = new WebSocket(this._url);
         conn.onopen = this._onopen;
         conn.onclose = this._onclose;
         conn.onerror = this._onerror;
