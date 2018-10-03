@@ -4,7 +4,7 @@ export interface WsMessageData {
     id?: string;
     type?: string;
     room?: string;
-    payload?: string;
+    payload?: any;
 }
 
 /**
@@ -26,7 +26,7 @@ export class WsMessage {
     static readonly TYPE_JSONAPI_DELETE = 'JSONAPI_DELETE';
 
     constructor(
-        protected _payload: string,
+        protected _payload: any,
         protected _type: string = null, // join / leave
         protected _room: string | number = null,
         protected _id: string = null
