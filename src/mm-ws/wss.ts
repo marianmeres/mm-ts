@@ -118,7 +118,7 @@ export const createWss = (
             // heartbeat?
             else if (msg.isHeartbeat) {
                 wss.emit(WsMessage.TYPE_HEARTBEAT, msg, ws, req);
-                wss.emit(`all`, msg, ws, req); // hm... chceme hearbeat aj medzi all?
+                wss.emit(`all`, msg, ws, req); // hm... chceme heartbeat aj medzi all?
             } else if (msg.isReconnect) {
                 wss.emit(WsMessage.TYPE_RECONNECT, msg, ws, req);
                 wss.emit(`all`, msg, ws, req);
