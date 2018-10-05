@@ -420,6 +420,10 @@ export class WsClient extends EventEmitter {
         this.onReady(() => this._roomAction(true, room, cb));
     }
 
+    isJoined(room) {
+        return this._joinedRooms.has(room);
+    }
+
     /**
      * @param room
      * @param cb
