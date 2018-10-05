@@ -243,10 +243,16 @@ export class WsClient extends EventEmitter {
         //
         const m = WsMessage.factory(e.data);
 
-        // feature - server echos back id, so we can implement `onSuccess`
-        if (m.isEcho && WsClient._pendingCallbacks.has(m.payload)) {
-            WsClient._pendingCallbacks.get(m.payload)(); // call `onSuccess` handler
-            WsClient._pendingCallbacks.delete(m.payload);
+        // FEATURE - server echos back id, so we can implement `onSuccess`
+        if (
+            m.isEcho &&
+            m.payload &&
+            m.payload.id &&
+            WsClient._pendingCallbacks.has(m.payload.id)
+        ) {
+            // call `onSuccess` handler with response (if provided)
+            WsClient._pendingCallbacks.get(m.payload.id)(m.payload.response);
+            WsClient._pendingCallbacks.delete(m.payload.id);
         }
         //
         else if (m.isConnectionEstablished) {
@@ -267,15 +273,24 @@ export class WsClient extends EventEmitter {
     }
 
     /**
-     * @param data
+     * @param msg
      * @param onSuccess
      */
-    send(data, onSuccess?: () => any) {
+    send(msg: string | WsMessage, onSuccess?: (some?) => any) {
         if (isFn(onSuccess)) {
+            // IMPORTANT: if our `onSuccess` contains arguments, let's consider it
+            // as request-response kind of message and signal to server that we
+            // are expecting direct response (in the form of ECHO message with
+            // `response` key in the payload)
+            // NOTE: applicable only on WsMessage
+            if (msg instanceof WsMessage) {
+                msg.expectsResponse = onSuccess.length > 0;
+            }
+
             try {
-                let json = JSON.parse(data);
-                if (json.id) {
-                    WsClient._pendingCallbacks.set(json.id, onSuccess);
+                let id = msg instanceof WsMessage ? msg.id : JSON.parse(msg).id;
+                if (id) {
+                    WsClient._pendingCallbacks.set(id, onSuccess);
                 } else {
                     this.log(
                         'warning',
@@ -285,11 +300,12 @@ export class WsClient extends EventEmitter {
             } catch (e) {
                 this.log(
                     'warning',
-                    'Unknown message format, ignoring `onSuccess`.'
+                    'Unknown message format, ignoring `onSuccess`.',
+                    e.toString()
                 );
             }
         }
-        this._queue.push(data);
+        this._queue.push(msg instanceof WsMessage ? msg.stringify() : msg);
         this._flushQueue();
     }
 
@@ -297,7 +313,6 @@ export class WsClient extends EventEmitter {
      * @private
      */
     _flushQueue() {
-
         // note: it might be reasonable (but risky) to inspect the queue here
         // before actual send to remove dupes (or consider other heuristics...)
 
@@ -359,12 +374,15 @@ export class WsClient extends EventEmitter {
         }
 
         if (!doRoomAction) {
-            this.log(`Skipping (unneeded) ${isJoin ? 'JOIN' : 'LEAVE'} for ${room}`);
+            this.log(
+                `Skipping (unneeded) ${isJoin ? 'JOIN' : 'LEAVE'} for ${room}`
+            );
         }
 
         // we don't need to check for `isOpen` because messages are queued in order
         // and will be flushed once connection becomes ready
-        if (doRoomAction) { // && this.isOpen()
+        if (doRoomAction) {
+            // && this.isOpen()
             this.send(
                 WsMessage.stringify({
                     type: isJoin

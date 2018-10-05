@@ -131,12 +131,16 @@ export const createWss = (
 
             // always echo back (use the original message id as payload), so we can
             // implement `onSuccess` callbacks
-            ws.send(
-                WsMessage.stringify({
-                    payload: msg.id,
-                    type: WsMessage.TYPE_ECHO,
-                })
-            );
+            // UNLESS msg.expectResponse is true - in that case, leave that
+            // responsibility on the handler
+            if (!msg.expectsResponse) {
+                ws.send(
+                    WsMessage.stringify({
+                        payload: { id: msg.id },
+                        type: WsMessage.TYPE_ECHO,
+                    })
+                );
+            }
         });
 
         // https://github.com/websockets/ws/issues/1256

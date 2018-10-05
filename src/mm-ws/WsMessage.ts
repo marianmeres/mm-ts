@@ -5,6 +5,7 @@ export interface WsMessageData {
     type?: string;
     room?: string;
     payload?: any;
+    expectsResponse?: boolean;
 }
 
 /**
@@ -29,7 +30,8 @@ export class WsMessage {
         protected _payload: any,
         protected _type: string = null, // join / leave
         protected _room: string | number = null,
-        protected _id: string = null
+        protected _id: string = null,
+        public expectsResponse: boolean = void 0
     ) {
         if (!this._id) {
             this._id = mmUid();
@@ -49,14 +51,18 @@ export class WsMessage {
             parsed = data;
         }
 
-        let { payload, type, room, id } = parsed;
+        let { payload, type, room, id, expectsResponse } = parsed;
 
         // parsed ok, but still if all are undefined, consider it as unknown
-        if (![payload, type, room, id].some((v) => v !== void 0)) {
+        if (
+            ![payload, type, room, id, expectsResponse].some(
+                (v) => v !== void 0
+            )
+        ) {
             return new WsMessage(data.toString());
         }
 
-        return new WsMessage(payload, type, room, id);
+        return new WsMessage(payload, type, room, id, expectsResponse);
     }
 
     // type sugar
@@ -129,6 +135,7 @@ export class WsMessage {
             type: this.type,
             room: this.room,
             id: this.id,
+            expectsResponse: this.expectsResponse ? true : void 0,
         };
     }
 }
