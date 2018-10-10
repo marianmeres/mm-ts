@@ -1,10 +1,13 @@
 import { mmUid } from '../mm-string';
 
-export interface WsMessageData {
+export interface GenericMessageData {
     id?: string;
     type?: string;
-    room?: string;
+    room?: string; // a.k.a. namespace
     payload?: any;
+}
+
+export interface WsMessageData extends GenericMessageData{
     expectsResponse?: boolean;
 }
 
