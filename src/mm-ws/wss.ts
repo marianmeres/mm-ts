@@ -26,6 +26,8 @@ interface WssInitOptions {
 //
 const _wsDebug = (msg) => console.log(msg);
 
+const isOpen = (client: AdvancedWebSocket) => client.readyState === WebSocket.OPEN;
+
 /**
  * @param {"http".Server | number} serverOrPort
  * @param {WssInitOptions} options
@@ -75,7 +77,7 @@ export const createWss = (
 
         //
         _wsDebug(`Client ${ws.cid} connected from ${ws.ip}...`);
-        ws.send(
+        isOpen(ws) && ws.send(
             WsMessage.stringify({
                 payload: ws.cid,
                 type: WsMessage.TYPE_CONNECTION_ESTABLISHED,
@@ -134,7 +136,7 @@ export const createWss = (
             // UNLESS msg.expectResponse is true - in that case, leave that
             // responsibility on the handler
             if (!msg.expectsResponse) {
-                ws.send(
+                isOpen(ws) && ws.send(
                     WsMessage.stringify({
                         payload: { id: msg.id },
                         type: WsMessage.TYPE_ECHO,
@@ -198,7 +200,7 @@ export const wsSend = (
     wss.clients.forEach((client: AdvancedWebSocket) => {
         if (
             client !== ws &&
-            client.readyState === WebSocket.OPEN &&
+            isOpen(client) &&
             // target by room id (to all in the room) or client id (directly, privately to one client)
             // or to all if room is '' (empty)
             (forceToAllRooms ||
