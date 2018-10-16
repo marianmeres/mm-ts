@@ -76,7 +76,7 @@ export const createWss = (
         }
 
         //
-        _wsDebug(`Client ${ws.cid} connected from ${ws.ip}...`);
+        // _wsDebug(`Client ${ws.cid} connected from ${ws.ip}...`);
         isOpen(ws) && ws.send(
             WsMessage.stringify({
                 payload: ws.cid,
@@ -156,7 +156,7 @@ export const createWss = (
 
         ws.on('close', () => {
             ws.isAlive = false; // treba toto?
-            _wsDebug(`Client ${ws.cid} disconnected...`);
+            // _wsDebug(`Client ${ws.cid} disconnected...`);
         });
     });
 
