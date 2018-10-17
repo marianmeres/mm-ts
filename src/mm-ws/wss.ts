@@ -164,11 +164,13 @@ export const createWss = (
     // ping/pong PART 2
     setInterval(() => {
         wss.clients.forEach((ws: AdvancedWebSocket) => {
-            if (!ws.isAlive) {
-                return ws.terminate();
+            if (isOpen(ws)) { // adding...
+                if (!ws.isAlive) {
+                    return ws.terminate();
+                }
+                ws.isAlive = false;
+                ws.ping(null, void 0);
             }
-            ws.isAlive = false;
-            ws.ping(null, void 0);
         });
     }, options.autoReconnectInterval);
 
