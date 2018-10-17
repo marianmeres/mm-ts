@@ -312,4 +312,17 @@ export class BaseModel {
             id: null, // id is required...
         };
     }
+
+    static JSONStringify(val) {
+        const isEmptyObject = (obj) =>
+            obj && Object.keys(obj).length === 0 && obj.constructor === Object;
+
+        val = JSON.stringify(val);
+
+        if (val === void 0 || val === 'null' || val === '{}' || isEmptyObject(val)) {
+            val = null;
+        }
+
+        return val;
+    }
 }
