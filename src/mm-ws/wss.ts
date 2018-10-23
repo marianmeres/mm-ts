@@ -21,12 +21,15 @@ export interface AdvancedWebSocket extends WebSocket {
 //
 interface WssInitOptions {
     autoReconnectInterval?: number;
+    originWhitelist?: string[];
 }
 
 //
 const _wsDebug = (msg) => console.log(msg);
 
 const isOpen = (client: AdvancedWebSocket) => client.readyState === WebSocket.OPEN;
+
+const _notAllowedHostWarn = new Map();
 
 /**
  * @param {"http".Server | number} serverOrPort
@@ -63,6 +66,21 @@ export const createWss = (
 
     //
     wss.on('connection', (ws: AdvancedWebSocket, req) => {
+
+        // console.log(req.headers, req.connection.remoteAddress);
+        if (options.originWhitelist && options.originWhitelist.length) {
+            const origin = (req.headers as any).origin;
+            if (origin && -1 === options.originWhitelist.indexOf(origin)) {
+                if (!_notAllowedHostWarn.has(origin)) {
+                    _notAllowedHostWarn.set(origin, true);
+                    console.error(`Origin ${origin} not allowed. Ignoring...`);
+                }
+                ws.close();
+                return;
+            }
+        }
+
+
         // initialize client
         // 1.
         ws.cid = mmGetRandomStr({ length: 16 /*, prefix: 'ws_' */ });
