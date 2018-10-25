@@ -42,6 +42,17 @@ export class Service<TModel extends BaseModel> {
     }
 
     /**
+     * low level fetcher - to be overridden for custom needs
+     * @param pk
+     * @param assert
+     * @param debug
+     * @private
+     */
+    protected async _fetchRow(pk, assert, debug) {
+        return this.dao.fetchRow(pk, assert, debug);
+    }
+
+    /**
      * @param id
      * @param {boolean} assert
      * @param debug
@@ -52,7 +63,7 @@ export class Service<TModel extends BaseModel> {
         if (this._isDeletedColName) {
             pk = { ...pk, [this._isDeletedColName]: 0 };
         }
-        const row = await this.dao.fetchRow(pk, assert, debug);
+        const row = await this._fetchRow(pk, assert, debug);
         return row ? new this._modelCtor(row) : null;
     }
 
@@ -67,7 +78,7 @@ export class Service<TModel extends BaseModel> {
         if (this._isDeletedColName) {
             where = { ...where, [this._isDeletedColName]: 0 };
         }
-        const row = await this.dao.fetchRow(where, assert, debug);
+        const row = await this._fetchRow(where, assert, debug);
         return row ? new this._modelCtor(row) : null;
     }
 
