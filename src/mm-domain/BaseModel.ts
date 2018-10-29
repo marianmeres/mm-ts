@@ -1,4 +1,5 @@
 import isEqual from 'lodash-es/isEqual';
+import isPlainObject from 'lodash-es/isPlainObject';
 import { JSONApiData } from '../mm-util/mm-types';
 import { mmGetPrototypeChain } from '../mm-util/mm-get-prototype-chain';
 
@@ -108,7 +109,20 @@ export class BaseModel {
      * @returns {BaseModelData}
      */
     toJSONSerialized(): BaseModelData {
-        return this.toJSON();
+        let json = this.toJSON();
+
+        // NEW FEATURE: all plain object values are serialized/stringified
+        // automatically (handly for JSONB types)
+        return Object.keys(json).reduce((memo, k) => {
+            if (isPlainObject(json[k])) {
+                memo[k] = BaseModel.JSONStringify(json[k]);
+            } else {
+                memo[k] = json[k];
+            }
+            return memo;
+        }, {} as any);
+
+        // return json;
     }
 
     /**
@@ -222,8 +236,17 @@ export class BaseModel {
      * @returns {any}
      * @private
      */
-    protected _get(k, defaultValue = null) {
-        return this._data[k] === null ? defaultValue : this._data[k];
+    protected _get(k, defaultValue = null, withToJSON = false) {
+        let out = this._data[k] === null ? defaultValue : this._data[k];
+
+        if (withToJSON && out && !out.toJSON) {
+            // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON/stringify
+            // ...If the value has a toJSON() method, it's responsible to define
+            // what data will be serialized...
+            return { ...out, toJSON: () => JSON.stringify(out) };
+        }
+
+        return out;
     }
 
     /**
@@ -324,7 +347,7 @@ export class BaseModel {
 
         val = JSON.stringify(val);
 
-        if (val === void 0 || val === 'null' || val === '{}' || isEmptyObject(val)) {
+        if (val === void 0 || val === 'null' /*|| val === '{}' || isEmptyObject(val)*/) {
             val = null;
         }
 
