@@ -113,14 +113,17 @@ export class BaseModel {
 
         // NEW FEATURE: all plain object values are serialized/stringified
         // automatically (handly for JSONB types)
-        return Object.keys(json).reduce((memo, k) => {
-            if (isPlainObject(json[k])) {
-                memo[k] = BaseModel.JSONStringify(json[k]);
-            } else {
-                memo[k] = json[k];
-            }
-            return memo;
-        }, {} as any);
+        return Object.keys(json).reduce(
+            (memo, k) => {
+                if (isPlainObject(json[k])) {
+                    memo[k] = BaseModel.JSONStringify(json[k]);
+                } else {
+                    memo[k] = json[k];
+                }
+                return memo;
+            },
+            {} as any
+        );
 
         // return json;
     }
@@ -347,7 +350,10 @@ export class BaseModel {
 
         val = JSON.stringify(val);
 
-        if (val === void 0 || val === 'null' /*|| val === '{}' || isEmptyObject(val)*/) {
+        if (
+            val === void 0 ||
+            val === 'null' /*|| val === '{}' || isEmptyObject(val)*/
+        ) {
             val = null;
         }
 

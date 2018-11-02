@@ -1,13 +1,13 @@
-// import { isDate, isNaN } from 'lodash';
-import isDate from 'lodash-es/isDate';
-import isNaN from 'lodash-es/isNaN';
-
 /**
  * @param date
  * @returns {boolean}
  */
 export function mmIsValidDate(date) {
-    return isDate(date) && !isNaN(date.valueOf());
+    return (
+        date &&
+        Object.prototype.toString.call(date) === '[object Date]' &&
+        !isNaN(date)
+    );
 }
 
 /**

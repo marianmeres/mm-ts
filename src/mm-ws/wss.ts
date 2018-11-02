@@ -27,7 +27,8 @@ interface WssInitOptions {
 //
 const _wsDebug = (msg) => console.log(msg);
 
-const isOpen = (client: AdvancedWebSocket) => client.readyState === WebSocket.OPEN;
+const isOpen = (client: AdvancedWebSocket) =>
+    client.readyState === WebSocket.OPEN;
 
 const _notAllowedHostWarn = new Map();
 
@@ -66,7 +67,6 @@ export const createWss = (
 
     //
     wss.on('connection', (ws: AdvancedWebSocket, req) => {
-
         // console.log(req.headers, req.connection.remoteAddress);
         if (options.originWhitelist && options.originWhitelist.length) {
             const origin = (req.headers as any).origin;
@@ -79,7 +79,6 @@ export const createWss = (
                 return;
             }
         }
-
 
         // initialize client
         // 1.
@@ -95,17 +94,18 @@ export const createWss = (
 
         //
         // _wsDebug(`Client ${ws.cid} connected from ${ws.ip}...`);
-        isOpen(ws) && ws.send(
-            WsMessage.stringify({
-                payload: ws.cid,
-                type: WsMessage.TYPE_CONNECTION_ESTABLISHED,
-            }),
-            (err) => {
-                if (err) {
-                    console.error(err);
+        isOpen(ws) &&
+            ws.send(
+                WsMessage.stringify({
+                    payload: ws.cid,
+                    type: WsMessage.TYPE_CONNECTION_ESTABLISHED,
+                }),
+                (err) => {
+                    if (err) {
+                        console.error(err);
+                    }
                 }
-            }
-        );
+            );
 
         // ping/pong PART 1
         ws.isAlive = true;
@@ -154,12 +154,13 @@ export const createWss = (
             // UNLESS msg.expectResponse is true - in that case, leave that
             // responsibility on the handler
             if (!msg.expectsResponse) {
-                isOpen(ws) && ws.send(
-                    WsMessage.stringify({
-                        payload: { id: msg.id },
-                        type: WsMessage.TYPE_ECHO,
-                    })
-                );
+                isOpen(ws) &&
+                    ws.send(
+                        WsMessage.stringify({
+                            payload: { id: msg.id },
+                            type: WsMessage.TYPE_ECHO,
+                        })
+                    );
             }
         });
 
@@ -182,7 +183,8 @@ export const createWss = (
     // ping/pong PART 2
     setInterval(() => {
         wss.clients.forEach((ws: AdvancedWebSocket) => {
-            if (isOpen(ws)) { // adding...
+            if (isOpen(ws)) {
+                // adding...
                 if (!ws.isAlive) {
                     return ws.terminate();
                 }

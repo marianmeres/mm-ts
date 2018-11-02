@@ -7,7 +7,7 @@ export interface GenericMessageData {
     payload?: any;
 }
 
-export interface WsMessageData extends GenericMessageData{
+export interface WsMessageData extends GenericMessageData {
     expectsResponse?: boolean;
 }
 
