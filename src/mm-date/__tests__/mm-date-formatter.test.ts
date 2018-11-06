@@ -221,3 +221,16 @@ test('relative: s custom translation', () => {
     expect({ type, value }).toEqual({ type: 's', value: 40 });
     expect(localized).toEqual('práve teraz');
 });
+
+
+//
+test('relative: localize test', () => {
+    let { type, value, details, isPast, localized } = MMDateFormatter.from(
+        new Date('2000-01-01 01:00:00'),
+        new Date('2000-01-01 01:01:50'),
+        'sk'
+    );
+    // console.log(details);
+    // expect({ type, value }).toEqual({ type: 'm', value: 1 });
+    expect(localized).toEqual('pred 2 minútami');
+});
