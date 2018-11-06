@@ -34,6 +34,7 @@ export interface MMDateFormatterI18N {
 }
 
 export class MMDateFormatter {
+    
     // prettier-ignore
     static i18n: MMDateFormatterI18N = {
         en: {
@@ -259,6 +260,10 @@ export class MMDateFormatter {
         });
     }
 
+    /**
+     * @param deltaSeconds
+     * @private
+     */
     protected static _diff(deltaSeconds: number) {
         const SEC_PER_DAY = 86400; // 60 * 60 * 24;
 
@@ -328,10 +333,20 @@ export class MMDateFormatter {
         return out('s', seconds);
     }
 
+    /**
+     * @param date
+     * @param locale
+     */
     static fromNow(date: Date, locale = 'en') {
         return MMDateFormatter.from(date, new Date(), locale);
     }
 
+    /**
+     * @param date
+     * @param compareTo
+     * @param locale
+     * @param i18n
+     */
     static from(date: Date, compareTo: Date, locale = 'en', i18n?: Partial<MMDateFormatterI18NLocaleRelative>) {
         if (!mmIsValidDate(date) || !mmIsValidDate(compareTo)) {
             throw new Error(`Invalid date(s)`);
