@@ -348,8 +348,12 @@ export class MMDateFormatter {
      * @param i18n
      */
     static from(date: Date, compareTo: Date, locale = 'en', i18n?: Partial<MMDateFormatterI18NLocaleRelative>) {
-        if (!mmIsValidDate(date) || !mmIsValidDate(compareTo)) {
-            throw new Error(`Invalid date(s)`);
+        if (!mmIsValidDate(date)) {
+            throw new Error(`Invalid 'date' date`);
+        }
+
+        if (!mmIsValidDate(compareTo)) {
+            throw new Error(`Invalid 'compareTo' date`);
         }
 
         if (!MMDateFormatter.i18n[locale]) {
