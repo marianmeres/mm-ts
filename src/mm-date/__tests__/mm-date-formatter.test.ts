@@ -132,9 +132,10 @@ test('relative: MM (46 days to 10 months)', () => {
 test('relative: M (26 to 45 days)', () => {
     let { type, value, details, isPast, localized } = MMDateFormatter.from(
         new Date('2000-01-01'),
-        new Date('2000-02-23'),
+        new Date('2000-01-27'),
         'sk'
     );
+    // console.log(details);
     expect({ type, value }).toEqual({ type: 'M', value: 1 });
     expect(localized).toEqual('pred mesiacom');
 });

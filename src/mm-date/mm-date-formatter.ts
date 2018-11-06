@@ -261,6 +261,7 @@ export class MMDateFormatter {
 
     protected static _diff(deltaSeconds: number) {
         const SEC_PER_DAY = 86400; // 60 * 60 * 24;
+
         //
         const seconds = deltaSeconds % 60;
         const minutes = Math.floor(deltaSeconds / 60);
@@ -276,46 +277,51 @@ export class MMDateFormatter {
             details: { years, months, days, hours, minutes, seconds },
         });
 
+        const min2sec = (_min) => _min * 60;
+        const hours2sec = (_hours) => _hours * 60 * 60;
+        const days2sec = (_days) => _days * SEC_PER_DAY;
+        const months2sec = (_months) => days2sec(_months * 30);
+
         // https://github.com/iamkun/dayjs/blob/master/docs/en/Plugin.md#relativetime
 
         // 18 months+	yy	2 years ago ... 20 years ago
-        if (months >= 18) {
+        if (deltaSeconds >= months2sec(18)) {
             return out('yy', years);
         }
         // 11 months to 17 months	y	a year ago
-        else if (months >= 11) {
+        else if (deltaSeconds >= months2sec(11)) {
             return out('y', 1);
         }
         // 46 days to 10 months	MM	2 months ago ... 10 months ago
-        else if (months > 1 && days >= 46) {
+        else if (deltaSeconds >= days2sec(46)) {
             return out('MM', months);
         }
         // 26 to 45 days	M	a month ago
-        else if (days >= 26) {
+        else if (deltaSeconds >= days2sec(26)) {
             return out('M', 1);
         }
         // 36 hours to 25 days	dd	2 days ago ... 25 days ago
-        else if (days > 1 && hours >= 36) {
+        else if (deltaSeconds >= hours2sec(36)) {
             return out('dd', days);
         }
         // 22 to 35 hours	d	a day ago
-        else if (hours >= 22) {
+        else if (deltaSeconds >= hours2sec(22)) {
             return out('d', 1);
         }
         // 90 minutes to 21 hours	hh	2 hours ago ... 21 hours ago
-        else if (minutes >= 90) {
+        else if (deltaSeconds >= min2sec(90)) {
             return out('hh', hours);
         }
         // 45 to 89 minutes	h	an hour ago
-        else if (minutes >= 45) {
+        else if (deltaSeconds >= min2sec(45)) {
             return out('h', 1);
         }
         // 90 seconds to 44 minutes	mm	2 minutes ago ... 44 minutes ago
-        else if (minutes > 1 || seconds >= 90) {
+        else if (deltaSeconds >= 90) {
             return out('mm', minutes);
         }
         // 45 to 89 seconds	m	a minute ago
-        else if (seconds >= 45) {
+        else if (deltaSeconds >= 45) {
             return out('m', 1);
         }
         // 0 to 44 seconds	s	a few seconds ago
