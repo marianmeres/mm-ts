@@ -34,7 +34,7 @@ export interface MMDateFormatterI18N {
 }
 
 export class MMDateFormatter {
-    
+
     // prettier-ignore
     static i18n: MMDateFormatterI18N = {
         en: {
