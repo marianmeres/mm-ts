@@ -235,8 +235,8 @@ export class BaseModel {
     /**
      * wrapper on top of _data, called by getters
      * @param k
-     * @param {any} defaultValue
-     * @returns {any}
+     * @param defaultValue
+     * @param withToJSON
      * @private
      */
     protected _get(k, defaultValue = null, withToJSON = false) {
