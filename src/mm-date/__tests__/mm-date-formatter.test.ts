@@ -215,13 +215,12 @@ test('relative: s custom translation', () => {
         new Date('2000-01-01 01:00:00'),
         'sk',
         {
-            s: (v, p) => 'práve teraz'
+            s: (v, p) => 'práve teraz',
         }
     );
     expect({ type, value }).toEqual({ type: 's', value: 40 });
     expect(localized).toEqual('práve teraz');
 });
-
 
 //
 test('relative: localize test', () => {

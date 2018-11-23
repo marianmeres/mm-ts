@@ -11,6 +11,7 @@ export const _sqlUtilTestsAll = {
                 {
                     pg: /^"foo"\s*IS\s+NULL$/,
                     mysql: /^`foo`\s*IS\s+NULL$/,
+                    sqlite: /^"foo"\s*IS\s+NULL$/,
                 },
             ],
             [
@@ -18,6 +19,7 @@ export const _sqlUtilTestsAll = {
                 {
                     pg: /^"foo"\s*IS\s+NULL$/,
                     mysql: /^`foo`\s*IS\s+NULL$/,
+                    sqlite: /^"foo"\s*IS\s+NULL$/,
                 },
             ],
             [
@@ -25,6 +27,7 @@ export const _sqlUtilTestsAll = {
                 {
                     pg: /^"foo"\s*IS\s+NOT\s+NULL$/,
                     mysql: /^`foo`\s*IS\s+NOT\s+NULL$/,
+                    sqlite: /^"foo"\s*IS\s+NOT\s+NULL$/,
                 },
             ],
             [
@@ -32,6 +35,7 @@ export const _sqlUtilTestsAll = {
                 {
                     pg: /^"foo"\s*=\s*'foo \+ 1'$/,
                     mysql: /^`foo`\s*=\s*'foo \+ 1'$/,
+                    sqlite: /^"foo"\s*=\s*'foo \+ 1'$/,
                 },
             ],
             [
@@ -39,6 +43,7 @@ export const _sqlUtilTestsAll = {
                 {
                     pg: /^"foo"\s*=\s*'CUSTOM_FUNCTION\(\)'$/,
                     mysql: /^`foo`\s*=\s*'CUSTOM_FUNCTION\(\)'$/,
+                    sqlite: /^"foo"\s*=\s*'CUSTOM_FUNCTION\(\)'$/,
                 },
             ],
             [
@@ -46,6 +51,7 @@ export const _sqlUtilTestsAll = {
                 {
                     pg: /^"foo"\s*=\s*'123'$/,
                     mysql: /^`foo`\s*=\s*123$/,
+                    sqlite: /^"foo"\s*=\s*'123'$/,
                 },
             ],
             [
@@ -53,6 +59,7 @@ export const _sqlUtilTestsAll = {
                 {
                     pg: /^"foo"\s*=\s*'bar'$/,
                     mysql: /^`foo`\s*=\s*'bar'$/,
+                    sqlite: /^"foo"\s*=\s*'bar'$/,
                 },
             ],
             [
@@ -60,6 +67,7 @@ export const _sqlUtilTestsAll = {
                 {
                     pg: /^"foo"\s*>\s*'bar'$/,
                     mysql: /^`foo`\s*>\s*'bar'$/,
+                    sqlite: /^"foo"\s*>\s*'bar'$/,
                 },
             ],
             [
@@ -67,6 +75,7 @@ export const _sqlUtilTestsAll = {
                 {
                     pg: /^"foo"\s*<=\s*'bar'$/,
                     mysql: /^`foo`\s*<=\s*'bar'$/,
+                    sqlite: /^"foo"\s*<=\s*'bar'$/,
                 },
             ],
             [
@@ -74,6 +83,7 @@ export const _sqlUtilTestsAll = {
                 {
                     pg: /^"foo"\s*<>\s*'bar'$/,
                     mysql: /^`foo`\s*<>\s*'bar'$/,
+                    sqlite: /^"foo"\s*<>\s*'bar'$/,
                 },
             ],
             [
@@ -81,6 +91,7 @@ export const _sqlUtilTestsAll = {
                 {
                     pg: /^"foo"\s*ILIKE\s*'bar'$/,
                     mysql: /^`foo`\s*LIKE\s*'bar'$/,
+                    sqlite: /^"foo"\s*LIKE\s*'bar'$/,
                 },
             ],
             [
@@ -88,6 +99,7 @@ export const _sqlUtilTestsAll = {
                 {
                     pg: /^"foo"\s*NOT ILIKE\s*'bar'$/,
                     mysql: /^`foo`\s*NOT LIKE\s*'bar'$/,
+                    sqlite: /^"foo"\s*NOT LIKE\s*'bar'$/,
                 },
             ],
             [
@@ -95,6 +107,7 @@ export const _sqlUtilTestsAll = {
                 {
                     pg: /^"foo"\s*IN\s*\('bar',\s*'baz'\)$/,
                     mysql: /^`foo`\s*IN\s*\('bar',\s*'baz'\)$/,
+                    sqlite: /^"foo"\s*IN\s*\('bar',\s*'baz'\)$/,
                 },
             ],
             [
@@ -102,6 +115,7 @@ export const _sqlUtilTestsAll = {
                 {
                     pg: /^"foo"\s*NOT\s*IN\s*\('bar',\s*'baz'\)$/,
                     mysql: /^`foo`\s*NOT\s*IN\s*\('bar',\s*'baz'\)$/,
+                    sqlite: /^"foo"\s*NOT\s*IN\s*\('bar',\s*'baz'\)$/,
                 },
             ],
             [
@@ -109,6 +123,7 @@ export const _sqlUtilTestsAll = {
                 {
                     pg: /^"foo"\s*=\s*'bar'\s*AND\s*"baz"\s*=\s*'bat'$/,
                     mysql: /^`foo`\s*=\s*'bar'\s*AND\s*`baz`\s*=\s*'bat'$/,
+                    sqlite: /^"foo"\s*=\s*'bar'\s*AND\s*"baz"\s*=\s*'bat'$/,
                 },
             ],
             [
@@ -116,6 +131,7 @@ export const _sqlUtilTestsAll = {
                 {
                     pg: /^"foo"\s*=\s*'bar'\s*AND\s*"baz"\s*NOT\s*IN\s*\('bat',\s*'hey'\)$/,
                     mysql: /^`foo`\s*=\s*'bar'\s*AND\s*`baz`\s*NOT\s*IN\s*\('bat',\s*'hey'\)$/,
+                    sqlite: /^"foo"\s*=\s*'bar'\s*AND\s*"baz"\s*NOT\s*IN\s*\('bat',\s*'hey'\)$/,
                 },
             ],
         ];
@@ -144,10 +160,12 @@ export const _sqlUtilTestsAll = {
             'some~': {
                 pg: 'ILIKE',
                 mysql: 'LIKE',
+                sqlite: 'LIKE',
             },
             'some!~': {
                 pg: 'NOT ILIKE',
                 mysql: 'NOT LIKE',
+                sqlite: 'NOT LIKE',
             },
         };
 
@@ -223,7 +241,7 @@ export const _sqlUtilTestsAll = {
         if (db.isPg()) {
             expect(res.label).toEqual('hovno'); // inserted row
         } else {
-            expect(res).toEqual(1); // affected rows
+            expect(res).toEqual(3); // last insert id
         }
 
         const row = await db.fetchRow('*', 'foo', { id: 3 });
@@ -239,7 +257,7 @@ export const _sqlUtilTestsAll = {
         if (db.isPg()) {
             expect(res.label).toEqual(null); // inserted row
         } else {
-            expect(res).toEqual(1); // affected rows
+            expect(res).toEqual(3); // last insert id
         }
 
         const row = await db.fetchRow('*', 'foo', { id: 3 });
@@ -252,8 +270,10 @@ export const _sqlUtilTestsAll = {
 
         if (db.isPg()) {
             expect(res.label).toEqual('hovno'); // inserted row
-        } else {
+        } else if (db.isMysql()) {
             expect(res).toEqual(1); // affected rows
+        } else {
+            expect(res).toEqual(null); //
         }
 
         const row = await db.fetchRow('*', 'foo', { id: 1 });
@@ -268,8 +288,10 @@ export const _sqlUtilTestsAll = {
 
         if (db.isPg()) {
             expect(res.label).toEqual(null); // inserted row
-        } else {
+        } else if (db.isMysql()) {
             expect(res).toEqual(1); // affected rows
+        } else {
+            expect(res).toEqual(null); //
         }
 
         const row = await db.fetchRow('*', 'foo', { id: 1 });

@@ -1,12 +1,15 @@
 import * as _mysql from 'mysql';
 import * as _pg from 'pg';
 import * as util from 'util';
+import * as sqlite3 from 'sqlite3';
+import * as genericPool from 'generic-pool';
+import { DbConfig } from '../../test-utils/misc';
 
 export class SqlUtilHelper {
     /**
      * @param config
      */
-    static factoryMysqlDriverProxy(config) {
+    static factoryMysqlDriverProxy(config: DbConfig) {
         const mysqlPool = _mysql.createPool(
             Object.assign({}, config as any, {
                 // force same behavior as pg
@@ -81,7 +84,7 @@ export class SqlUtilHelper {
     /**
      * @param config
      */
-    static factoryPgDriverProxy(config) {
+    static factoryPgDriverProxy(config: DbConfig) {
         const { Pool } = _pg;
         const pgPool = new Pool(config);
         pgPool.on('error', (err, _client) =>
@@ -117,6 +120,111 @@ export class SqlUtilHelper {
         // prettier-ignore
         return {
             driver: 'pg', query, client, clientRelease, config, poolEnd, raw: _pg,
+        };
+    }
+
+    /**
+     * @param config
+     */
+    static factorySqliteDriverProxy(config: DbConfig) {
+        const log = (msg) => (config.logger ? config.logger(msg) : null);
+
+        const _poolFactory = {
+            create: (): Promise<sqlite3.Database> => {
+                return new Promise((resolve, reject) => {
+                    let _client = new (sqlite3.verbose()).Database(
+                        config.database,
+                        (err) => {
+                            err && reject(err);
+                        }
+                    );
+                    _client.once('open', () => {
+                        log(`sqlite: open ${config.database}`);
+                        resolve(_client);
+                    });
+                    _client.once('close', () =>
+                        log(`sqlite: close ${config.database}`)
+                    );
+                    // _client.on('error', (e) => log(`sqlite: error ${e}`));
+                });
+            },
+            destroy: (_client: sqlite3.Database) => {
+                return new Promise((resolve, reject) => {
+                    _client.close((err) => (err ? reject(err) : resolve()));
+                });
+            },
+        };
+
+        // intentionally just size 1... (reported issues)
+        const _myPool = genericPool.createPool(_poolFactory as any, {
+            min: 0,
+            max: 1,
+        });
+
+        const _clientQuery = (_client: sqlite3.Database, text, params) => {
+            return new Promise((resolve, reject) => {
+                _client.serialize(() => {
+                    _client.all(text, params, async (err, rows) => {
+                        if (err) {
+                            return reject(err);
+                        }
+                        log(`sqlite: query finished, releasing client`);
+                        await _myPool.release(_client);
+                        resolve(rows);
+                    });
+                });
+            });
+        };
+
+        const query = async (text, params) => {
+            return new Promise((resolve, reject) => {
+                (_myPool as any)
+                    .acquire()
+                    .then((_client: sqlite3.Database) => {
+                        log(`sqlite: client acquired (query)`);
+                        return resolve(_clientQuery(_client, text, params));
+                    })
+                    .catch(reject);
+            });
+        };
+
+        const client = async () => {
+            return new Promise((resolve, reject) => {
+                (_myPool as any)
+                    .acquire()
+                    .then((_client: sqlite3.Database) => {
+                        log(`sqlite: client acquired (client)`);
+
+                        // uff... monkey patch so we have normalized api across drivers...
+                        (_client as any).query = async (text, params) =>
+                            _clientQuery(_client, text, params);
+
+                        resolve(_client);
+                    })
+                    .catch(reject);
+            });
+        };
+
+        const clientRelease = async (_client) => {
+            await _myPool.release(true);
+            _client = null;
+        };
+
+        const poolEnd = async () => {
+            return new Promise((resolve, reject) => {
+                (_myPool as any)
+                    .drain()
+                    .then(async () => {
+                        await _myPool.clear();
+                        resolve();
+                    })
+                    .catch(reject);
+            });
+        };
+
+        // prettier-ignore
+        return {
+            driver: 'sqlite', config, query, client, clientRelease, poolEnd, raw: sqlite3,
         };
     }
 }

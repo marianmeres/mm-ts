@@ -27,7 +27,7 @@ export class SqlUtil {
      * @param db
      */
     constructor(protected _dialect: string, db?) {
-        if (!this.isPg() && !this.isMysql()) {
+        if (!this.isPg() && !this.isMysql() && !this.isSqlite()) {
             throw new Error(`Dialect ${this._dialect} not (yet) supported.`);
         }
         if (db) {
@@ -73,6 +73,13 @@ export class SqlUtil {
     }
 
     /**
+     * @param driverProxy
+     */
+    static sqlite(driverProxy?) {
+        return new SqlUtil('sqlite', driverProxy);
+    }
+
+    /**
      * @returns {boolean}
      */
     isPg() {
@@ -84,6 +91,13 @@ export class SqlUtil {
      */
     isMysql() {
         return SqlUtil.RGX_MYSQL.test(this._dialect);
+    }
+
+    /**
+     *
+     */
+    isSqlite() {
+        return SqlUtil.RGX_SQLITE.test(this._dialect);
     }
 
     /**
@@ -303,6 +317,25 @@ export class SqlUtil {
     }
 
     /**
+     * @param val
+     * @private
+     */
+    protected _qvSqlite(val) {
+        if (null === val || val === void 0) {
+            return 'NULL';
+        }
+
+        // opnionated: Dates are converted to ISO
+        if (_.isDate(val)) {
+            val = val.toISOString();
+        }
+
+        val = `${val}`;
+        val = val.replace(/'/g, `''`);
+        return `'${val}'`;
+    }
+
+    /**
      * "qv" = quote value
      * @param val
      * @returns {string}
@@ -313,6 +346,9 @@ export class SqlUtil {
         }
         if (this.isMysql()) {
             return this._qvMysql(val);
+        }
+        if (this.isSqlite()) {
+            return this._qvSqlite(val);
         }
         throw new Error('Not supported');
     }
@@ -338,6 +374,14 @@ export class SqlUtil {
     }
 
     /**
+     * @param id
+     * @private
+     */
+    protected _qiSqlite(id) {
+        return this._qiPg(id);
+    }
+
+    /**
      * "qi" = quote identifier
      * @param val
      * @returns {string}
@@ -348,6 +392,9 @@ export class SqlUtil {
         }
         if (this.isMysql()) {
             return this._qiMysql(val);
+        }
+        if (this.isSqlite()) {
+            return this._qiSqlite(val);
         }
         throw new Error('Not supported');
     }
@@ -513,16 +560,18 @@ export class SqlUtil {
 
         // MYSQL: return affected rows count
         res = await this.query(sql, [], debug);
-        if (this.isMysql()) {
-            return res.affectedRows;
-        }
 
+        // if (this.isMysql()) {
+        //     return res.affectedRows;
+        // }
+        //
         // if (this.isSqlite()) {
-        //     // to do
+        // hm...
+        return this.lastInsertId();
         // }
 
         // should not be reached...
-        return null;
+        // return null;
     }
 
     /**
@@ -638,8 +687,9 @@ export class SqlUtil {
             return parseInt(rows[0].lid, 10);
         }
         // sqlite
-        else {
-            // to do
+        else if (this.isSqlite()) {
+            let rows = await this.query(`SELECT last_insert_rowid() AS lid;`);
+            return parseInt(rows[0].lid, 10);
         }
 
         return null;

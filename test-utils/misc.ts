@@ -7,6 +7,7 @@ export interface DbConfig {
     password?: string;
     database?: string;
     port?: string | number;
+    logger?: (msg) => void;
 }
 
 export interface PgDbConfig extends DbConfig {

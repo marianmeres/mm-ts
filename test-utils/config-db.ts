@@ -16,3 +16,7 @@ export const configPg = {
     database: process.env.MM_TS_TESTING__DB_PG_DATABASE,
     port: process.env.MM_TS_TESTING__DB_PG_PORT,
 };
+
+export const configSqlite = {
+    database: process.env.MM_TS_TESTING__DB_SQLITE_DATABASE,
+};

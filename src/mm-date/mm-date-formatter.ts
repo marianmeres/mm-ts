@@ -34,7 +34,6 @@ export interface MMDateFormatterI18N {
 }
 
 export class MMDateFormatter {
-
     // prettier-ignore
     static i18n: MMDateFormatterI18N = {
         en: {
@@ -347,7 +346,12 @@ export class MMDateFormatter {
      * @param locale
      * @param i18n
      */
-    static from(date: Date, compareTo: Date, locale = 'en', i18n?: Partial<MMDateFormatterI18NLocaleRelative>) {
+    static from(
+        date: Date,
+        compareTo: Date,
+        locale = 'en',
+        i18n?: Partial<MMDateFormatterI18NLocaleRelative>
+    ) {
         if (!mmIsValidDate(date)) {
             throw new Error(`Invalid 'date' date`);
         }
