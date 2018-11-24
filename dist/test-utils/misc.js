@@ -1,0 +1,41 @@
+"use strict";
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const init_1 = require("./init");
+exports.testSuiteFactorySqlUtilDialectBased = (db, testsAll, shouldSkipResolver) => {
+    let testsFactoryMap = Object.keys(testsAll);
+    describe(db.dialect, () => {
+        beforeEach(() => __awaiter(this, void 0, void 0, function* () { return (shouldSkipResolver() ? void 0 : init_1._initDb(db)); }));
+        for (let i = 0; i < testsFactoryMap.length; i++) {
+            let key = testsFactoryMap[i];
+            let testFactory = testsAll[key];
+            let testFn = () => __awaiter(this, void 0, void 0, function* () {
+                if (!shouldSkipResolver()) {
+                    yield testFactory(db);
+                }
+            });
+            if (shouldSkipResolver()) {
+                key = `skip.${key}`;
+            }
+            // skip
+            if (/^skip\./i.test(key)) {
+                test.skip(key, testFn);
+            }
+            // only
+            else if (/^only\./i.test(key)) {
+                test.only(key, testFn);
+            }
+            // normal
+            else {
+                test(key, testFn);
+            }
+        }
+    });
+};

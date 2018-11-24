@@ -48,6 +48,8 @@
     "ws": "^6.0.0"
   },
   "scripts": {
+    "clean": "rm -rf dist/*",
+    "build": "npm run clean && tsc",
     "test": "NODE_ENV=testing jest --watch --runInBand",
     "tslint": "tslint -c tslint.json -p tsconfig.json --force",
     "watch:tslint": "onchange 'src/**/*.*' --initial -- npm run tslint",
