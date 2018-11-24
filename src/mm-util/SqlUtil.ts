@@ -23,29 +23,35 @@ export class SqlUtil {
     protected _db;
 
     /**
-     * As readonly memo of what was initialized... for debugging purposes mainly
+     * lazy initiate just once helper flag
      */
-    readonly initSqls: string[];
+    protected _initiated = false;
 
     /**
      * @param _dialect
      * @param db
      * @param initSqls
      */
-    constructor(protected _dialect: string, db?, initSqls?: string[]) {
+    constructor(protected _dialect: string, db?, public readonly initSqls?: string[]) {
         if (!this.isPg() && !this.isMysql() && !this.isSqlite()) {
             throw new Error(`Dialect ${this._dialect} not (yet) supported.`);
         }
         if (db) {
             this.db = db;
-            if (initSqls && Array.isArray(initSqls)) {
-                this.initSqls = initSqls.filter((v) => v.trim() !== '');
-                // note: this async is just for the init sqls to process in order
-                (async () => {
-                    for (let sql of initSqls) {
-                        await this.db.query(sql);
-                    }
-                })();
+        }
+    }
+
+    /**
+     * @private
+     */
+    async _lazyInitOnce() {
+        if (!this._initiated) {
+            this._initiated = true;
+            if (this.initSqls && Array.isArray(this.initSqls)) {
+                let nonEmpty = this.initSqls.filter((v) => v.trim() !== '');
+                for (let sql of nonEmpty) {
+                    await this.query(sql);
+                }
             }
         }
     }
@@ -423,6 +429,7 @@ export class SqlUtil {
      * @returns {Promise<void>}
      */
     async query(query, params?, debug = false) {
+        await this._lazyInitOnce();
         debug && console.log('QUERY:', query, '\nPARAMS:', params);
         return this.db.query(query, params ? params : []);
     }

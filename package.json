@@ -75,6 +75,9 @@
       "<rootDir>/dist/"
     ],
     "globals": {
+      "ts-jest": {
+        "diagnostics": false
+      },
       "__TESTING__": true
     }
   },

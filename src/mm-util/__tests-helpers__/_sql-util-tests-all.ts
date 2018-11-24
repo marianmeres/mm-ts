@@ -333,15 +333,5 @@ export const _sqlUtilTestsAll = {
         expect(lid).toEqual(4);
     },
 
-    '`initSqls` works': async (db: SqlUtil) => {
-        if (!db.isSqlite()) {
-            return;
-        }
-        let res = await db.query('PRAGMA foreign_keys');
-
-        expect(res[0].foreign_keys).toEqual(1);
-        expect(db.initSqls.some((v) => /pragma foreign_keys/i.test(v))).toBeTruthy();
-    }
-
     // 'foo': async (db: SqlUtil) => {},
 };
