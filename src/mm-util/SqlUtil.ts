@@ -23,15 +23,30 @@ export class SqlUtil {
     protected _db;
 
     /**
-     * @param {string} _dialect
-     * @param db
+     * As readonly memo of what was initialized... for debugging purposes mainly
      */
-    constructor(protected _dialect: string, db?) {
+    readonly initSqls: string[];
+
+    /**
+     * @param _dialect
+     * @param db
+     * @param initSqls
+     */
+    constructor(protected _dialect: string, db?, initSqls?: string[]) {
         if (!this.isPg() && !this.isMysql() && !this.isSqlite()) {
             throw new Error(`Dialect ${this._dialect} not (yet) supported.`);
         }
         if (db) {
             this.db = db;
+            if (initSqls && Array.isArray(initSqls)) {
+                this.initSqls = initSqls.filter((v) => v.trim() !== '');
+                // note: this async is just for the init sqls to process in order
+                (async () => {
+                    for (let sql of initSqls) {
+                        await this.db.query(sql);
+                    }
+                })();
+            }
         }
     }
 
@@ -57,26 +72,27 @@ export class SqlUtil {
     }
 
     /**
-     * factory
-     * @returns {SqlUtil}
+     * @param driverProxy
+     * @param initSqls
      */
-    static pg(driverProxy?) {
-        return new SqlUtil('pg', driverProxy);
+    static pg(driverProxy?, initSqls?: string[]) {
+        return new SqlUtil('pg', driverProxy, initSqls);
     }
 
     /**
      * @param driverProxy
-     * @returns {SqlUtil}
+     * @param initSqls
      */
-    static mysql(driverProxy?) {
-        return new SqlUtil('mysql', driverProxy);
+    static mysql(driverProxy?, initSqls?: string[]) {
+        return new SqlUtil('mysql', driverProxy, initSqls);
     }
 
     /**
      * @param driverProxy
+     * @param initSqls
      */
-    static sqlite(driverProxy?) {
-        return new SqlUtil('sqlite', driverProxy);
+    static sqlite(driverProxy?, initSqls?: string[]) {
+        return new SqlUtil('sqlite', driverProxy, initSqls);
     }
 
     /**

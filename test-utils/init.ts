@@ -9,7 +9,22 @@ const _assertExists = (file) => {
     }
 };
 
-export async function _importData(DATA_DIR, db) {
+/**
+ * WARNING: NAIVE AND INSECURE FOR USERLAND INPUT
+ * @param sql
+ * @private
+ */
+export const _splitAsMultipleStatements = (sql: string) => {
+    return `${sql}`.split(';').filter((v) => v.trim() !== '');
+};
+
+export const _queryMultipleStatements = async (sqls: string[], db: SqlUtil, debug?) => {
+    for (let sql of sqls) {
+        await db.query(sql, void 0, debug);
+    }
+};
+
+export async function _importData(DATA_DIR, db: SqlUtil) {
     _assertExists(DATA_DIR);
     const sqlFile = path.join(DATA_DIR, `testing.sql`); // hard
 
@@ -17,17 +32,8 @@ export async function _importData(DATA_DIR, db) {
         let sql = fs.readFileSync(sqlFile).toString();
 
         if (db.isSqlite()) {
-            // lebo sqlite nepodporuje multiplestatements
-            // NOTE: NAIVE + INSECURE
-            sql = sql.split(';') as any;
-            for (let _sql of sql) {
-                if (_sql.trim() !== '') {
-                    await db.query(_sql);
-                }
-            }
-        }
-        //
-        else {
+            await _queryMultipleStatements(_splitAsMultipleStatements(sql), db);
+        } else {
             return db.query(sql);
         }
     }
@@ -42,27 +48,15 @@ export const _initDb = async (db: SqlUtil, debug?, withData = true) => {
     );
     _assertExists(SCHEMA_DIR);
 
-    const sqlSchema = getSqlSchema(SCHEMA_DIR);
+    const sql = getSqlSchema(SCHEMA_DIR);
     // console.log(sqlSchema);
 
     try {
         // import schema
         if (db.isSqlite()) {
-            // lebo sqlite nepodporuje multiplestatements
-            // toto je hack... ale mam za to, tento init je safe lebo data
-            // su pod kontrolou
-            // NOTE: NAIVE + INSECURE
-            let sqls = sqlSchema.split(';');
-            for (let sql of sqls) {
-                if (sql.trim() !== '') {
-                    // console.log(sql.replace(/\s\s*/g, ' '));
-                    await db.query(sql, void 0, debug);
-                }
-            }
-        }
-        //
-        else {
-            await db.query(sqlSchema, void 0, debug);
+            await _queryMultipleStatements(_splitAsMultipleStatements(sql), db);
+        } else {
+            await db.query(sql, void 0, debug);
         }
 
         if (withData) {

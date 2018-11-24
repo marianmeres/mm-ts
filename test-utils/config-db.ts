@@ -19,4 +19,7 @@ export const configPg = {
 
 export const configSqlite = {
     database: process.env.MM_TS_TESTING__DB_SQLITE_DATABASE,
+    initSqls: [
+        'PRAGMA foreign_keys = ON'
+    ]
 };

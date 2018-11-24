@@ -129,37 +129,39 @@ export class SqlUtilHelper {
     static factorySqliteDriverProxy(config: DbConfig) {
         const log = (msg) => (config.logger ? config.logger(msg) : null);
 
-        const _poolFactory = {
-            create: (): Promise<sqlite3.Database> => {
-                return new Promise((resolve, reject) => {
-                    let _client = new (sqlite3.verbose()).Database(
-                        config.database,
-                        (err) => {
-                            err && reject(err);
-                        }
-                    );
-                    _client.once('open', () => {
-                        log(`sqlite: open ${config.database}`);
-                        resolve(_client);
+        // create pool so we have similar interface with other drivers
+        const _myPool = genericPool.createPool(
+            {
+                create: (): Promise<sqlite3.Database> => {
+                    return new Promise((resolve, reject) => {
+                        let _client = new (sqlite3.verbose()).Database(
+                            config.database,
+                            (err) => {
+                                err && reject(err);
+                            }
+                        );
+                        _client.once('open', () => {
+                            log(`sqlite: open ${config.database}`);
+                            resolve(_client);
+                        });
+                        _client.once('close', () =>
+                            log(`sqlite: close ${config.database}`)
+                        );
+                        // _client.on('error', (e) => log(`sqlite: error ${e}`));
                     });
-                    _client.once('close', () =>
-                        log(`sqlite: close ${config.database}`)
-                    );
-                    // _client.on('error', (e) => log(`sqlite: error ${e}`));
-                });
+                },
+                destroy: (_client: sqlite3.Database) => {
+                    return new Promise((resolve, reject) => {
+                        _client.close((err) => (err ? reject(err) : resolve()));
+                    });
+                },
             },
-            destroy: (_client: sqlite3.Database) => {
-                return new Promise((resolve, reject) => {
-                    _client.close((err) => (err ? reject(err) : resolve()));
-                });
-            },
-        };
-
-        // intentionally just size 1... (reported issues)
-        const _myPool = genericPool.createPool(_poolFactory as any, {
-            min: 0,
-            max: 1,
-        });
+            // intentionally just size 1... (reported issues on multiple clients with sqlite)
+            {
+                min: 1,
+                max: 1,
+            }
+        );
 
         const _clientQuery = (_client: sqlite3.Database, text, params) => {
             return new Promise((resolve, reject) => {
@@ -190,7 +192,7 @@ export class SqlUtilHelper {
 
         const client = async () => {
             return new Promise((resolve, reject) => {
-                (_myPool as any)
+                (_myPool as any) // ts wtf?
                     .acquire()
                     .then((_client: sqlite3.Database) => {
                         log(`sqlite: client acquired (client)`);
@@ -206,13 +208,13 @@ export class SqlUtilHelper {
         };
 
         const clientRelease = async (_client) => {
-            await _myPool.release(true);
+            await _myPool.release(_client);
             _client = null;
         };
 
         const poolEnd = async () => {
             return new Promise((resolve, reject) => {
-                (_myPool as any)
+                (_myPool as any) // ts wtf?
                     .drain()
                     .then(async () => {
                         await _myPool.clear();

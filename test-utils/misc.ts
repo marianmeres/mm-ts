@@ -8,6 +8,7 @@ export interface DbConfig {
     database?: string;
     port?: string | number;
     logger?: (msg) => void;
+    initSqls?: string[];
 }
 
 export interface PgDbConfig extends DbConfig {
