@@ -40,10 +40,11 @@ test('`sqlInits` pre-query init works', async (done) => {
     let _db = db();
     let res = await _db.query('PRAGMA foreign_keys');
     expect(res[0].foreign_keys).toEqual(1);
-    expect(_db.initSqls.some((v) => /pragma foreign_keys/i.test(v))).toBeTruthy();
+    expect(
+        _db.initSqls.some((v) => /pragma foreign_keys/i.test(v))
+    ).toBeTruthy();
     done();
 });
-
 
 // should not need to edit below
 const shouldSkip = () =>

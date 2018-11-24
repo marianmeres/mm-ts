@@ -12,9 +12,23 @@ export interface SqlUtilFetchOptions {
 }
 
 export class SqlUtil {
-    static readonly RGX_PG = /pg|postgres/i;
-    static readonly RGX_MYSQL = /mysql/i;
-    static readonly RGX_SQLITE = /sqlite/i;
+    static readonly DIALECT_PG = 'pg';
+    static readonly DIALECT_MYSQL = 'mysql';
+    static readonly DIALECT_SQLITE = 'sqlite';
+
+    /**
+     *
+     */
+    protected static readonly _dialectNormalizeMap = {
+        [SqlUtil.DIALECT_PG]: /pg(sql)?|postgres(ql)?/i,
+        [SqlUtil.DIALECT_MYSQL]: /mysql|mariadb/i,
+        [SqlUtil.DIALECT_SQLITE]: /sqlite/i,
+    };
+
+    /**
+     *
+     */
+    public readonly dialect: string;
 
     /**
      * Injectnutelny "pool" or "client" instance... primarne tu ide o to, aby som mohol
@@ -28,13 +42,14 @@ export class SqlUtil {
     protected _initiated = false;
 
     /**
-     * @param _dialect
+     * @param dialect
      * @param db
      * @param initSqls
      */
-    constructor(protected _dialect: string, db?, public readonly initSqls?: string[]) {
+    constructor(dialect: string, db?, public readonly initSqls?: string[]) {
+        this.dialect = SqlUtil._normalizeDialectName(dialect);
         if (!this.isPg() && !this.isMysql() && !this.isSqlite()) {
-            throw new Error(`Dialect ${this._dialect} not (yet) supported.`);
+            throw new Error(`Dialect ${this.dialect} not (yet) supported.`);
         }
         if (db) {
             this.db = db;
@@ -48,19 +63,20 @@ export class SqlUtil {
         if (!this._initiated) {
             this._initiated = true;
             if (this.initSqls && Array.isArray(this.initSqls)) {
-                let nonEmpty = this.initSqls.filter((v) => v.trim() !== '');
-                for (let sql of nonEmpty) {
+                for (let sql of this.initSqls) {
                     await this.query(sql);
                 }
             }
         }
     }
 
-    /**
-     * @returns {string}
-     */
-    get dialect() {
-        return this._dialect;
+    protected static _normalizeDialectName(dialect) {
+        for (let normalized of Object.keys(SqlUtil._dialectNormalizeMap)) {
+            if (SqlUtil._dialectNormalizeMap[normalized].test(dialect)) {
+                return normalized;
+            }
+        }
+        return dialect;
     }
 
     /**
@@ -105,21 +121,21 @@ export class SqlUtil {
      * @returns {boolean}
      */
     isPg() {
-        return SqlUtil.RGX_PG.test(this._dialect);
+        return this.dialect === SqlUtil.DIALECT_PG;
     }
 
     /**
      * @returns {boolean}
      */
     isMysql() {
-        return SqlUtil.RGX_MYSQL.test(this._dialect);
+        return this.dialect === SqlUtil.DIALECT_MYSQL;
     }
 
     /**
      *
      */
     isSqlite() {
-        return SqlUtil.RGX_SQLITE.test(this._dialect);
+        return this.dialect === SqlUtil.DIALECT_SQLITE;
     }
 
     /**
@@ -429,6 +445,9 @@ export class SqlUtil {
      * @returns {Promise<void>}
      */
     async query(query, params?, debug = false) {
+        if (`${query}`.trim() === '') {
+            return null;
+        }
         await this._lazyInitOnce();
         debug && console.log('QUERY:', query, '\nPARAMS:', params);
         return this.db.query(query, params ? params : []);
