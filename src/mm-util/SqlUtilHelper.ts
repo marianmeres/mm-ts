@@ -235,7 +235,7 @@ export class SqlUtilHelper {
      * @param sql
      * @param dialect
      */
-    static dialectize(sql, dialect) {
+    static dialectize(sql, dialect): string {
         return sql.replace(/(__[A-Z_]+__)/g, (k) => {
             const rep = (SqlUtilHelper.SQL_REPLACE_MAP[k] || {})[dialect];
             return rep !== void 0 ? rep : k;

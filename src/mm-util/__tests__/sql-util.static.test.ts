@@ -11,6 +11,7 @@ test('sql replace map works', () => {
             name varchar(255)
         );
     `;
+
     let sql;
 
     // pg
