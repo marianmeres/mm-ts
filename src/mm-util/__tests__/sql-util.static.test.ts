@@ -5,8 +5,8 @@ dotenv.config();
 
 test('sql replace map works', () => {
     let generic = `
-        drop table user __DROP_TABLE_CASCADE__;
-        create table user (
+        drop table __QI__user__QI__ __DROP_TABLE_CASCADE__;
+        create table __QI__user__QI__ (
             id  __SERIAL_PRIMARY_KEY__,
             name varchar(255)
         );
@@ -19,6 +19,7 @@ test('sql replace map works', () => {
     expect(/__DROP_TABLE_CASCADE__/.test(sql)).toBeFalsy();
     expect(/SERIAL PRIMARY KEY/.test(sql)).toBeTruthy();
     expect(/CASCADE/.test(sql)).toBeTruthy();
+    expect(/"user"/.test(sql)).toBeTruthy();
 
     // sqlite
     sql = SqlUtilHelper.dialectize(generic, SqlUtil.DIALECT_SQLITE);
@@ -26,4 +27,10 @@ test('sql replace map works', () => {
     expect(/__DROP_TABLE_CASCADE__/.test(sql)).toBeFalsy();
     expect(/SERIAL PRIMARY KEY/.test(sql)).toBeFalsy();
     expect(/AUTOINCREMENT/.test(sql)).toBeTruthy();
+    expect(/"user"/.test(sql)).toBeTruthy();
+
+    // mysql
+    sql = SqlUtilHelper.dialectize(generic, SqlUtil.DIALECT_MYSQL);
+    // console.log(sql);
+    expect(/`user`/.test(sql)).toBeTruthy();
 });
