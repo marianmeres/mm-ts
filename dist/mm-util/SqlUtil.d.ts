@@ -40,7 +40,7 @@ export declare class SqlUtil {
      * @private
      */
     _lazyInitOnce(): Promise<void>;
-    protected static _normalizeDialectName(dialect: any): any;
+    static normalizeDialectName(dialect: any): any;
     /**
      * @param driverProxy
      */

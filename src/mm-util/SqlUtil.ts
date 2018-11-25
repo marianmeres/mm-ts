@@ -47,7 +47,7 @@ export class SqlUtil {
      * @param initSqls
      */
     constructor(dialect: string, db?, public readonly initSqls?: string[]) {
-        this.dialect = SqlUtil._normalizeDialectName(dialect);
+        this.dialect = SqlUtil.normalizeDialectName(dialect);
         if (!this.isPg() && !this.isMysql() && !this.isSqlite()) {
             throw new Error(`Dialect ${this.dialect} not (yet) supported.`);
         }
@@ -70,7 +70,7 @@ export class SqlUtil {
         }
     }
 
-    protected static _normalizeDialectName(dialect) {
+    static normalizeDialectName(dialect) {
         for (let normalized of Object.keys(SqlUtil._dialectNormalizeMap)) {
             if (SqlUtil._dialectNormalizeMap[normalized].test(dialect)) {
                 return normalized;

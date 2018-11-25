@@ -25,7 +25,7 @@ class SqlUtil {
          * lazy initiate just once helper flag
          */
         this._initiated = false;
-        this.dialect = SqlUtil._normalizeDialectName(dialect);
+        this.dialect = SqlUtil.normalizeDialectName(dialect);
         if (!this.isPg() && !this.isMysql() && !this.isSqlite()) {
             throw new Error(`Dialect ${this.dialect} not (yet) supported.`);
         }
@@ -48,7 +48,7 @@ class SqlUtil {
             }
         });
     }
-    static _normalizeDialectName(dialect) {
+    static normalizeDialectName(dialect) {
         for (let normalized of Object.keys(SqlUtil._dialectNormalizeMap)) {
             if (SqlUtil._dialectNormalizeMap[normalized].test(dialect)) {
                 return normalized;
