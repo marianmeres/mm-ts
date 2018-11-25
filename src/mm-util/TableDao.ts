@@ -1,5 +1,6 @@
-import defaults from 'lodash-es/defaults';
+// import defaults from 'lodash-es/defaults';
 import { SqlUtil } from './SqlUtil';
+import { defaults } from 'lodash';
 
 export interface TableDaoOptions {
     idCol?: string | string[];

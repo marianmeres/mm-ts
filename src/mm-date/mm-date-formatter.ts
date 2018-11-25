@@ -5,7 +5,6 @@
  */
 import { mmEscapeRegExp, mmReplaceMap } from '../mm-string';
 import { mmIsValidDate } from './mm-date';
-import { min } from 'lodash-es';
 
 interface MMDateFormatterI18NLocaleRelative {
     yy: (value: number, isPast: boolean) => string;

@@ -1,7 +1,9 @@
-import isPlainObject from 'lodash-es/isPlainObject';
+// import isPlainObject from 'lodash-es/isPlainObject';
+
+import { isPlainObject } from 'lodash';
 
 /**
- * hm...
+ * hm...q
  * @param obj
  * @returns {any}
  */

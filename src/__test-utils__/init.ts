@@ -1,5 +1,5 @@
 import * as fs from 'fs';
-import { SqlUtil } from '../src/mm-util/SqlUtil';
+import { SqlUtil } from '../mm-util/SqlUtil';
 import { getSqlSchema } from './get-sql-schema';
 import * as path from 'path';
 

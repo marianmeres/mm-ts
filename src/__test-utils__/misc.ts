@@ -1,4 +1,4 @@
-import { SqlUtil } from '../src/mm-util/SqlUtil';
+import { SqlUtil } from '../mm-util/SqlUtil';
 import { _initDb } from './init';
 
 export interface DbConfig {

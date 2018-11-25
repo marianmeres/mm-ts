@@ -1,4 +1,6 @@
-import find from 'lodash-es/find';
+// import find from 'lodash-es/find';
+
+import { find } from 'lodash';
 
 export default class BaseCollection {
     protected _items: any[] = [];

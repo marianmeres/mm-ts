@@ -1,4 +1,4 @@
-import { SqlUtil } from '../src/mm-util/SqlUtil';
+import { SqlUtil } from '../mm-util/SqlUtil';
 /**
  * WARNING: NAIVE AND INSECURE FOR USERLAND INPUT
  * @param sql

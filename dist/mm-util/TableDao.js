@@ -8,7 +8,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const defaults_1 = require("lodash-es/defaults");
+const lodash_1 = require("lodash");
 /**
  * adds sugar on top of SqlUtil...:
  *  - PK resolutions
@@ -29,7 +29,7 @@ class TableDao {
             idCol: 'id',
             autoIncrement: true,
         };
-        options = defaults_1.default(options || {}, this._defaultOptions);
+        options = lodash_1.defaults(options || {}, this._defaultOptions);
         if (options.db) {
             this.db = options.db;
             // delete options.db;

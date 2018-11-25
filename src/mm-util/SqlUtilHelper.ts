@@ -3,7 +3,7 @@ import * as _pg from 'pg';
 import * as util from 'util';
 import * as sqlite3 from 'sqlite3';
 import * as genericPool from 'generic-pool';
-import { DbConfig } from '../../test-utils/misc';
+import { DbConfig } from '../__test-utils__/misc';
 
 export class SqlUtilHelper {
     /**

@@ -1,8 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const isEqual_1 = require("lodash-es/isEqual");
-const isPlainObject_1 = require("lodash-es/isPlainObject");
 const mm_get_prototype_chain_1 = require("../mm-util/mm-get-prototype-chain");
+const lodash_1 = require("lodash");
 const isString = (v) => typeof v === 'string';
 /**
  *
@@ -81,7 +80,7 @@ class BaseModel {
         // NEW FEATURE: all plain object values are serialized/stringified
         // automatically (handly for JSONB types)
         return Object.keys(json).reduce((memo, k) => {
-            if (isPlainObject_1.default(json[k])) {
+            if (lodash_1.isPlainObject(json[k])) {
                 memo[k] = BaseModel.JSONStringify(json[k]);
             }
             else {
@@ -214,7 +213,7 @@ class BaseModel {
     _maybeMarkKeyDirty(k, oldRawValue) {
         let newRawValue = this._data[k];
         // if (oldRawValue !== newRawValue && -1 === this._dirtyKeys.indexOf(k)) {
-        if (!isEqual_1.default(oldRawValue, newRawValue) &&
+        if (!lodash_1.isEqual(oldRawValue, newRawValue) &&
             -1 === this._dirtyKeys.indexOf(k)) {
             this._dirtyKeys.push(k);
         }

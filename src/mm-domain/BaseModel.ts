@@ -1,7 +1,8 @@
-import isEqual from 'lodash-es/isEqual';
-import isPlainObject from 'lodash-es/isPlainObject';
+// import isEqual from 'lodash-es/isEqual';
+// import isPlainObject from 'lodash-es/isPlainObject';
 import { JSONApiData } from '../mm-util/mm-types';
 import { mmGetPrototypeChain } from '../mm-util/mm-get-prototype-chain';
+import { isEqual, isPlainObject } from 'lodash';
 
 export interface BaseModelData {
     id: any;

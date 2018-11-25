@@ -1,9 +1,9 @@
 import * as dotenv from 'dotenv';
 import { SqlUtil } from '../SqlUtil';
 import { _sqlUtilTestsAll } from '../__tests-helpers__/_table-dao-tests-all';
-import { configMysql } from '../../../test-utils/config-db';
+import { configMysql } from '../../__test-utils__/config-db';
 import { SqlUtilHelper } from '../SqlUtilHelper';
-import { testSuiteFactorySqlUtilDialectBased } from '../../../test-utils/misc';
+import { testSuiteFactorySqlUtilDialectBased } from '../../__test-utils__/misc';
 
 dotenv.config();
 

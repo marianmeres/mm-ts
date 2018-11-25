@@ -1,8 +1,9 @@
 "use strict";
+// import isPlainObject from 'lodash-es/isPlainObject';
 Object.defineProperty(exports, "__esModule", { value: true });
-const isPlainObject_1 = require("lodash-es/isPlainObject");
+const lodash_1 = require("lodash");
 /**
- * hm...
+ * hm...q
  * @param obj
  * @returns {any}
  */
@@ -15,7 +16,7 @@ exports.mmGetPrototypeChain = (obj) => {
     }
     let proto = Object.getPrototypeOf(obj);
     let out = [];
-    while (!isPlainObject_1.default(proto)) {
+    while (!lodash_1.isPlainObject(proto)) {
         out.push(proto);
         proto = Object.getPrototypeOf(proto);
     }

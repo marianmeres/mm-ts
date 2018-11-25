@@ -1,10 +1,10 @@
 import * as dotenv from 'dotenv';
 import { _sqlUtilTestsAll } from '../__tests-helpers__/_sql-util-tests-all';
 import { SqlUtil } from '../SqlUtil';
-import { configMysql, configPg } from '../../../test-utils/config-db';
+import { configMysql, configPg } from '../../__test-utils__/config-db';
 import { SqlUtilHelper } from '../SqlUtilHelper';
-import { testSuiteFactorySqlUtilDialectBased } from '../../../test-utils/misc';
-import { _initDb } from '../../../test-utils/init';
+import { testSuiteFactorySqlUtilDialectBased } from '../../__test-utils__/misc';
+import { _initDb } from '../../__test-utils__/init';
 dotenv.config();
 
 const driverProxy = SqlUtilHelper.factoryMysqlDriverProxy(configMysql);

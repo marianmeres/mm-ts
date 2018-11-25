@@ -2,7 +2,6 @@ import * as ws from 'ws';
 import * as fs from 'fs';
 import * as path from 'path';
 import { WsClient } from '../WsClient';
-import isEqual from 'lodash-es/isEqual';
 import * as dotenv from 'dotenv';
 import { mmDelay } from '../../mm-util/mm-delay';
 dotenv.config();

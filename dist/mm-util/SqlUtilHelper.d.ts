@@ -1,6 +1,6 @@
 import * as _mysql from 'mysql';
 import * as sqlite3 from 'sqlite3';
-import { DbConfig } from '../../test-utils/misc';
+import { DbConfig } from '../__test-utils__/misc';
 export declare class SqlUtilHelper {
     /**
      * @param config

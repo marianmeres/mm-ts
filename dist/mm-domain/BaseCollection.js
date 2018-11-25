@@ -1,6 +1,7 @@
 "use strict";
+// import find from 'lodash-es/find';
 Object.defineProperty(exports, "__esModule", { value: true });
-const find_1 = require("lodash-es/find");
+const lodash_1 = require("lodash");
 class BaseCollection {
     /**
      * @param {any[]} items
@@ -45,7 +46,7 @@ class BaseCollection {
         const attrKeys = Object.keys(attributes);
         const isWhereMatch = (item) => attrKeys.length ===
             attrKeys.reduce((acc, key) => (acc += item[key] === attributes[key] ? 1 : 0), 0);
-        return find_1.default(this._items, isWhereMatch);
+        return lodash_1.find(this._items, isWhereMatch);
     }
 }
 exports.default = BaseCollection;

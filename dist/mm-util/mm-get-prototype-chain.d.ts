@@ -1,5 +1,5 @@
 /**
- * hm...
+ * hm...q
  * @param obj
  * @returns {any}
  */
