@@ -6,7 +6,7 @@ export interface BaseFooData {
     label?: string;
 }
 export declare class BaseFoo extends BaseModel {
-    readonly entityType: string;
+    readonly entityType = "foo";
     protected _data: BaseFooData;
     label: any;
     readonly bar: string;

@@ -10,18 +10,18 @@ export interface WsClientOptions {
 export declare class WsClient extends EventEmitter {
     protected _url: string;
     readonly options?: WsClientOptions;
-    static readonly EVENT_OPEN: string;
-    static readonly EVENT_ERROR: string;
-    static readonly EVENT_CLOSE: string;
-    static readonly EVENT_MESSAGE: string;
-    static readonly EVENT_RECONNECT_SCHEDULING: string;
-    static readonly EVENT_RECONNECTING: string;
-    static readonly EVENT_RECONNECT_OPEN: string;
-    static readonly EVENT_SEND: string;
-    static readonly READYSTATE_CONNECTING: number;
-    static readonly READYSTATE_OPEN: number;
-    static readonly READYSTATE_CLOSING: number;
-    static readonly READYSTATE_CLOSED: number;
+    static readonly EVENT_OPEN = "open";
+    static readonly EVENT_ERROR = "error";
+    static readonly EVENT_CLOSE = "close";
+    static readonly EVENT_MESSAGE = "message";
+    static readonly EVENT_RECONNECT_SCHEDULING = "reconnect_scheduling";
+    static readonly EVENT_RECONNECTING = "reconnecting";
+    static readonly EVENT_RECONNECT_OPEN = "reconnect_open";
+    static readonly EVENT_SEND = "send";
+    static readonly READYSTATE_CONNECTING = 0;
+    static readonly READYSTATE_OPEN = 1;
+    static readonly READYSTATE_CLOSING = 2;
+    static readonly READYSTATE_CLOSED = 3;
     logger: {
         (message?: any, ...optionalParams: any[]): void;
         (message?: any, ...optionalParams: any[]): void;

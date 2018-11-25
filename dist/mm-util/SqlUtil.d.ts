@@ -6,9 +6,9 @@ export interface SqlUtilFetchOptions {
 }
 export declare class SqlUtil {
     readonly initSqls?: string[];
-    static readonly DIALECT_PG: string;
-    static readonly DIALECT_MYSQL: string;
-    static readonly DIALECT_SQLITE: string;
+    static readonly DIALECT_PG = "pg";
+    static readonly DIALECT_MYSQL = "mysql";
+    static readonly DIALECT_SQLITE = "sqlite";
     /**
      *
      */
