@@ -43,7 +43,7 @@ export declare class SqlUtilHelper {
      * @param sql
      * @param dialect
      */
-    static dialectize(sql: any, dialect: any): any;
+    static dialectize(sql: any, dialect: any): string;
     /**
      * map of special placeholders with their correct dialect form
      */
@@ -153,7 +153,7 @@ export declare class SqlUtilHelper {
             sqlite: string;
             mysql: string;
         };
-        __Q__: {
+        __QI__: {
             pg: string;
             sqlite: string;
             mysql: string;

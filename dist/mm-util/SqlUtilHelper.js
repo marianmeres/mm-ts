@@ -208,7 +208,7 @@ class SqlUtilHelper {
      * @param dialect
      */
     static dialectize(sql, dialect) {
-        return sql.replace(/(__\w+__)/g, (k) => {
+        return sql.replace(/(__[A-Z_]+__)/g, (k) => {
             const rep = (SqlUtilHelper.SQL_REPLACE_MAP[k] || {})[dialect];
             return rep !== void 0 ? rep : k;
         });
@@ -325,7 +325,7 @@ SqlUtilHelper.SQL_REPLACE_MAP = {
         sqlite: `0000-00-00 00:00:00`,
         mysql: `0000-00-00 00:00:00`,
     },
-    __Q__: {
+    __QI__: {
         pg: `"`,
         sqlite: `"`,
         mysql: '`',
