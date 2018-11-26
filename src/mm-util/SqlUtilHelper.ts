@@ -167,11 +167,11 @@ export class SqlUtilHelper {
             return new Promise((resolve, reject) => {
                 _client.serialize(() => {
                     _client.all(text, params, async (err, rows) => {
+                        await _myPool.release(_client);
                         if (err) {
                             return reject(err);
                         }
                         log(`sqlite: query finished, releasing client`);
-                        await _myPool.release(_client);
                         resolve(rows);
                     });
                 });

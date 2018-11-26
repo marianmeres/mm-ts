@@ -148,11 +148,11 @@ class SqlUtilHelper {
             return new Promise((resolve, reject) => {
                 _client.serialize(() => {
                     _client.all(text, params, (err, rows) => __awaiter(this, void 0, void 0, function* () {
+                        yield _myPool.release(_client);
                         if (err) {
                             return reject(err);
                         }
                         log(`sqlite: query finished, releasing client`);
-                        yield _myPool.release(_client);
                         resolve(rows);
                     }));
                 });

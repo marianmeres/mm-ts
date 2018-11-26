@@ -46,6 +46,18 @@ test('`sqlInits` pre-query init works', async (done) => {
     done();
 });
 
+test('client is released on error', async (done) => {
+    let _db = db();
+    let res;
+
+    try {
+        res = await _db.query('select * from non_existent_table');
+    } catch (e) {/**/}
+
+    res = await _db.query('select 1');
+    done();
+});
+
 // should not need to edit below
 const shouldSkip = () =>
     !dotenv.config().parsed[
