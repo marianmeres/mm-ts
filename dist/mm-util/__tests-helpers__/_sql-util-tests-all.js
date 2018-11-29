@@ -232,16 +232,32 @@ exports._sqlUtilTestsAll = {
         expect(row.id).toEqual(3);
     }),
     '`insert` works (undefined values are converted to nulls)': (db) => __awaiter(this, void 0, void 0, function* () {
-        let res = yield db.insert('foo', { label: void 0 });
+        // auto increment serial pk
+        let res = yield db.insert('foo', { label: 'kokos' });
         if (db.isPg()) {
-            expect(res.label).toEqual(null); // inserted row
+            expect(res.id).toEqual(3); // inserted row
+            expect(res.label).toEqual('kokos'); // inserted row
         }
         else {
             expect(res).toEqual(3); // last insert id
         }
-        const row = yield db.fetchRow('*', 'foo', { id: 3 });
-        expect(row.label).toEqual(null);
+        let row = yield db.fetchRow('*', 'foo', { id: 3 });
         expect(row.id).toEqual(3);
+        expect(row.label).toEqual('kokos');
+        // komposit pk
+        res = yield db.insert('foo2', { id1: 10, id2: 20, label: 'kokos2' });
+        if (db.isPg()) {
+            expect(res.label).toEqual('kokos2'); // inserted row
+        }
+        else if (db.isMysql()) {
+            // mysql returns 3 here as well, but that is id from the different insert
+            // above
+        }
+        else if (db.isSqlite()) { // vracia rowid co je v tomto konkretnom pripade tiez 3
+            expect(res).toEqual(3); // last insert id
+        }
+        row = yield db.fetchRow('*', 'foo2', { id1: 10, id2: 20 });
+        expect(row.label).toEqual('kokos2');
     }),
     '`update` works': (db) => __awaiter(this, void 0, void 0, function* () {
         let res = yield db.update('foo', { label: 'hovno' }, { id: 1 });

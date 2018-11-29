@@ -252,7 +252,7 @@ SqlUtilHelper.SQL_REPLACE_MAP = {
     },
     __TIMESTAMP_DEFAULT_NOW__: {
         pg: `TIMESTAMP WITH TIME ZONE DEFAULT NOW()`,
-        sqlite: `TIMESTAMP DEFAULT '0000-00-00 00:00:00'`,
+        sqlite: `TIMESTAMP DEFAULT CURRENT_TIMESTAMP`,
         mysql: `DATETIME DEFAULT CURRENT_TIMESTAMP`,
     },
     __BOOL__: {
