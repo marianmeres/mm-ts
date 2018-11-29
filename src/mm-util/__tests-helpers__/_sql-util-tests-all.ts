@@ -252,17 +252,33 @@ export const _sqlUtilTestsAll = {
     '`insert` works (undefined values are converted to nulls)': async (
         db: SqlUtil
     ) => {
-        let res = await db.insert('foo', { label: void 0 });
-
+        // auto increment serial pk
+        let res = await db.insert('foo', { label: 'kokos' });
         if (db.isPg()) {
-            expect(res.label).toEqual(null); // inserted row
+            expect(res.id).toEqual(3); // inserted row
+            expect(res.label).toEqual('kokos'); // inserted row
         } else {
             expect(res).toEqual(3); // last insert id
         }
 
-        const row = await db.fetchRow('*', 'foo', { id: 3 });
-        expect(row.label).toEqual(null);
+        let row = await db.fetchRow('*', 'foo', { id: 3 });
         expect(row.id).toEqual(3);
+        expect(row.label).toEqual('kokos');
+
+        // komposit pk
+        res = await db.insert('foo2', { id1: 10, id2: 20, label: 'kokos2' });
+        if (db.isPg()) {
+            expect(res.label).toEqual('kokos2'); // inserted row
+        }
+        else if (db.isMysql()) {
+            // mysql returns 3 here as well, but that is id from the different insert
+            // above
+        }
+        else if (db.isSqlite()) { // vracia rowid co je v tomto konkretnom pripade tiez 3
+            expect(res).toEqual(3); // last insert id
+        }
+        row = await db.fetchRow('*', 'foo2', { id1: 10, id2: 20 });
+        expect(row.label).toEqual('kokos2');
     },
 
     '`update` works': async (db: SqlUtil) => {

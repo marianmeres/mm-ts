@@ -600,20 +600,12 @@ export class SqlUtil {
             return res.rows[0];
         }
 
-        // MYSQL: return affected rows count
         res = await this.query(sql, [], debug);
 
-        // if (this.isMysql()) {
-        //     return res.affectedRows;
-        // }
-        //
-        // if (this.isSqlite()) {
-        // hm...
+        // note: this might be confusing as diferent engines returns different value...
+        // (sqlite returns 'rowid', mysql might return insert id for previous inserts...)
+        // consumer must know how to handle the result
         return this.lastInsertId();
-        // }
-
-        // should not be reached...
-        // return null;
     }
 
     /**

@@ -4,8 +4,6 @@ import { SqlUtil } from '../SqlUtil';
 import { configSqlite } from '../../__test-utils__/config-db';
 import { SqlUtilHelper } from '../SqlUtilHelper';
 import { testSuiteFactorySqlUtilDialectBased } from '../../__test-utils__/misc';
-import { _initDb } from '../../__test-utils__/init';
-import * as sqlite3 from 'sqlite3';
 
 dotenv.config();
 
