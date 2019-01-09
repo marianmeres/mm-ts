@@ -138,7 +138,9 @@ export class MMDateFormatter {
         }
 
         if (!MMDateFormatter.i18n[locale]) {
-            throw new Error(`Invalid locale ${locale}`);
+            console.error(`Invalid locale ${locale}`);
+            locale = 'en';
+            // throw new Error(`Invalid locale ${locale}`);
         }
 
         if (!mask || typeof mask !== 'string') {
@@ -360,7 +362,9 @@ export class MMDateFormatter {
         }
 
         if (!MMDateFormatter.i18n[locale]) {
-            throw new Error(`Invalid locale ${locale}`);
+            // throw new Error(`Invalid locale ${locale}`);
+            console.error(`Invalid locale ${locale}`);
+            locale = 'en';
         }
 
         let deltaSeconds = Math.round(
