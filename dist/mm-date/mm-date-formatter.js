@@ -43,7 +43,9 @@ class MMDateFormatter {
             throw new Error(`Invalid date ${date}`);
         }
         if (!MMDateFormatter.i18n[locale]) {
-            throw new Error(`Invalid locale ${locale}`);
+            console.error(`Invalid locale ${locale}`);
+            locale = 'en';
+            // throw new Error(`Invalid locale ${locale}`);
         }
         if (!mask || typeof mask !== 'string') {
             return date.toISOString();
@@ -233,7 +235,9 @@ class MMDateFormatter {
             throw new Error(`Invalid 'compareTo' date`);
         }
         if (!MMDateFormatter.i18n[locale]) {
-            throw new Error(`Invalid locale ${locale}`);
+            // throw new Error(`Invalid locale ${locale}`);
+            console.error(`Invalid locale ${locale}`);
+            locale = 'en';
         }
         let deltaSeconds = Math.round(Math.abs(date.valueOf() - compareTo.valueOf()) / 1000);
         let res = MMDateFormatter._diff(deltaSeconds);

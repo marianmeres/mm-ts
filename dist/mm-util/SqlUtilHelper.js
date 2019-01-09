@@ -340,5 +340,20 @@ SqlUtilHelper.SQL_REPLACE_MAP = {
         sqlite: `TEXT`,
         mysql: `TEXT`,
     },
+    __COMMENT_EXCEPT_PG__: {
+        pg: ``,
+        sqlite: `-- `,
+        mysql: `-- `,
+    },
+    __COMMENT_EXCEPT_SQLITE__: {
+        pg: `-- `,
+        sqlite: ``,
+        mysql: `-- `,
+    },
+    __COMMENT_EXCEPT_MYSQL__: {
+        pg: `-- `,
+        sqlite: `-- `,
+        mysql: ``,
+    },
 };
 exports.SqlUtilHelper = SqlUtilHelper;

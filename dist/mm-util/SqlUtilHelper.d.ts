@@ -168,5 +168,20 @@ export declare class SqlUtilHelper {
             sqlite: string;
             mysql: string;
         };
+        __COMMENT_EXCEPT_PG__: {
+            pg: string;
+            sqlite: string;
+            mysql: string;
+        };
+        __COMMENT_EXCEPT_SQLITE__: {
+            pg: string;
+            sqlite: string;
+            mysql: string;
+        };
+        __COMMENT_EXCEPT_MYSQL__: {
+            pg: string;
+            sqlite: string;
+            mysql: string;
+        };
     };
 }
