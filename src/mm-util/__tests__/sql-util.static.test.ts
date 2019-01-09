@@ -35,3 +35,27 @@ test('sql replace map works', () => {
     // console.log(sql);
     expect(/`user`/.test(sql)).toBeTruthy();
 });
+
+test('sql replace map works 2 (comments)', () => {
+    let generic = [
+        `__COMMENT_EXCEPT_PG__ pg`,
+        `__COMMENT_EXCEPT_SQLITE__ sqlite`,
+        `__COMMENT_EXCEPT_MYSQL__ mysql`,
+    ].join('\n');
+    let sql;
+
+    const _filterComments = (txt) =>
+        txt.split('\n').map(v => v.trim()).filter(v => !/^-- /.test(v)).join('\n');
+
+    // pg
+    sql = SqlUtilHelper.dialectize(generic, SqlUtil.DIALECT_PG);
+    expect(_filterComments(sql)).toEqual(SqlUtil.DIALECT_PG);
+
+    // sqlite
+    sql = SqlUtilHelper.dialectize(generic, SqlUtil.DIALECT_SQLITE);
+    expect(_filterComments(sql)).toEqual(SqlUtil.DIALECT_SQLITE);
+
+    // sqlite
+    sql = SqlUtilHelper.dialectize(generic, SqlUtil.DIALECT_MYSQL);
+    expect(_filterComments(sql)).toEqual(SqlUtil.DIALECT_MYSQL);
+});
