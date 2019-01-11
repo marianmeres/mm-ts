@@ -18,4 +18,4 @@ export interface MysqlDbConfig extends DbConfig {
 export interface MysqlPoolDbConfig extends MysqlDbConfig {
     multipleStatements?: boolean;
 }
-export declare const testSuiteFactorySqlUtilDialectBased: (db: SqlUtil, testsAll: any, shouldSkipResolver: any) => void;
+export declare const testSuiteFactorySqlUtilDialectBased: (db: SqlUtil, testsAll: any, shouldSkipResolver: any, _beforeEach?: any) => void;

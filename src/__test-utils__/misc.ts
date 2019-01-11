@@ -38,12 +38,18 @@ export interface MysqlPoolDbConfig extends MysqlDbConfig {
 export const testSuiteFactorySqlUtilDialectBased = (
     db: SqlUtil,
     testsAll,
-    shouldSkipResolver
+    shouldSkipResolver,
+    _beforeEach?
 ) => {
     let testsFactoryMap = Object.keys(testsAll);
 
     describe(db.dialect, () => {
-        beforeEach(async () => (shouldSkipResolver() ? void 0 : _initDb(db)));
+        beforeEach(async () => {
+            if (typeof _beforeEach === 'function') {
+                return _beforeEach();
+            }
+            return (shouldSkipResolver() ? void 0 : _initDb(db));
+        });
 
         for (let i = 0; i < testsFactoryMap.length; i++) {
             let key = testsFactoryMap[i];

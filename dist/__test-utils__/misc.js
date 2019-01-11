@@ -9,10 +9,15 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const init_1 = require("./init");
-exports.testSuiteFactorySqlUtilDialectBased = (db, testsAll, shouldSkipResolver) => {
+exports.testSuiteFactorySqlUtilDialectBased = (db, testsAll, shouldSkipResolver, _beforeEach) => {
     let testsFactoryMap = Object.keys(testsAll);
     describe(db.dialect, () => {
-        beforeEach(() => __awaiter(this, void 0, void 0, function* () { return (shouldSkipResolver() ? void 0 : init_1._initDb(db)); }));
+        beforeEach(() => __awaiter(this, void 0, void 0, function* () {
+            if (typeof _beforeEach === 'function') {
+                return _beforeEach();
+            }
+            return (shouldSkipResolver() ? void 0 : init_1._initDb(db));
+        }));
         for (let i = 0; i < testsFactoryMap.length; i++) {
             let key = testsFactoryMap[i];
             let testFactory = testsAll[key];
