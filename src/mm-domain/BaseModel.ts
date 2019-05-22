@@ -14,7 +14,7 @@ const isString = (v) => typeof v === 'string';
 /**
  *
  */
-export class BaseModel<D extends BaseModelData> {
+export class BaseModel<TData extends BaseModelData> {
     /**
      * to be added at extended level
      */
@@ -23,7 +23,7 @@ export class BaseModel<D extends BaseModelData> {
     /**
      *
      */
-    protected _data: D;
+    protected _data: TData;
 
     /**
      * @type {Array}
@@ -84,21 +84,21 @@ export class BaseModel<D extends BaseModelData> {
     /**
      * @private
      */
-    get _defaults(): D {
+    get _defaults(): TData {
         // throw new Error('Method _defaults must be overidden in extended models');
-        return BaseModel.defaults() as D;
+        return BaseModel.defaults() as TData;
     }
 
     /**
      *
      */
-    toJSON(): D {
+    toJSON(): TData {
         return Object.keys(this._data).reduce(
             (out, k) => {
                 out[k] = this.get(k);
                 return out;
             },
-            {} as D
+            {} as TData
         );
     }
 
@@ -106,7 +106,7 @@ export class BaseModel<D extends BaseModelData> {
      * defaultne to iste co `toJSON` akurat povolujeme custom override pre special case-y
      * (serializovanie non-primitivov do DB)
      */
-    toJSONSerialized(): D {
+    toJSONSerialized(): TData {
         let json = this.toJSON();
 
         // NEW FEATURE: all plain object values are serialized/stringified

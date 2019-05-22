@@ -6,7 +6,7 @@ export interface BaseModelData {
 /**
  *
  */
-export declare class BaseModel<D extends BaseModelData> {
+export declare class BaseModel<TData extends BaseModelData> {
     /**
      * to be added at extended level
      */
@@ -14,7 +14,7 @@ export declare class BaseModel<D extends BaseModelData> {
     /**
      *
      */
-    protected _data: D;
+    protected _data: TData;
     /**
      * @type {Array}
      * @private
@@ -35,23 +35,23 @@ export declare class BaseModel<D extends BaseModelData> {
     /**
      * @private
      */
-    readonly _defaults: D;
+    readonly _defaults: TData;
     /**
      *
      */
-    toJSON(): D;
+    toJSON(): TData;
     /**
      * defaultne to iste co `toJSON` akurat povolujeme custom override pre special case-y
      * (serializovanie non-primitivov do DB)
      */
-    toJSONSerialized(): D;
+    toJSONSerialized(): TData;
     /**
      * "over the wire" attributes filter hook
      * @param options
      * @param options
      * @private
      */
-    protected _toJSONApiAttributes(options?: any): D;
+    protected _toJSONApiAttributes(options?: any): TData;
     /**
      * @param options
      * @returns {null}
