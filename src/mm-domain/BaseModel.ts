@@ -14,17 +14,16 @@ const isString = (v) => typeof v === 'string';
 /**
  *
  */
-export class BaseModel {
+export class BaseModel<D extends BaseModelData> {
     /**
      * to be added at extended level
      */
     readonly entityType: string;
 
     /**
-     * @type {BaseModelData}
-     * @private
+     *
      */
-    protected _data: BaseModelData;
+    protected _data: D;
 
     /**
      * @type {Array}
@@ -41,7 +40,7 @@ export class BaseModel {
             data = data.toJSON();
         }
 
-        this._data = Object.assign({}, this._defaults) as BaseModelData; // dolezity uvodny init...
+        this._data = Object.assign({}, this._defaults); // dolezity uvodny init...
 
         this.populate(Object.assign({}, this._defaults, data || {})); // populate via setters
         this.resetDirty();
@@ -83,33 +82,31 @@ export class BaseModel {
     }
 
     /**
-     * @returns {BaseModelData}
      * @private
      */
-    get _defaults(): BaseModelData {
+    get _defaults(): D {
         // throw new Error('Method _defaults must be overidden in extended models');
-        return BaseModel.defaults();
+        return BaseModel.defaults() as D;
     }
 
     /**
-     * @returns {BaseModelData}
+     *
      */
-    toJSON(): BaseModelData {
+    toJSON(): D {
         return Object.keys(this._data).reduce(
             (out, k) => {
                 out[k] = this.get(k);
                 return out;
             },
-            {} as any
+            {} as D
         );
     }
 
     /**
      * defaultne to iste co `toJSON` akurat povolujeme custom override pre special case-y
      * (serializovanie non-primitivov do DB)
-     * @returns {BaseModelData}
      */
-    toJSONSerialized(): BaseModelData {
+    toJSONSerialized(): D {
         let json = this.toJSON();
 
         // NEW FEATURE: all plain object values are serialized/stringified
@@ -132,7 +129,7 @@ export class BaseModel {
     /**
      * "over the wire" attributes filter hook
      * @param options
-     * @returns {BaseModelData}
+     * @param options
      * @private
      */
     protected _toJSONApiAttributes(options: any = null) {

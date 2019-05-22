@@ -6,16 +6,15 @@ export interface BaseModelData {
 /**
  *
  */
-export declare class BaseModel {
+export declare class BaseModel<D extends BaseModelData> {
     /**
      * to be added at extended level
      */
     readonly entityType: string;
     /**
-     * @type {BaseModelData}
-     * @private
+     *
      */
-    protected _data: BaseModelData;
+    protected _data: D;
     /**
      * @type {Array}
      * @private
@@ -34,27 +33,25 @@ export declare class BaseModel {
     populateRelationships(rels: any): void;
     id: any;
     /**
-     * @returns {BaseModelData}
      * @private
      */
-    readonly _defaults: BaseModelData;
+    readonly _defaults: D;
     /**
-     * @returns {BaseModelData}
+     *
      */
-    toJSON(): BaseModelData;
+    toJSON(): D;
     /**
      * defaultne to iste co `toJSON` akurat povolujeme custom override pre special case-y
      * (serializovanie non-primitivov do DB)
-     * @returns {BaseModelData}
      */
-    toJSONSerialized(): BaseModelData;
+    toJSONSerialized(): D;
     /**
      * "over the wire" attributes filter hook
      * @param options
-     * @returns {BaseModelData}
+     * @param options
      * @private
      */
-    protected _toJSONApiAttributes(options?: any): BaseModelData;
+    protected _toJSONApiAttributes(options?: any): D;
     /**
      * @param options
      * @returns {null}

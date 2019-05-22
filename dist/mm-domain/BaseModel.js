@@ -54,7 +54,6 @@ class BaseModel {
         this._set('id', v);
     }
     /**
-     * @returns {BaseModelData}
      * @private
      */
     get _defaults() {
@@ -62,7 +61,7 @@ class BaseModel {
         return BaseModel.defaults();
     }
     /**
-     * @returns {BaseModelData}
+     *
      */
     toJSON() {
         return Object.keys(this._data).reduce((out, k) => {
@@ -73,7 +72,6 @@ class BaseModel {
     /**
      * defaultne to iste co `toJSON` akurat povolujeme custom override pre special case-y
      * (serializovanie non-primitivov do DB)
-     * @returns {BaseModelData}
      */
     toJSONSerialized() {
         let json = this.toJSON();
@@ -93,7 +91,7 @@ class BaseModel {
     /**
      * "over the wire" attributes filter hook
      * @param options
-     * @returns {BaseModelData}
+     * @param options
      * @private
      */
     _toJSONApiAttributes(options = null) {

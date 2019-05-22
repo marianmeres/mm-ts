@@ -7,10 +7,8 @@ export interface BaseFooData {
     label?: string;
 }
 
-export class BaseFoo extends BaseModel {
+export class BaseFoo extends BaseModel<BaseFooData> {
     readonly entityType = 'foo';
-
-    protected _data: BaseFooData;
 
     get label() {
         return this._get('label');

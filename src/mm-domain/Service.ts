@@ -1,4 +1,4 @@
-import { BaseModel } from './BaseModel';
+import { BaseModel, BaseModelData } from './BaseModel';
 import { SqlUtil } from '../mm-util/SqlUtil';
 import { TableDao, TableDaoOptions } from '../mm-util/TableDao';
 
@@ -12,7 +12,7 @@ export const assertWhereNotString = (where) => {
  * takes care of common usual use-cases... it's ok to overwrite if special case
  * is needed, and is also OK not to be tied up with the usual cases...
  */
-export class Service<TModel extends BaseModel> {
+export class Service<TModel extends BaseModel<BaseModelData>> {
     protected _tableName: string;
 
     protected _daoOptions: TableDaoOptions;

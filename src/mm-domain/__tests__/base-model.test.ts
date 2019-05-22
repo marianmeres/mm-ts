@@ -1,8 +1,12 @@
-import { BaseModel } from '../BaseModel';
+import { BaseModel, BaseModelData } from '../BaseModel';
 
-class Foo extends BaseModel {
+class Data implements BaseModelData {
+    id: string;
+    name: string;
+}
+
+class Foo extends BaseModel<Data> {
     readonly entityType = 'foo';
-    protected _data: any;
     get name() {
         return this._get('name');
     }
