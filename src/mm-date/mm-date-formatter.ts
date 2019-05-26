@@ -315,7 +315,7 @@ export class MMDateFormatter {
         }
         // 90 minutes to 21 hours	hh	2 hours ago ... 21 hours ago
         else if (delta >= min2sec(90)) {
-            return out('hh', hours);
+            return out('hh', Math.max(2, hours));
         }
         // 45 to 89 minutes	h	an hour ago
         else if (delta >= min2sec(45)) {
