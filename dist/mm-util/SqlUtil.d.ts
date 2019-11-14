@@ -44,10 +44,11 @@ export declare class SqlUtil {
     /**
      * @param driverProxy
      */
+    set db(driverProxy: any);
     /**
-    * @returns {any}
-    */
-    db: any;
+     * @returns {any}
+     */
+    get db(): any;
     /**
      * @param driverProxy
      * @param initSqls

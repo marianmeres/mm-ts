@@ -1,15 +1,16 @@
 "use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
         function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports._sqlUtilTestsAll = {
-    'buildWhere works': (db) => __awaiter(this, void 0, void 0, function* () {
+    'buildWhere works': (db) => __awaiter(void 0, void 0, void 0, function* () {
         let cases = [
             [null, /^$/],
             ['kokos', /^kokos$/],
@@ -151,7 +152,7 @@ exports._sqlUtilTestsAll = {
             expect(sql).toMatch(rgx);
         });
     }),
-    'sign parsing works': (db) => __awaiter(this, void 0, void 0, function* () {
+    'sign parsing works': (db) => __awaiter(void 0, void 0, void 0, function* () {
         const s = db.getSignFromColNotation.bind(db); // shortcut
         let cases = {
             some: '=',
@@ -179,7 +180,7 @@ exports._sqlUtilTestsAll = {
             expect(s(k).column).toEqual('some');
         });
     }),
-    'building addons works': (db) => __awaiter(this, void 0, void 0, function* () {
+    'building addons works': (db) => __awaiter(void 0, void 0, void 0, function* () {
         expect(db.buildAddons({
             group_by: 'foo',
         })).toMatch(/GROUP BY [`"]foo[`"]/);
@@ -196,30 +197,30 @@ exports._sqlUtilTestsAll = {
             offset: 5,
         })).toEqual('ORDER BY foo LIMIT 10 OFFSET 5');
     }),
-    '`fetchRow` works': (db) => __awaiter(this, void 0, void 0, function* () {
+    '`fetchRow` works': (db) => __awaiter(void 0, void 0, void 0, function* () {
         const row = yield db.fetchRow('*', 'foo', { id: 1 });
         expect(row).toBeTruthy();
         expect(row.id).toEqual(1);
     }),
-    '`fetchOne` works': (db) => __awaiter(this, void 0, void 0, function* () {
+    '`fetchOne` works': (db) => __awaiter(void 0, void 0, void 0, function* () {
         const id = yield db.fetchOne('id', 'foo', null, {
             order_by: 'id desc',
         });
         expect(id).toEqual(2);
     }),
-    '`fetchOne` works (nonexisting record)': (db) => __awaiter(this, void 0, void 0, function* () {
+    '`fetchOne` works (nonexisting record)': (db) => __awaiter(void 0, void 0, void 0, function* () {
         const id = yield db.fetchOne('id', 'foo', { id: 400 });
         expect(id).toEqual(false);
     }),
-    '`fetchAll` works': (db) => __awaiter(this, void 0, void 0, function* () {
+    '`fetchAll` works': (db) => __awaiter(void 0, void 0, void 0, function* () {
         const rows = yield db.fetchAll('*', 'foo');
         expect(rows.length).toEqual(2);
     }),
-    '`fetchCount` works': (db) => __awaiter(this, void 0, void 0, function* () {
+    '`fetchCount` works': (db) => __awaiter(void 0, void 0, void 0, function* () {
         const count = yield db.fetchCount('foo');
         expect(count).toEqual(2);
     }),
-    '`insert` works': (db) => __awaiter(this, void 0, void 0, function* () {
+    '`insert` works': (db) => __awaiter(void 0, void 0, void 0, function* () {
         let res = yield db.insert('foo', { label: 'hovno' });
         if (db.isPg()) {
             expect(res.label).toEqual('hovno'); // inserted row
@@ -231,7 +232,7 @@ exports._sqlUtilTestsAll = {
         expect(row.label).toEqual('hovno');
         expect(row.id).toEqual(3);
     }),
-    '`insert` works (undefined values are converted to nulls)': (db) => __awaiter(this, void 0, void 0, function* () {
+    '`insert` works (undefined values are converted to nulls)': (db) => __awaiter(void 0, void 0, void 0, function* () {
         // auto increment serial pk
         let res = yield db.insert('foo', { label: 'kokos' });
         if (db.isPg()) {
@@ -259,7 +260,7 @@ exports._sqlUtilTestsAll = {
         row = yield db.fetchRow('*', 'foo2', { id1: 10, id2: 20 });
         expect(row.label).toEqual('kokos2');
     }),
-    '`update` works': (db) => __awaiter(this, void 0, void 0, function* () {
+    '`update` works': (db) => __awaiter(void 0, void 0, void 0, function* () {
         let res = yield db.update('foo', { label: 'hovno' }, { id: 1 });
         if (db.isPg()) {
             expect(res.label).toEqual('hovno'); // inserted row
@@ -274,7 +275,7 @@ exports._sqlUtilTestsAll = {
         expect(row.label).toEqual('hovno');
         expect(row.id).toEqual(1);
     }),
-    '`update` works (undefined values are converted to nulls)': (db) => __awaiter(this, void 0, void 0, function* () {
+    '`update` works (undefined values are converted to nulls)': (db) => __awaiter(void 0, void 0, void 0, function* () {
         let res = yield db.update('foo', { label: void 0 }, { id: 1 });
         if (db.isPg()) {
             expect(res.label).toEqual(null); // inserted row
@@ -289,7 +290,7 @@ exports._sqlUtilTestsAll = {
         expect(row.label).toEqual(null);
         expect(row.id).toEqual(1);
     }),
-    'PG ONLY: `update` works (with `col=` sign notation)': (db) => __awaiter(this, void 0, void 0, function* () {
+    'PG ONLY: `update` works (with `col=` sign notation)': (db) => __awaiter(void 0, void 0, void 0, function* () {
         if (db.isPg()) {
             // pri "=" sa nedotykame hodnoty
             yield db.update('foo', { 'label=': `LOWER(TRIM('  hoVNO  '))` }, { id: 1 });
@@ -298,13 +299,13 @@ exports._sqlUtilTestsAll = {
             expect(row.id).toEqual(1);
         }
     }),
-    '`delete` works': (db) => __awaiter(this, void 0, void 0, function* () {
+    '`delete` works': (db) => __awaiter(void 0, void 0, void 0, function* () {
         yield db.delete('foo', { id: 1 });
         let rows = yield db.fetchAll('*', 'foo');
         expect(rows.length).toEqual(1);
         expect(rows[0].id).toEqual(2);
     }),
-    '`lastInsertId` works': (db) => __awaiter(this, void 0, void 0, function* () {
+    '`lastInsertId` works': (db) => __awaiter(void 0, void 0, void 0, function* () {
         yield db.insert('foo', { label: 'hovno' });
         let lid = yield db.lastInsertId();
         expect(lid).toEqual(3);

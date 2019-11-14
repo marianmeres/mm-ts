@@ -7,9 +7,10 @@ export interface BaseFooData {
 }
 export declare class BaseFoo extends BaseModel<BaseFooData> {
     readonly entityType = "foo";
-    label: any;
-    readonly bar: string;
-    readonly _defaults: BaseFooData;
+    get label(): any;
+    set label(v: any);
+    get bar(): string;
+    get _defaults(): BaseFooData;
     static defaults(): BaseFooData;
 }
 export declare const fooService: (db?: SqlUtil) => FooService;

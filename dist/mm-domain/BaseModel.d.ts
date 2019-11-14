@@ -31,11 +31,12 @@ export declare class BaseModel<TData extends BaseModelData> {
      */
     populate(data: any): this;
     populateRelationships(rels: any): void;
-    id: any;
+    get id(): any;
+    set id(v: any);
     /**
      * @private
      */
-    readonly _defaults: TData;
+    get _defaults(): TData;
     /**
      *
      */
@@ -125,7 +126,7 @@ export declare class BaseModel<TData extends BaseModelData> {
     /**
      * @returns {Array}
      */
-    readonly dirtyKeys: any[];
+    get dirtyKeys(): any[];
     /**
      * @param k
      * @returns {boolean}

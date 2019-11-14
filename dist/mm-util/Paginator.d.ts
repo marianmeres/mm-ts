@@ -6,11 +6,14 @@ export declare class Paginator {
     protected _itemsPerPage: number;
     protected _currentPage: number;
     constructor(itemsTotal: number, itemsPerPage?: number, currentPage?: number);
-    itemsTotal: any;
-    itemsPerPage: any;
-    currentPage: number;
+    get itemsTotal(): any;
+    set itemsTotal(v: any);
+    get itemsPerPage(): any;
+    set itemsPerPage(v: any);
+    get currentPage(): number;
+    set currentPage(v: number);
     protected _assertNumber(val: any, fallback?: number): any;
-    readonly pageCount: number;
+    get pageCount(): number;
     /**
      * Returns interval from (exclusive) - to (inclusive); Offset is considered
      * as postgres does: OFFSET says to skip that many rows before beginning to return rows.
@@ -20,15 +23,15 @@ export declare class Paginator {
      */
     getOffsetByPage(page?: number, noInterval?: boolean): number | number[];
     getPageByOffset(offset: number): number;
-    readonly offset: number | number[];
-    readonly limit: any;
+    get offset(): number | number[];
+    get limit(): any;
     isOutOfBounds(page?: number): boolean;
     getNextPage(page?: number): number | false;
-    readonly nextPage: number | false;
+    get nextPage(): number | false;
     getPreviousPage(page?: number): number | false;
-    readonly previousPage: number | false;
-    readonly lastPage: number;
-    readonly firstPage: number;
+    get previousPage(): number | false;
+    get lastPage(): number;
+    get firstPage(): number;
     isLastPage(page?: number): boolean;
     isFirstPage(page?: number): boolean;
     dump(): {

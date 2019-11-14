@@ -95,7 +95,8 @@ export class BaseModel<TData extends BaseModelData> {
     toJSON(): TData {
         return Object.keys(this._data).reduce(
             (out, k) => {
-                out[k] = this.get(k);
+                // string cannot be used to index T...
+                (out as any)[k] = this.get(k);
                 return out;
             },
             {} as TData
@@ -202,7 +203,7 @@ export class BaseModel<TData extends BaseModelData> {
     set(k, v) {
         let oldRawValue = this._data[k];
         // IMPORTANT: prefer setter if exists
-        this._hasSetterFor(k) ? (this[k] = v) : (this._data[k] = v);
+        this._hasSetterFor(k) ? (this[k] = v) : ((this._data as any)[k] = v);
         this._maybeMarkKeyDirty(k, oldRawValue);
         return this;
     }
@@ -225,7 +226,7 @@ export class BaseModel<TData extends BaseModelData> {
      */
     protected _set(k, v) {
         let oldRawValue = this._data[k];
-        this._data[k] = v;
+        (this._data as any)[k] = v;
         this._maybeMarkKeyDirty(k, oldRawValue);
         return this;
     }

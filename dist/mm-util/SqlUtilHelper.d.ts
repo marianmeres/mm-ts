@@ -7,8 +7,8 @@ export declare class SqlUtilHelper {
      */
     static factoryMysqlDriverProxy(config: DbConfig): {
         driver: string;
-        query: (text: any, params: any) => Promise<{}>;
-        client: () => Promise<{}>;
+        query: (text: any, params: any) => Promise<unknown>;
+        client: () => Promise<unknown>;
         clientRelease: (_client: any) => Promise<void>;
         config: DbConfig;
         poolEnd: () => Promise<void>;
@@ -32,10 +32,10 @@ export declare class SqlUtilHelper {
     static factorySqliteDriverProxy(config: DbConfig): {
         driver: string;
         config: DbConfig;
-        query: (text: any, params: any) => Promise<{}>;
-        client: () => Promise<{}>;
+        query: (text: any, params: any) => Promise<unknown>;
+        client: () => Promise<unknown>;
         clientRelease: (_client: any) => Promise<void>;
-        poolEnd: () => Promise<{}>;
+        poolEnd: () => Promise<unknown>;
         raw: typeof sqlite3;
     };
     /**

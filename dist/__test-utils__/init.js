@@ -1,9 +1,10 @@
 "use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
         function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
@@ -24,7 +25,7 @@ const _assertExists = (file) => {
 exports._splitAsMultipleStatements = (sql) => {
     return `${sql}`.split(';').filter((v) => v.trim() !== '');
 };
-exports._queryMultipleStatements = (sqls, db, debug) => __awaiter(this, void 0, void 0, function* () {
+exports._queryMultipleStatements = (sqls, db, debug) => __awaiter(void 0, void 0, void 0, function* () {
     for (let sql of sqls) {
         yield db.query(sql, void 0, debug);
     }
@@ -45,7 +46,7 @@ function _importData(DATA_DIR, db) {
     });
 }
 exports._importData = _importData;
-exports._initDb = (db, debug, withData = true) => __awaiter(this, void 0, void 0, function* () {
+exports._initDb = (db, debug, withData = true) => __awaiter(void 0, void 0, void 0, function* () {
     const SCHEMA_DIR = path.resolve(process.cwd(), 'data', db.dialect, 'schema');
     _assertExists(SCHEMA_DIR);
     const sql = get_sql_schema_1.getSqlSchema(SCHEMA_DIR);

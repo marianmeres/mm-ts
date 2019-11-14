@@ -1,9 +1,10 @@
 "use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
         function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
@@ -12,7 +13,7 @@ const init_1 = require("./init");
 exports.testSuiteFactorySqlUtilDialectBased = (db, testsAll, shouldSkipResolver, _beforeEach) => {
     let testsFactoryMap = Object.keys(testsAll);
     describe(db.dialect, () => {
-        beforeEach(() => __awaiter(this, void 0, void 0, function* () {
+        beforeEach(() => __awaiter(void 0, void 0, void 0, function* () {
             if (typeof _beforeEach === 'function') {
                 return _beforeEach();
             }
@@ -21,7 +22,7 @@ exports.testSuiteFactorySqlUtilDialectBased = (db, testsAll, shouldSkipResolver,
         for (let i = 0; i < testsFactoryMap.length; i++) {
             let key = testsFactoryMap[i];
             let testFactory = testsAll[key];
-            let testFn = () => __awaiter(this, void 0, void 0, function* () {
+            let testFn = () => __awaiter(void 0, void 0, void 0, function* () {
                 if (!shouldSkipResolver()) {
                     yield testFactory(db);
                 }

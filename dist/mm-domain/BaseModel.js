@@ -65,6 +65,7 @@ class BaseModel {
      */
     toJSON() {
         return Object.keys(this._data).reduce((out, k) => {
+            // string cannot be used to index T...
             out[k] = this.get(k);
             return out;
         }, {});
@@ -197,7 +198,7 @@ class BaseModel {
             // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON/stringify
             // ...If the value has a toJSON() method, it's responsible to define
             // what data will be serialized...
-            return Object.assign({}, out, { toJSON: () => JSON.stringify(out) });
+            return Object.assign(Object.assign({}, out), { toJSON: () => JSON.stringify(out) });
         }
         return out;
     }

@@ -97,6 +97,7 @@ class WsMessage {
         };
     }
 }
+exports.WsMessage = WsMessage;
 // "system" types
 WsMessage.TYPE_JOIN_ROOM = 'JOIN';
 WsMessage.TYPE_LEAVE_ROOM = 'LEAVE';
@@ -109,4 +110,3 @@ WsMessage.TYPE_CONNECTION_ESTABLISHED = 'CONNECTION_ESTABLISHED';
 WsMessage.TYPE_JSONAPI = 'JSONAPI';
 WsMessage.TYPE_JSONAPI_UPDATE = 'JSONAPI_UPDATE';
 WsMessage.TYPE_JSONAPI_DELETE = 'JSONAPI_DELETE';
-exports.WsMessage = WsMessage;

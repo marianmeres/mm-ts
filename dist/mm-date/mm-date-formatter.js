@@ -68,7 +68,7 @@ class MMDateFormatter {
         const Milliseconds = date[_ + 'Milliseconds']();
         const TZOffset = utc ? 0 : date.getTimezoneOffset();
         const _i18n = (k) => {
-            let t = Object.assign({}, (MMDateFormatter.i18n[locale] || {}), (i18n || {}));
+            let t = Object.assign(Object.assign({}, (MMDateFormatter.i18n[locale] || {})), (i18n || {}));
             return t[k] || {};
         };
         const ZZ = () => (TZOffset > 0 ? '-' : '+') +
@@ -243,12 +243,13 @@ class MMDateFormatter {
         let res = MMDateFormatter._diff(deltaSeconds);
         const isPast = date < compareTo;
         const _i18n = (k, _val, _isPast) => {
-            let t = Object.assign({}, ((MMDateFormatter.i18n[locale] || {}).relative || {}), (i18n || {}));
+            let t = Object.assign(Object.assign({}, ((MMDateFormatter.i18n[locale] || {}).relative || {})), (i18n || {}));
             return t[k] ? t[k](_val, _isPast) : `${k},${_val},${_isPast}`;
         };
-        return Object.assign({}, res, { isPast, isFuture: !isPast, localized: _i18n(res.type, res.value, isPast) });
+        return Object.assign(Object.assign({}, res), { isPast, isFuture: !isPast, localized: _i18n(res.type, res.value, isPast) });
     }
 }
+exports.MMDateFormatter = MMDateFormatter;
 // prettier-ignore
 MMDateFormatter.i18n = {
     en: {
@@ -306,4 +307,3 @@ MMDateFormatter.i18n = {
         }
     },
 };
-exports.MMDateFormatter = MMDateFormatter;

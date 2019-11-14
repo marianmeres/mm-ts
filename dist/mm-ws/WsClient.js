@@ -392,6 +392,7 @@ class WsClient extends EventEmitter {
         this.on(WsClient.EVENT_MESSAGE, cb);
     }
 }
+exports.WsClient = WsClient;
 // WebSocket events
 WsClient.EVENT_OPEN = 'open';
 WsClient.EVENT_ERROR = 'error';
@@ -409,4 +410,3 @@ WsClient.READYSTATE_CLOSING = 2;
 WsClient.READYSTATE_CLOSED = 3;
 // "once" map of `onSuccess` handlers...
 WsClient._pendingCallbacks = new Map();
-exports.WsClient = WsClient;

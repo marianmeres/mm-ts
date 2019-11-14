@@ -33,7 +33,7 @@ export declare class MMDateFormatter {
     /**
      *
      */
-    readonly date: Date;
+    get date(): Date;
     /**
      * @param mask
      * @param utc

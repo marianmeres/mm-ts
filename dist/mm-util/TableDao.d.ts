@@ -29,10 +29,11 @@ export declare class TableDao {
     /**
      * @param {SqlUtil} sqlUtil
      */
+    set db(sqlUtil: SqlUtil);
     /**
-    * @returns {SqlUtil}
-    */
-    db: SqlUtil;
+     * @returns {SqlUtil}
+     */
+    get db(): SqlUtil;
     /**
      * @param data
      * @returns {{}}

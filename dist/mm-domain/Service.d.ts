@@ -13,8 +13,9 @@ export declare class Service<TModel extends BaseModel<BaseModelData>> {
     protected _modelCtor: any;
     protected _isDeletedColName: null | string;
     constructor(_db?: SqlUtil);
-    db: SqlUtil | null;
-    readonly dao: TableDao;
+    set db(db: SqlUtil | null);
+    get db(): SqlUtil | null;
+    get dao(): TableDao;
     /**
      * low level fetcher - to be overridden for custom needs
      * @param pk

@@ -1,4 +1,4 @@
 /**
  * @param ms
  */
-export declare const mmDelay: (ms: any) => Promise<{}>;
+export declare const mmDelay: (ms: any) => Promise<unknown>;

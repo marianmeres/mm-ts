@@ -1,9 +1,10 @@
 "use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
         function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
@@ -56,7 +57,7 @@ class Service {
         return __awaiter(this, void 0, void 0, function* () {
             let pk = { id };
             if (this._isDeletedColName) {
-                pk = Object.assign({}, pk, { [this._isDeletedColName]: 0 });
+                pk = Object.assign(Object.assign({}, pk), { [this._isDeletedColName]: 0 });
             }
             const row = yield this._fetchRow(pk, assert, debug);
             return row ? new this._modelCtor(row) : null;
@@ -72,7 +73,7 @@ class Service {
         return __awaiter(this, void 0, void 0, function* () {
             exports.assertWhereNotString(where);
             if (this._isDeletedColName) {
-                where = Object.assign({}, where, { [this._isDeletedColName]: 0 });
+                where = Object.assign(Object.assign({}, where), { [this._isDeletedColName]: 0 });
             }
             const row = yield this._fetchRow(where, assert, debug);
             return row ? new this._modelCtor(row) : null;
@@ -88,7 +89,7 @@ class Service {
         return __awaiter(this, void 0, void 0, function* () {
             exports.assertWhereNotString(where);
             if (this._isDeletedColName) {
-                where = Object.assign({}, where, { [this._isDeletedColName]: 0 });
+                where = Object.assign(Object.assign({}, where), { [this._isDeletedColName]: 0 });
             }
             let rows = yield this.dao.fetchAll(where, options, debug);
             return rows.map((row) => new this._modelCtor(row));
