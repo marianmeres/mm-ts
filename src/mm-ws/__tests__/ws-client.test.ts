@@ -4,6 +4,7 @@ import * as path from 'path';
 import { WsClient } from '../WsClient';
 import * as dotenv from 'dotenv';
 import { mmDelay } from '../../mm-util/mm-delay';
+import { WsMessage } from '../WsMessage';
 dotenv.config();
 
 const WSS_PORT = parseInt(process.env.MM_TS_TESTING_WSS_PORT, 10);
@@ -161,8 +162,16 @@ test('true reconnect works', (done) => {
     ss = new ws.Server({ port: WSS_PORT }, () => {
         // server's client message handling
         ss.on('connection', (client) => {
-            client.on('message', (data) => {
-                expect(data).toEqual('1');
+            client.on('message', (data: any) => {
+                try {
+                    data = JSON.parse(data);
+                } catch (e) {
+                    //
+                }
+                if (data.type === WsMessage.TYPE_RECONNECT) { // omit RECONNECT
+                    return;
+                }
+                expect(data).toEqual(1);
                 ss.close(afterClose);
             });
         });
