@@ -1,11 +1,9 @@
 # mm-ts
 
-Ongoing collection of various personal TypeScript utils...
+## This package is divided into 3 separate repos and is now deprecated...
 
-**Notes/links:**
+Use:
+- https://github.com/marianmeres/mm-ts-utils
+- https://github.com/marianmeres/mm-ts-utils-client
+- https://github.com/marianmeres/mm-ts-utils-server
 
-- https://medium.com/@martin_hotell/tree-shake-lodash-with-webpack-jest-and-typescript-2734fa13b5cd
-    1. use `import isDate from 'lodash-es/isDate'` syntax
-    2. jest: transpile also .js files not just .ts: `"transform": {"^.+\\.(j|t)sx?$": "ts-jest"}`
-    3. jest: whitelist lodash-es within transformIgnorePatterns: `"transformIgnorePatterns": ["<rootDir>/node_modules/(?!lodash-es/.*)"]`
-    4. tsconfig.json - transpile js too... `"allowJs": true`
